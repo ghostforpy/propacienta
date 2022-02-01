@@ -9,6 +9,14 @@ CREATE TABLE "users" (
   "accept_private_policy" BOOLEAN NOT NULL
 );
 
+CREATE TABLE "requests_logs" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "request_user" INTEGER NOT NULL,
+  "pacient" INTEGER NOT NULL,
+  "table_name" VARCHAR NOT NULL,
+  "table_row" INTEGER NOT NULL
+);
+
 CREATE TABLE "pacients" (
   "id" INTEGER PRIMARY KEY NOT NULL,
   "user" INTEGER NOT NULL,
@@ -32,6 +40,12 @@ CREATE TABLE "analysis_results" (
   "medicine_card" INTEGER UNIQUE NOT NULL,
   "analysis" INTEGER NOT NULL,
   "result" TEXT
+);
+
+CREATE TABLE "analysis_results_images" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "imagefile" VARCHAR,
+  "analysis_results" INTEGER NOT NULL
 );
 
 CREATE TABLE "appointment_order" (
@@ -194,3 +208,9 @@ ALTER TABLE "analysis_results" ADD FOREIGN KEY ("medicine_card") REFERENCES "med
 ALTER TABLE "analysis_results" ADD FOREIGN KEY ("analysis") REFERENCES "analyzes" ("id");
 
 ALTER TABLE "analysis_results" ADD FOREIGN KEY ("pacient") REFERENCES "pacients" ("id");
+
+ALTER TABLE "analysis_results_images" ADD FOREIGN KEY ("analysis_results") REFERENCES "analysis_results" ("id");
+
+ALTER TABLE "requests_logs" ADD FOREIGN KEY ("request_user") REFERENCES "users" ("id");
+
+ALTER TABLE "requests_logs" ADD FOREIGN KEY ("pacient") REFERENCES "pacients" ("id");
