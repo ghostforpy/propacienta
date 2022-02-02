@@ -6,7 +6,11 @@ CREATE TABLE "users" (
   "is_active" BOOLEAN NOT NULL,
   "is_superuser" BOOLEAN NOT NULL,
   "is_staff" BOOLEAN NOT NULL,
-  "accept_private_policy" BOOLEAN NOT NULL
+  "accept_private_policy" BOOLEAN NOT NULL,
+  "name" VARCHAR,
+  "surname" VARCHAR,
+  "patronymic" VARCHAR,
+  "birthday" date
 );
 
 CREATE TABLE "requests_logs" (
@@ -29,22 +33,116 @@ CREATE TABLE "doctors" (
   "user" INTEGER NOT NULL
 );
 
+CREATE TABLE "chat_room" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "pacient" INTEGER NOT NULL,
+  "doctor" INTEGER NOT NULL
+);
+
+CREATE TABLE "chat_message" (
+  "id" INTEGER NOT NULL,
+  "chat_room" INTEGER NOT NULL,
+  "pacient" INTEGER,
+  "doctor" INTEGER,
+  "created" timestamp NOT NULL,
+  "delivered" BOOLEAN,
+  "read" BOOLEAN,
+  PRIMARY KEY ("id", "chat_room")
+);
+
 CREATE TABLE "medicine_card" (
   "id" INTEGER PRIMARY KEY NOT NULL,
-  "user" INTEGER UNIQUE NOT NULL
+  "user" INTEGER UNIQUE NOT NULL,
+  "height" float,
+  "weight" float,
+  "average_pressure" VARCHAR
+);
+
+CREATE TABLE "pressure_results" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "medicine_card" INTEGER NOT NULL,
+  "datetime" timestamp,
+  "result" VARCHAR
+);
+
+CREATE TABLE "sugar_level" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "medicine_card" INTEGER NOT NULL,
+  "datetime" timestamp,
+  "result" VARCHAR
+);
+
+CREATE TABLE "transferred_diseases" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "medicine_card" INTEGER NOT NULL,
+  "disease" INTEGER NOT NULL,
+  "diagnosis" VARCHAR,
+  "diagnosis_date" date,
+  "diagnosis_year" INTEGER,
+  "treatment_date" date,
+  "treatment_end_date" date
+);
+
+CREATE TABLE "diseases" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "title" VARCHAR UNIQUE NOT NULL,
+  "code" VARCHAR
+);
+
+CREATE TABLE "through_diseases_analyzes" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "disease" INTEGER,
+  "analysis" INTEGER
+);
+
+CREATE TABLE "chronic_diseases" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "medicine_card" INTEGER NOT NULL,
+  "disease" INTEGER NOT NULL,
+  "treatment" TEXT
+);
+
+CREATE TABLE "transferred_operations" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "medicine_card" INTEGER NOT NULL,
+  "operation" INTEGER NOT NULL,
+  "operation_datetime" timestamp,
+  "effect" VARCHAR
+);
+
+CREATE TABLE "discharge_epicrisis" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "disease" INTEGER
+);
+
+CREATE TABLE "discharge_epicrisis_files" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "discharge_epicris" INTEGER
+);
+
+CREATE TABLE "operations" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "title" VARCHAR UNIQUE NOT NULL
 );
 
 CREATE TABLE "analysis_results" (
   "id" INTEGER PRIMARY KEY NOT NULL,
   "pacient" INTEGER NOT NULL,
-  "medicine_card" INTEGER UNIQUE NOT NULL,
+  "medicine_card" INTEGER NOT NULL,
   "analysis" INTEGER NOT NULL,
-  "result" TEXT
+  "result" TEXT,
+  "date_" date
 );
 
 CREATE TABLE "analysis_results_images" (
   "id" INTEGER PRIMARY KEY NOT NULL,
   "imagefile" VARCHAR,
+  "analysis_results" INTEGER NOT NULL
+);
+
+CREATE TABLE "analysis_results_files" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "file" VARCHAR,
   "analysis_results" INTEGER NOT NULL
 );
 
@@ -61,6 +159,14 @@ CREATE TABLE "appointment_order" (
   "hospital" INTEGER NOT NULL
 );
 
+CREATE TABLE "survey" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "complaints" TEXT,
+  "complaints_date" date,
+  "treatment" TEXT,
+  "appointment_order" INTEGER
+);
+
 CREATE TABLE "doctors_appointment" (
   "id" INTEGER PRIMARY KEY NOT NULL,
   "pacient" INTEGER NOT NULL,
@@ -70,7 +176,12 @@ CREATE TABLE "doctors_appointment" (
   "datetime" timestamp NOT NULL,
   "medicine_card" INTEGER NOT NULL,
   "doctor_specialization" INTEGER NOT NULL,
-  "doctor_subspecialization" INTEGER
+  "doctor_subspecialization" INTEGER,
+  "complaints" TEXT,
+  "complaints_date" date,
+  "treatment" TEXT,
+  "rating_for_pacient" INTEGER,
+  "rating_for_doctor" INTEGER
 );
 
 CREATE TABLE "prescription_of_medicines" (
@@ -147,6 +258,12 @@ CREATE TABLE "hospitals" (
   "address" VARCHAR(45) NOT NULL
 );
 
+CREATE TABLE "through_doctors_hospitals" (
+  "id" INTEGER PRIMARY KEY NOT NULL,
+  "doctor" INTEGER NOT NULL,
+  "hospital" INTEGER NOT NULL
+);
+
 ALTER TABLE "pacients" ADD FOREIGN KEY ("user") REFERENCES "users" ("id");
 
 ALTER TABLE "doctors" ADD FOREIGN KEY ("user") REFERENCES "users" ("id");
@@ -214,3 +331,48 @@ ALTER TABLE "analysis_results_images" ADD FOREIGN KEY ("analysis_results") REFER
 ALTER TABLE "requests_logs" ADD FOREIGN KEY ("request_user") REFERENCES "users" ("id");
 
 ALTER TABLE "requests_logs" ADD FOREIGN KEY ("pacient") REFERENCES "pacients" ("id");
+
+ALTER TABLE "chat_room" ADD FOREIGN KEY ("pacient") REFERENCES "pacients" ("id");
+
+ALTER TABLE "chat_room" ADD FOREIGN KEY ("doctor") REFERENCES "doctors" ("id");
+
+ALTER TABLE "chat_room" ADD FOREIGN KEY ("id") REFERENCES "chat_message" ("chat_room");
+
+ALTER TABLE "chat_message" ADD FOREIGN KEY ("pacient") REFERENCES "pacients" ("id");
+
+ALTER TABLE "chat_message" ADD FOREIGN KEY ("doctor") REFERENCES "doctors" ("id");
+
+ALTER TABLE "analysis_results_files" ADD FOREIGN KEY ("id") REFERENCES "analysis_results" ("id");
+
+ALTER TABLE "transferred_diseases" ADD FOREIGN KEY ("medicine_card") REFERENCES "medicine_card" ("id");
+
+ALTER TABLE "transferred_operations" ADD FOREIGN KEY ("medicine_card") REFERENCES "medicine_card" ("id");
+
+ALTER TABLE "transferred_operations" ADD FOREIGN KEY ("operation") REFERENCES "operations" ("id");
+
+ALTER TABLE "transferred_diseases" ADD FOREIGN KEY ("disease") REFERENCES "diseases" ("id");
+
+ALTER TABLE "pressure_results" ADD FOREIGN KEY ("medicine_card") REFERENCES "medicine_card" ("id");
+
+ALTER TABLE "sugar_level" ADD FOREIGN KEY ("medicine_card") REFERENCES "medicine_card" ("id");
+
+ALTER TABLE "through_doctors_hospitals" ADD FOREIGN KEY ("hospital") REFERENCES "hospitals" ("id");
+
+ALTER TABLE "through_doctors_hospitals" ADD FOREIGN KEY ("doctor") REFERENCES "doctors" ("id");
+
+ALTER TABLE "chronic_diseases" ADD FOREIGN KEY ("medicine_card") REFERENCES "medicine_card" ("id");
+
+ALTER TABLE "chronic_diseases" ADD FOREIGN KEY ("disease") REFERENCES "diseases" ("id");
+
+ALTER TABLE "discharge_epicrisis" ADD FOREIGN KEY ("disease") REFERENCES "chronic_diseases" ("id");
+
+ALTER TABLE "discharge_epicrisis" ADD FOREIGN KEY ("disease") REFERENCES "transferred_diseases" ("id");
+
+ALTER TABLE "discharge_epicrisis_files" ADD FOREIGN KEY ("discharge_epicris") REFERENCES "discharge_epicrisis" ("id");
+
+ALTER TABLE "through_diseases_analyzes" ADD FOREIGN KEY ("disease") REFERENCES "diseases" ("id");
+
+ALTER TABLE "through_diseases_analyzes" ADD FOREIGN KEY ("analysis") REFERENCES "analyzes" ("id");
+
+ALTER TABLE "appointment_order" ADD FOREIGN KEY ("id") REFERENCES "survey" ("appointment_order");
+
