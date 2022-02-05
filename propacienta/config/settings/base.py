@@ -80,6 +80,15 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "propacienta.users",
+    "pacients",
+    "doctors",
+    "chats",
+    "analisis",
+    "medicine_cards",
+    "appointments",
+    "hospitals",
+    "prescriptions",
+    "requests_logs"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
