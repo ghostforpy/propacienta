@@ -13,7 +13,7 @@ down:
 	docker-compose -f local.yml down
 
 make_migrations_local:
-	docker-compose -f local.yml run --rm django python manage.py makemigrations
+	docker-compose -f local.yml run --rm django python manage.py makemigrations && sudo chown ghost:ghost -R ./
 
 migrate_production:
 	sudo docker-compose -f production.yml run --rm django python manage.py migrate
