@@ -33,7 +33,14 @@ services:
       - production_postgres_data_backups:/backups:z
     env_file:
       - ./.envs/.production/.postgres
-
+  
+  pgbouncer:
+    image: edoburu/pgbouncer
+    depends_on:
+      - postgres
+    env_file:
+      - ./.envs/.production/.pgbouncer
+  
   traefik:
     build:
       context: .
