@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=propacienta
+POSTGRES_USER=WWyMaBHUcbmSOYXADeaLgjYRYurOrDsz
+POSTGRES_PASSWORD=ZFx8ZfTCzcaeVHIsIlUolkr1hTDOpZup8SBxIp4RndNYQW3tJqO25L1I9ugcZx9I
