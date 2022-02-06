@@ -6,5 +6,12 @@ from django.utils.translation import gettext_lazy as _
 
 class Pacient(models.Model):
     """Model for pacients."""
-    user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
-    phone = models.CharField(_("Телефон"))
+    phone = models.CharField(_("Телефон"), max_length=30)
+    
+    class Meta:
+        verbose_name = "Пациент"
+        verbose_name_plural = "Пациенты"
+
+    def __str__(self) -> str:
+        return "{} {}".format(self.user.first_name, self.user.last_name)
+
