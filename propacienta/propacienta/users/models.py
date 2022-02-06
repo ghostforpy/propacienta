@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField, DateField
+from django.db.models import CharField, DateField, OneToOneField, DO_NOTHING
 
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -18,6 +18,8 @@ class User(AbstractUser):
     last_name = CharField(_("Last name"), blank=True, max_length=255)
     patronymic = CharField(_("Patronymic"), blank=True, max_length=255)
     birthday = DateField(null=True)
+    pacient = OneToOneField("pacients.pacient", on_delete=DO_NOTHING, null=True, related_name="user")
+    doctor = OneToOneField("doctors.doctor", on_delete=DO_NOTHING, null=True, related_name="user")
 
     def get_absolute_url(self):
         """Get url for user's detail view.
@@ -27,3 +29,5 @@ class User(AbstractUser):
 
         """
         return reverse("users:detail", kwargs={"username": self.username})
+    
+
