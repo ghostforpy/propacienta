@@ -6,5 +6,5 @@ from django.utils.translation import gettext_lazy as _
 
 class Doctor(models.Model):
     """Model for doctors."""
-    user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
+    #user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
     phone = models.CharField(_("Телефон"), max_length=30)
