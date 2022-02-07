@@ -21,5 +21,9 @@ class Hospital(models.Model):
     )
     address = models.CharField(_("Адрес"), max_length=250)
 
+    class Meta:
+        verbose_name = "Клиника"
+        verbose_name_plural = "Клиники"
+
     def __str__(self) -> str:
         return self.title
