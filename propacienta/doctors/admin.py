@@ -1,12 +1,9 @@
 from pyexpat import model
 from django.contrib import admin
-from .models import Doctor
+from .models import Doctor, DoctorSpecialization, DoctorSubSpecialization
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from hospitals.models import Hospital
-
-class HospitalModelAdmin(admin.TabularInline):
-    model = Hospital
 
 
 class UserModelAdmin(admin.StackedInline):
@@ -26,3 +23,6 @@ class DoctorAdmin(admin.ModelAdmin):
 
     def user_name(self, obj):
         return obj.__str__()
+
+admin.site.register(DoctorSpecialization)
+admin.site.register(DoctorSubSpecialization)

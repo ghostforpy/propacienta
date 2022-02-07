@@ -1,11 +1,10 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 class DoctorSpecialization(models.Model):
     title = models.CharField(
-        _("Специализация"),
+        _("Наименование"),
         max_length=250,
         unique=True
         )
@@ -20,7 +19,7 @@ class DoctorSpecialization(models.Model):
 
 class DoctorSubSpecialization(models.Model):
     title = models.CharField(
-        _("Узкая специализация"),
+        _("Наименование"),
         max_length=250,
         unique=True
         )
