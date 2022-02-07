@@ -8,6 +8,11 @@ class Doctor(models.Model):
     """Model for doctors."""
     #user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
     phone = models.CharField(_("Телефон"), max_length=30)
+    hospitals = models.ManyToManyField(
+        "hospitals.hospital",
+        verbose_name=_("Клиники"),
+        related_name="doctors"
+    )
     
     class Meta:
         verbose_name = "Врач"
