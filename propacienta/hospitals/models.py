@@ -1,10 +1,10 @@
-from pyexpat import model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 
 class HospitalTown(models.Model):
+    """Town where hospital is located."""
     title = models.CharField(_("Наименование"), unique=True, max_length=150)
 
     def __str__(self) -> str:
@@ -12,6 +12,7 @@ class HospitalTown(models.Model):
 
 
 class Hospital(models.Model):
+    """Hospital model."""
     title = models.CharField(_("Наименование"), unique=True, max_length=150)
     town = models.ForeignKey(
         HospitalTown,
