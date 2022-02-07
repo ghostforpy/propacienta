@@ -88,7 +88,8 @@ LOCAL_APPS = [
     "appointments",
     "hospitals",
     "prescriptions",
-    "requests_logs"
+    "requests_logs",
+    "medicines"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
