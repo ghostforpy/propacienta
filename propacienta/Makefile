@@ -1,7 +1,7 @@
 .SILENT:
 
 local:
-	docker-compose -f local.yml up $(NAME) --remove-orphans
+	docker-compose -f local.yml up $(SERVICE) --remove-orphans
 
 db:
 	docker-compose -f local.yml up --remove-orphans -d postgres
