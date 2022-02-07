@@ -34,4 +34,4 @@ create_superuser_local:
 	docker-compose -f local.yml run --rm django ./manage.py createsuperuser
 
 startapp_local:
-	docker-compose -f local.yml run --rm django ./manage.py startapp $(APP)
+	docker-compose -f local.yml run --rm django ./manage.py startapp $(APP) && sudo chown ghost:ghost -R ./
