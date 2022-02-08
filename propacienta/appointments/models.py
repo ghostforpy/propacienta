@@ -65,6 +65,13 @@ class AppointmentSurvey(models.Model):
     complaints_date = models.DateField(_("Когда впервые появились жалобы"))
     treatment = models.TextField(_("Лечение"))
 
+    class Meta:
+        verbose_name = "Опросник перед приём врача"
+        verbose_name_plural = "Опросники перед приём врача"
+
+    def __str__(self) -> str:
+        return "{} к {}".format(self.pacient, self.doctor)
+
 
 class DoctorAppointment(models.Model):
     """Модель факта проеведения приема у врача."""
@@ -105,6 +112,12 @@ class DoctorAppointment(models.Model):
         related_name="doctor_appointments",
         null=True,
         blank=True
+    )
+    hospital = models.ForeignKey(
+        "hospitals.hospital",
+        on_delete=models.DO_NOTHING,
+        related_name="doctor_appointments",
+        null=True
     )
     complaints = models.TextField(_("Жалобы"))
     complaints_date = models.DateField(_("Когда впервые появились жалобы"))
