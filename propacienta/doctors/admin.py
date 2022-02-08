@@ -1,4 +1,3 @@
-from pyexpat import model
 from django.contrib import admin
 from .models import Doctor, DoctorSpecialization, DoctorSubSpecialization
 from django.utils.translation import gettext_lazy as _
