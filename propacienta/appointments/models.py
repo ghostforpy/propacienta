@@ -66,15 +66,15 @@ class AppointmentSurvey(models.Model):
     treatment = models.TextField(_("Лечение"))
 
     class Meta:
-        verbose_name = "Опросник перед приём врача"
-        verbose_name_plural = "Опросники перед приём врача"
+        verbose_name = "Опросник перед приёмом врача"
+        verbose_name_plural = "Опросники перед приёмом врача"
 
     def __str__(self) -> str:
         return "{} к {}".format(self.pacient, self.doctor)
 
 
 class DoctorAppointment(models.Model):
-    """Модель факта проеведения приема у врача."""
+    """Модель факта проведения приема у врача."""
     pacient = models.ForeignKey(
         "pacients.pacient",
         on_delete=models.DO_NOTHING,
