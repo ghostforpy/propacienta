@@ -18,3 +18,6 @@ class MedicineCard(models.Model):
     class Meta:
         verbose_name = "Медицинская карта"
         verbose_name_plural = "Медицинские карты"
+    
+    def __str__(self) -> str:
+        return "Медицинская карта {}".format(self.pacient)
