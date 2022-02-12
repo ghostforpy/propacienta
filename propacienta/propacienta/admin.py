@@ -12,7 +12,15 @@ class MyAdminSite(admin.AdminSite):
         # Sort the apps alphabetically.
         ordering = {i["name"]:100000 for i in app_dict.values()}
         ordering["Пациенты"] = 1
-        ordering["Врачи"] = 2
+        ordering["Медицинские карты"] = 2
+        ordering["Анализы"] = 3
+        ordering["Приемы врачей"] = 4
+        ordering["Назначения врачей"] = 5
+        ordering["Врачи"] = 6
+        ordering["Клиники"] = 7
+        ordering["Медикаменты"] = 8
+        ordering["Процедуры"] = 9
+
         #app_list = sorted(app_dict.values(), key=lambda x: x['name'].lower())
         app_list = sorted(app_dict.values(), key=lambda x: ordering[x['name']])
         
