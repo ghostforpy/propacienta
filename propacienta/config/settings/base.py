@@ -83,6 +83,7 @@ LOCAL_APPS = [
     "propacienta.users",
     "pacients",
     "doctors",
+    "diseases",
     "chats",
     "analisis",
     "medicine_cards",
