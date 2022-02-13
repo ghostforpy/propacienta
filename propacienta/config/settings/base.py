@@ -86,6 +86,7 @@ LOCAL_APPS = [
     "diseases",
     "chats",
     "analisis",
+    "operations",
     "medicine_cards",
     "appointments",
     "hospitals",
