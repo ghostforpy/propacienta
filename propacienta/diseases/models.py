@@ -10,7 +10,7 @@ class Disease(models.Model):
         max_length=250,
         unique=True
         )
-    code = models.CharField(_("Код"), max_length=50)
+    code = models.CharField(_("Код"), max_length=50, unique=True)
 
     class Meta:
         verbose_name = "Болезнь"
