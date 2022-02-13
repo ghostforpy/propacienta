@@ -9,6 +9,13 @@ class BasePrescription(models.Model):
         on_delete=models.DO_NOTHING,
         related_name="%(class)s",
     )
+    pacient = models.ForeignKey(
+        "pacients.pacient",
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Пациент"),
+        related_name="%(class)s",
+        null=True
+    )
     doctor = models.ForeignKey(
         "doctors.doctor",
         on_delete=models.DO_NOTHING,
