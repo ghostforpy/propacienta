@@ -1,4 +1,6 @@
+from operator import le
 from django.contrib import admin
+
 
 class MyAdminSite(admin.AdminSite):
     def get_app_list(self, request):
@@ -11,27 +13,21 @@ class MyAdminSite(admin.AdminSite):
 
         # Sort the apps alphabetically.
         ordering = {i["name"]:100000 for i in app_dict.values()}
-        c = 0
-        c += 1
-        ordering["Пациенты"] = c
-        c += 1
-        ordering["Медицинские карты"] = c
-        c += 1
-        ordering["Диагнозы"] = c
-        c += 1
-        ordering["Анализы"] = c
-        c += 1
-        ordering["Приемы врачей"] = c
-        c += 1
-        ordering["Назначения врачей"] = c
-        c += 1
-        ordering["Врачи"] = c
-        c += 1
-        ordering["Клиники"] = c
-        c += 1
-        ordering["Медикаменты"] = c
-        c += 1
-        ordering["Процедуры"] = c
+        app_name_list = [
+            "Пациенты",
+            "Медицинские карты",
+            "Диагнозы и заболевания",
+            "Операции",
+            "Анализы",
+            "Врачи",
+            "Приемы врачей",
+            "Назначения врачей",
+            "Клиники",
+            "Медикаменты",
+            "Процедуры"
+        ]
+        for i in range(len(app_name_list)):
+            ordering[app_name_list[i]] = i
 
         #app_list = sorted(app_dict.values(), key=lambda x: x['name'].lower())
         app_list = sorted(app_dict.values(), key=lambda x: ordering[x['name']])
