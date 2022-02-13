@@ -119,3 +119,37 @@ class DischargeEpicrisFiles(models.Model):
 
     def __str__(self) -> str:
         return "Файл к {}".format(self.discharge_epicris)
+
+
+class TransferredDisease(models.Model):
+    """Модель перенесенного заболевания."""
+    disease = models.ForeignKey(
+        Disease,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Заболенивание"),
+        related_name="transferred_diseases"
+    )
+    medicine_card = models.ForeignKey(
+        "medicine_cards.medicinecard",
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Медицинская карта"),
+        related_name="transferred_diseases"
+    )
+    pacient = models.ForeignKey(
+        "pacients.pacient",
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Пациент"),
+        related_name="transferred_diseases"
+    )
+    diagnosis = models.CharField(_("Диагноз"), max_length=250)
+    diagnosis_date = models.DateField(_("Дата постановки диагноза"), null=True)
+    diagnosis_year = models.PositiveIntegerField(_("Год постановки диагноза"), null=True)
+    treatment_date = models.DateField(_("Дата начала лечения"), null=True)
+    treatment_end_date = models.DateField(_("Дата окончания лечения"), null=True)
+
+    class Meta:
+        verbose_name = "Перенесенное заболевание"
+        verbose_name_plural = "Перенесенные заболевания"
+
+    def __str__(self) -> str:
+        return "{} {}".format(self.pacient, self.disease)
