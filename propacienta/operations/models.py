@@ -11,6 +11,10 @@ class Operation(models.Model):
         unique=True
         )
 
+    class Meta:
+        verbose_name = "Операция"
+        verbose_name_plural = "Операции"
+
     def __str__(self) -> str:
         return self.title
 
