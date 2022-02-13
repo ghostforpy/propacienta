@@ -8,6 +8,7 @@ class BasePrescription(models.Model):
         "medicine_cards.medicinecard",
         on_delete=models.DO_NOTHING,
         related_name="%(class)s",
+        verbose_name=_("Медицинская карта")
     )
     pacient = models.ForeignKey(
         "pacients.pacient",
@@ -20,11 +21,13 @@ class BasePrescription(models.Model):
         "doctors.doctor",
         on_delete=models.DO_NOTHING,
         related_name="%(class)s",
+        verbose_name=_("Врач"),
     )
     doctor_appointment = models.ForeignKey(
         "appointments.doctorappointment",
         on_delete=models.DO_NOTHING,
         related_name="%(class)s",
+        verbose_name=_("Прием врача"),
     )
 
     class Meta:
@@ -51,7 +54,8 @@ class MedicinePrescription(Prescription):
     medicine = models.ForeignKey(
         "medicines.medicine",
         on_delete=models.DO_NOTHING,
-        related_name="medicine_prescriptions"
+        related_name="medicine_prescriptions",
+        verbose_name=_("Медикамент"),
     )
 
     class Meta:
@@ -70,7 +74,8 @@ class ProcedurePrescription(Prescription):
     procedure = models.ForeignKey(
         "procedures.procedure",
         on_delete=models.DO_NOTHING,
-        related_name="procedure_prescriptions"
+        related_name="procedure_prescriptions",
+        verbose_name=_("Процедура"),
     )
 
     class Meta:
@@ -89,7 +94,8 @@ class AnalisisPrescription(BasePrescription):
     analisis = models.ForeignKey(
         "analisis.analysis",
         on_delete=models.DO_NOTHING,
-        related_name="analisis_prescriptions"
+        related_name="analisis_prescriptions",
+        verbose_name=_("Анализ"),
     )
 
     class Meta:
