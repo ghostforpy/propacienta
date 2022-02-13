@@ -11,6 +11,11 @@ class Analysis(models.Model):
         max_length=250,
         unique=True
         )
+    diseases = models.ManyToManyField(
+        "diseases.disease",
+        related_name="analyzis",
+        verbose_name="Заболевания"
+    )
     
     class Meta:
         verbose_name = "Анализ"
