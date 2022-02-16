@@ -1,4 +1,6 @@
+from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import get_user_model
+from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
@@ -9,7 +11,21 @@ from .serializers import UserSerializer
 
 User = get_user_model()
 
-
+@method_decorator(name='list', decorator=swagger_auto_schema(
+    tags=["users"]
+))
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+    tags=["users"]
+))
+@method_decorator(name='update', decorator=swagger_auto_schema(
+    tags=["users"]
+))
+@method_decorator(name='partial_update', decorator=swagger_auto_schema(
+    tags=["users"]
+))
+@method_decorator(name='me', decorator=swagger_auto_schema(
+    tags=["users"]
+))
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()

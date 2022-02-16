@@ -14,7 +14,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="Snippets API",
         default_version="v1",
-        description="Reality Info",
+        description="Propacienta Info",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="nebozhinskiy@gmail.com"),
         lisence=openapi.License(name="BSD Lisense"),
@@ -29,12 +29,12 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-router.register("users", UserViewSet)
+#router.register("users", UserViewSet)
 
 
 app_name = "api"
 urlpatterns = [
-    #path("", include("reality.api.urls")),
+    path("", include("propacienta.users.api.urls")),
     #path("", include("tom_tom.api.urls")),
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
