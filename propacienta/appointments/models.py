@@ -9,10 +9,12 @@ class AppointmentOrder(models.Model):
     pacient = models.ForeignKey(
         "pacients.pacient",
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Пациент"),
         related_name="appointment_orders"
     )
     doctor = models.ForeignKey(
         "doctors.doctor",
+        verbose_name=_("Врач"),
         on_delete=models.DO_NOTHING,
         related_name="appointment_orders"
     )
@@ -29,6 +31,7 @@ class AppointmentOrder(models.Model):
     doctor_specialization = models.ForeignKey(
         "doctors.doctorspecialization",
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Специализация врача"),
         related_name="appointment_orders",
         null=True,
         blank=True
@@ -36,6 +39,7 @@ class AppointmentOrder(models.Model):
     doctor_sub_specialization = models.ForeignKey(
         "doctors.doctorsubspecialization",
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Узкая специализация врача"),
         related_name="appointment_orders",
         null=True,
         blank=True
@@ -43,6 +47,7 @@ class AppointmentOrder(models.Model):
     hospital = models.ForeignKey(
         "hospitals.hospital",
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Клиника"),
         related_name="appointment_orders"
     )
 
@@ -59,6 +64,7 @@ class AppointmentSurvey(models.Model):
     appointment_order = models.OneToOneField(
         AppointmentOrder,
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Заказ на приём врача"),
         related_name="survey"
     )
     complaints = models.TextField(_("Жалобы"))
@@ -77,18 +83,21 @@ class DoctorAppointment(models.Model):
     """Модель факта проведения приема у врача."""
     pacient = models.ForeignKey(
         "pacients.pacient",
+        verbose_name=_("Пациент"),
         on_delete=models.DO_NOTHING,
         related_name="doctor_appointments"
     )
     doctor = models.ForeignKey(
         "doctors.doctor",
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Врач"),
         related_name="doctor_appointments"
     )
     dt = models.DateTimeField(_("Фактическое время приема"))
     appointment_order = models.OneToOneField(
         AppointmentOrder,
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Заказ на приём врача"),
         related_name="doctor_appointment",
         blank=True,
         null=True
@@ -97,11 +106,13 @@ class DoctorAppointment(models.Model):
     medicine_card = models.ForeignKey(
         "medicine_cards.medicinecard",
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Медицинская карта"),
         related_name="doctor_appointments"
     )
     doctor_specialization = models.ForeignKey(
         "doctors.doctorspecialization",
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Специализация врача"),
         related_name="doctor_appointments",
         null=True,
         blank=True
@@ -109,6 +120,7 @@ class DoctorAppointment(models.Model):
     doctor_sub_specialization = models.ForeignKey(
         "doctors.doctorsubspecialization",
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Узкая специализация врача"),
         related_name="doctor_appointments",
         null=True,
         blank=True
@@ -116,6 +128,7 @@ class DoctorAppointment(models.Model):
     hospital = models.ForeignKey(
         "hospitals.hospital",
         on_delete=models.DO_NOTHING,
+        verbose_name=_("Клиника"),
         related_name="doctor_appointments",
         null=True
     )

@@ -1,6 +1,8 @@
 from django.contrib import admin
-from .models import Hospital
+from .models import Hospital, HospitalTown
 # Register your models here.
+
+admin.site.register(HospitalTown)
 
 @admin.register(Hospital)
 class HospitalAdmin(admin.ModelAdmin):

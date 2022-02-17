@@ -14,10 +14,10 @@ class User(AbstractUser):
 
     #: First and last name do not cover name patterns around the globe
     name = CharField(_("Name of User"), blank=True, max_length=255)
-    first_name = CharField(_("First name"), blank=True, max_length=255)
-    last_name = CharField(_("Last name"), blank=True, max_length=255)
-    patronymic = CharField(_("Patronymic"), blank=True, max_length=255)
-    birthday = DateField(null=True)
+    first_name = CharField(_("Имя"), blank=True, max_length=255)
+    last_name = CharField(_("Фамилия"), blank=True, max_length=255)
+    patronymic = CharField(_("Отчество"), blank=True, max_length=255)
+    birthday = DateField(_("Дата рождения"),null=True)
     pacient = OneToOneField("pacients.pacient", on_delete=DO_NOTHING, null=True, related_name="user")
     doctor = OneToOneField("doctors.doctor", on_delete=DO_NOTHING, null=True, related_name="user")
 

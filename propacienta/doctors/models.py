@@ -26,6 +26,7 @@ class DoctorSubSpecialization(models.Model):
     specialization = models.ForeignKey(
         DoctorSpecialization,
         on_delete=models.CASCADE,
+        verbose_name=_("Специализация"),
         related_name="sub_specializations"
         )
     
@@ -48,10 +49,12 @@ class Doctor(models.Model):
     )
     specializations = models.ManyToManyField(
         DoctorSpecialization,
+        verbose_name=_("Специализации"),
         related_name="doctors"
     )
     sub_specializations = models.ManyToManyField(
         DoctorSubSpecialization,
+        verbose_name=_("Узкие специализации"),
         related_name="doctors"
     )
 

@@ -7,6 +7,10 @@ class HospitalTown(models.Model):
     """Town where hospital is located."""
     title = models.CharField(_("Наименование"), unique=True, max_length=150)
 
+    class Meta:
+        verbose_name = "Населенный пункт"
+        verbose_name_plural = "Населенные пункты"
+    
     def __str__(self) -> str:
         return self.title
 
