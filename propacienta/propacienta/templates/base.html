@@ -35,7 +35,10 @@
   </head>
 
   <body>
-
+    {% block content %}
+    
+    {% endblock content %}
+{% comment "" %}
     <div class="mb-1">
       <nav class="navbar navbar-expand-md navbar-light bg-light">
         <div class="container-fluid">
@@ -98,7 +101,7 @@
     </div> <!-- /container -->
 
     {% block modal %}{% endblock modal %}
-
+{% endcomment %}
     {% block inline_javascript %}
     {% comment %}
     Script tags with only code, no src (defer by default). To run
@@ -108,5 +111,52 @@
     </script>
     {% endcomment %}
     {% endblock inline_javascript %}
+
+
+    {% block js %}
+      
+      <!-- Bootstrap JS and its dependencies-->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+      <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+
+
+      <!-- Your stuff: Third-party javascript libraries go here -->
+      
+
+      <!-- place project specific Javascript in this file -->
+      
+      <script src="{% static 'js/project.js' %}"></script>
+{% comment "" %}
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+{% endcomment %}
+      <script type="text/javascript">
+        var csrftoken = '{{ csrf_token }}';
+        
+        //function csrfSafeMethod(method){
+        //  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        //  }
+        //$.ajaxSetup({
+        //  beforeSend:function(xhr, settings){
+         //   if (!csrfSafeMethod(settings.type) && !this.crossDomain){
+          //    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+           // }
+         // }
+        //});
+
+        //$(document).ready(function(){
+         // {% block domready %}{% endblock %}
+        //});
+        
+      </script>
+    {% endblock js %}
+    {% block page_javascript %}
+    {% endblock page_javascript %}
+    <!-- bootstrap dependens -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- fontawesome.io -->
+    <script src="https://kit.fontawesome.com/e126bb5529.js" crossorigin="anonymous"></script>
+
   </body>
 </html>

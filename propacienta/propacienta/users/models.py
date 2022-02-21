@@ -28,6 +28,14 @@ class User(AbstractUser):
             str: URL for user detail.
 
         """
-        return reverse("users:detail", kwargs={"username": self.username})
-    
+        return reverse("users:detail", kwargs={"id": self.id})
+
+    def get_api_url(self):
+        """Get url for user's detail view.
+
+        Returns:
+            str: URL for user detail.
+
+        """
+        return reverse("api:users-detail", kwargs={"id": self.id})
 
