@@ -13,13 +13,14 @@
   </v-app>
 </template>
 <script>
-//import AUTH_PING from "@/store/actions/auth";
+import { AUTH_PING } from "@/store/actions/auth";
 export default {
   name: "App",
   created: function () {
-    this.$store.dispatch("AUTH_PING").then(() => {
+    var path = this.$route.path;
+    this.$store.dispatch(AUTH_PING).then(() => {
       if (this.$store.getters.isAuthenticated) {
-        this.$router.push("/");
+        this.$router.push(path);
       }
     });
   },

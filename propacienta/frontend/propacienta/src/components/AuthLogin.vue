@@ -38,7 +38,7 @@
 
 <script>
 import request_service from "@/api/HTTP";
-//import AUTH_REQUEST from "@/store/actions/auth";
+import { AUTH_REQUEST } from "@/store/actions/auth";
 export default {
   name: "AuthLogin",
   props: {
@@ -56,30 +56,7 @@ export default {
         email: this.email,
         password: this.password,
       };
-      this.$store.dispatch("AUTH_REQUEST", data);
-    },
-    onSubmxit: function () {
-      let data = {
-        email: this.email,
-        password: this.password,
-      };
-      let config = {
-        method: "post",
-        url: "auth-token/",
-        data: data,
-      };
-      request_service(
-        config,
-        function () {
-          //console.log(...resp.headers);
-          //console.log(resp.data);
-        },
-        function () {
-          document.cookie =
-            "csrftoken" + "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-        }
-        //
-      );
+      this.$store.dispatch(AUTH_REQUEST, data);
     },
     onMe: function () {
       let config = {
