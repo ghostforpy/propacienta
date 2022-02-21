@@ -91,3 +91,9 @@ services:
     ports:
       - "5555:5555"
     command: /start-flower
+
+  reverse_proxy:
+    image: nginx:latest
+    volumes:
+      - ./compose/local/nginx.conf:/etc/nginx/nginx.conf
+    network_mode: host
