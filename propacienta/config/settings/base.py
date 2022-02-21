@@ -325,7 +325,17 @@ REST_FRAMEWORK = {
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
-
+#CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://0.0.0.0:8080",
+    "http://django",
+    "http://localhost",
+    "http://0.0.0.0",
+    "http://django:8000",
+]
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + ['access-control-allow-credentials']
 # By Default swagger ui is available only to admin user. You can change permission classs to change that
 # See more configuration options at https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
 SPECTACULAR_SETTINGS = {
