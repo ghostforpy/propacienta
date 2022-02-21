@@ -2,8 +2,10 @@
 
 local:
 	docker-compose -f local.yml up $(SERVICE) --remove-orphans
+
 local_nginx:
 	docker-compose -f local.yml up reverse_proxy
+
 db:
 	docker-compose -f local.yml up --remove-orphans -d postgres
 
