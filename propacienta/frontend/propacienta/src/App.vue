@@ -43,7 +43,7 @@
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
 
-      <v-menu bottom transition="slide-y-transition">
+      <v-menu bottom transition="slide-y-transition" v-if="isAuthenticated">
         <template v-slot:activator="{ on, attrs }">
           <v-btn dark icon v-bind="attrs" v-on="on">
             <v-icon>mdi-account</v-icon>
@@ -77,7 +77,7 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item>
+          <v-list-item v-if="isAuthenticated">
             <v-list-item-title
               ><router-link to="/medicine-card"
                 ><v-btn icon>
@@ -156,6 +156,11 @@ export default {
   watch: {
     group() {
       this.drawer = false;
+    },
+  },
+  computed: {
+    isAuthenticated: function () {
+      return this.$store.getters.isAuthenticated;
     },
   },
   created: function () {
