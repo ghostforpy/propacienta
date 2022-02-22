@@ -3,13 +3,13 @@
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md4>
         <v-card class="elevation-12">
-          <v-toolbar dark color="primary">
+          <v-toolbar dark color="cyan darken-1">
             <v-toolbar-title>Авторизация</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
               <v-text-field
-                prepend-icon="person"
+                prepend-icon="email"
                 name="login"
                 label="Адрес электронной почты"
                 type="text"
@@ -27,8 +27,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" v-on:click="onSubmit">Вход</v-btn>
-            <v-btn color="primary" v-on:click="onMe">Me</v-btn>
+            <v-btn color="cyan" v-on:click="onSubmit">Вход</v-btn>
+            <v-btn color="cyan" v-on:click="onMe">Me</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -76,4 +76,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.v-btn__content {
+  color: white;
+}
+</style>
