@@ -1,25 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import AuthLogin from '@/components/AuthLogin';
+import AuthLogin from '@/views/auth/AuthLogin';
 import MainPage from '@/components/MainPage';
 import store from '@/store'
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.getters.isAuthenticated) {
-    console.log("11111111")
     next()
     return
   }
-  console.log("22222222222")
   next('')
 }
 const ifAuthenticated = (to, from, next) => {
   if (store.getters.isAuthenticated) {
-    console.log("333333333333")
     next()
     return
   }
-  console.log("44444444444")
   next('/login')
 }
 
@@ -30,6 +26,15 @@ const routes = [
     name: "login",
     component: AuthLogin,
     beforeEnter: ifNotAuthenticated,
+    meta: {
+      layout: "default-layout"
+    }
+  },
+  {
+    path: '/logout',
+    name: "logout",
+    component: AuthLogin,
+    beforeEnter: ifAuthenticated,
   },
   {
     path: '',
