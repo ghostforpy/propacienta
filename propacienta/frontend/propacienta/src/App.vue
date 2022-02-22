@@ -42,9 +42,28 @@
       <v-btn icon>
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
-      <v-btn icon>
-        <v-icon>mdi-account</v-icon>
-      </v-btn>
+
+      <v-menu bottom transition="slide-y-transition">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn dark icon v-bind="attrs" v-on="on">
+            <v-icon>mdi-account</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list class="account-menu">
+          <v-list-item
+            dense="true"
+            v-for="(item, i) in accountMenuList"
+            :key="i"
+          >
+            <router-link :to="item.route"> {{ item.title }}</router-link>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item>
+            <router-link to="/logout">Выход</router-link>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -129,6 +148,10 @@ export default {
     drawer: false,
     group: null,
     links: ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"],
+    accountMenuList: [
+      { title: "Медицинская карта", route: "/my-medicine-card" },
+      { title: "Мой профиль", route: "/my-profile" },
+    ],
   }),
   watch: {
     group() {
@@ -152,6 +175,11 @@ export default {
   text-decoration: none;
 }
 .nav-bar-drawer a {
+  all: unset;
+  color: rgb(83, 83, 83) !important;
+  text-decoration: none;
+}
+.account-menu a {
   all: unset;
   color: rgb(83, 83, 83) !important;
   text-decoration: none;
