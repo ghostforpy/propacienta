@@ -3,20 +3,30 @@ import VueRouter from 'vue-router'
 import AuthLogin from '@/views/auth/AuthLogin';
 import MainPage from '@/components/MainPage';
 import store from '@/store'
+import { AUTH_PING } from "@/store/actions/auth";
 
 const ifNotAuthenticated = (to, from, next) => {
-  if (!store.getters.isAuthenticated) {
-    next()
-    return
+  if (store.getters.isAuthenticated == '') {
+    store.dispatch(AUTH_PING).then(() => {
+      if (!store.getters.isAuthenticated) {
+        next()
+        return
+      }
+      next('')
+    })
   }
-  next('')
 }
+
 const ifAuthenticated = (to, from, next) => {
-  if (store.getters.isAuthenticated) {
-    next()
-    return
+  if (store.getters.isAuthenticated == '') {
+    store.dispatch(AUTH_PING).then(() => {
+      if (store.getters.isAuthenticated) {
+        next()
+        return
+      }
+      next('/login')
+    })
   }
-  next('/login')
 }
 
 Vue.use(VueRouter)
@@ -26,9 +36,6 @@ const routes = [
     name: "login",
     component: AuthLogin,
     beforeEnter: ifNotAuthenticated,
-    meta: {
-      layout: "default-layout"
-    }
   },
   {
     path: '/logout',

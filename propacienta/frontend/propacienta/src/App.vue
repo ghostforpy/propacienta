@@ -51,11 +51,7 @@
         </template>
 
         <v-list class="account-menu">
-          <v-list-item
-            dense="true"
-            v-for="(item, i) in accountMenuList"
-            :key="i"
-          >
+          <v-list-item dense v-for="(item, i) in accountMenuList" :key="i">
             <router-link :to="item.route"> {{ item.title }}</router-link>
           </v-list-item>
           <v-divider></v-divider>
@@ -141,7 +137,6 @@
   </v-app>
 </template>
 <script>
-import { AUTH_PING } from "@/store/actions/auth";
 export default {
   name: "App",
   data: () => ({
@@ -162,14 +157,6 @@ export default {
     isAuthenticated: function () {
       return this.$store.getters.isAuthenticated;
     },
-  },
-  created: function () {
-    var path = this.$route.path;
-    this.$store.dispatch(AUTH_PING).then(() => {
-      if (this.$store.getters.isAuthenticated) {
-        this.$router.push(path);
-      }
-    });
   },
 };
 </script>
