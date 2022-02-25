@@ -73,39 +73,14 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item v-if="isAuthenticated">
+          <v-list-item v-for="(link, id) in computedDrawerMenuList" :key="id">
             <v-list-item-title
-              ><router-link to="/medicine-card"
+              ><router-link :to="link.route"
                 ><v-btn icon>
-                  <v-icon>mdi-card-account-details-outline</v-icon></v-btn
-                >Медицинская карта</router-link
-              ></v-list-item-title
-            >
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title
-              ><router-link to="/appointment"
-                ><v-btn icon> <v-icon>mdi-calendar-month</v-icon></v-btn
-                >Приёмы</router-link
-              ></v-list-item-title
-            >
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title
-              ><router-link to="/hospitals"
-                ><v-btn icon> <v-icon>mdi-hospital-building</v-icon></v-btn
-                >Клиники</router-link
-              ></v-list-item-title
-            >
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title
-              ><router-link to="/doctors">
-                <v-btn icon> <v-icon>mdi-doctor</v-icon></v-btn
-                >Врачи</router-link
+                  <v-icon class="nav-bar-drawer-icon">{{
+                    link.icon
+                  }}</v-icon></v-btn
+                >{{ link.title }}</router-link
               ></v-list-item-title
             >
           </v-list-item>
@@ -147,6 +122,32 @@ export default {
       { title: "Медицинская карта", route: "/my-medicine-card" },
       { title: "Мой профиль", route: "/my-profile" },
     ],
+    drawerMenuList: [
+      {
+        title: "Медицинская карта",
+        route: "/medicine-card",
+        icon: "mdi-card-account-details-outline",
+        needAuth: true,
+      },
+      {
+        title: "Приёмы",
+        route: "/appointment",
+        icon: "mdi-calendar-month",
+        needAuth: false,
+      },
+      {
+        title: "Клиники",
+        route: "/hospitals",
+        icon: "mdi-hospital-building",
+        needAuth: false,
+      },
+      {
+        title: "Врачи",
+        route: "/doctors",
+        icon: "mdi-doctor",
+        needAuth: false,
+      },
+    ],
   }),
   watch: {
     group() {
@@ -156,6 +157,11 @@ export default {
   computed: {
     isAuthenticated: function () {
       return this.$store.getters.isAuthenticated;
+    },
+    computedDrawerMenuList: function () {
+      return this.drawerMenuList.filter(
+        (item) => !item.needAuth || (!this.isAuthenticated && !item.needAuth)
+      );
     },
   },
 };
@@ -170,6 +176,9 @@ export default {
   all: unset;
   color: rgb(83, 83, 83) !important;
   text-decoration: none;
+}
+.nav-bar-drawer-icon {
+  color: rgb(83, 83, 83) !important;
 }
 .account-menu a {
   all: unset;
