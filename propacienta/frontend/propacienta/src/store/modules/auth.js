@@ -7,7 +7,7 @@ import {
 } from "../actions/auth";
 import request_service from "@/api/HTTP";
 const state = {
-    isAuthenticated: false,
+    isAuthenticated: '',
     authError: false,
 };
 
@@ -24,21 +24,23 @@ const actions = {
             };
             request_service(
                 config,
-                function (resp) {
+                function () {
                     commit(AUTH_SUCCESS);
                     console.log('ping sucsess')
-                    resolve(resp)
+                    resolve(true)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
                 },
                 function () {
                     commit(AUTH_ERROR);
                     console.log("auth ping err")
+                    resolve(false)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
                 },
                 //
             );
+            return false
         })
     },
 
@@ -56,14 +58,15 @@ const actions = {
             };
             request_service(
                 config,
-                function (resp) {
+                function () {
                     commit(AUTH_SUCCESS);
-                    resolve(resp)
+                    resolve(true)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
                 },
                 function () {
                     commit(AUTH_ERROR);
+                    resolve(false)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
                 },

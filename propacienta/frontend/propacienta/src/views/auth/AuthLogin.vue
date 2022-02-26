@@ -51,12 +51,17 @@ export default {
     };
   },
   methods: {
-    onSubmit: function () {
+    onSubmit: async function () {
       let data = {
         email: this.email,
         password: this.password,
       };
-      this.$store.dispatch(AUTH_REQUEST, data);
+      const res = await this.$store.dispatch(AUTH_REQUEST, data);
+      if (res) {
+        this.$router.push({
+          path: this.$route.query.redirect,
+        });
+      }
     },
     onMe: function () {
       let config = {
