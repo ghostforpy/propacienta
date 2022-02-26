@@ -358,10 +358,11 @@ DJOSER = {
     #'ACTIVATION_URL': '#/activate/{uid}/{token}',
     #'SEND_ACTIVATION_EMAIL': True,
     #'SERIALIZERS': {},
-    'USER_ID_FIELD' :'id',
+    'USER_ID_FIELD' : 'id',
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE':True,
-    'SERIALIZERS':{
+
+    'SERIALIZERS': {
         'activation': 'djoser.serializers.ActivationSerializer',
         'password_reset': 'djoser.serializers.SendEmailResetSerializer',
         'password_reset_confirm': 'djoser.serializers.PasswordResetConfirmSerializer',
@@ -373,15 +374,15 @@ DJOSER = {
         'username_reset': 'djoser.serializers.SendEmailResetSerializer',
         'username_reset_confirm': 'djoser.serializers.UsernameResetConfirmSerializer',
         'username_reset_confirm_retype': 'djoser.serializers.UsernameResetConfirmRetypeSerializer',
-        'user_create': 'djoser.serializers.UserCreateSerializer',
-        'user_create_password_retype': 'djoser.serializers.UserCreatePasswordRetypeSerializer',
+        'user_create': 'propacienta.users.api.serializers.CUserCreateSerializer',
+        'user_create_password_retype': 'propacienta.users.api.serializers.CUserCreateSerializer',
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
         'user': 'djoser.serializers.UserSerializer',
         'current_user': 'djoser.serializers.UserSerializer',
         #'token': 'djoser.serializers.TokenSerializer',
         #'token_create': 'djoser.serializers.TokenCreateSerializer',
     },
-    'PERMISSIONS':{
+    'PERMISSIONS' : {
         'activation': ['rest_framework.permissions.AllowAny'],
         'password_reset': ['rest_framework.permissions.AllowAny'],
         'password_reset_confirm': ['rest_framework.permissions.AllowAny'],
