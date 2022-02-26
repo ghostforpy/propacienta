@@ -24,6 +24,11 @@
                 v-model="password"
               ></v-text-field>
             </v-form>
+            <v-flex class="caption text-xs-right"
+              ><router-link to="/recover-password"
+                >Забыли пароль?</router-link
+              ></v-flex
+            >
             <div v-if="loginError" v-bind:class="{ shake: animError }">
               <v-alert transition="fade-transition" type="error">
                 {{ loginErrorText }}
