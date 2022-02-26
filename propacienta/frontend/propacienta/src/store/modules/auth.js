@@ -53,7 +53,7 @@ const actions = {
             //};
             let config = {
                 method: "post",
-                url: "auth-token/",
+                url: "auth/login/",
                 data: user_data,
             };
             request_service(
@@ -76,9 +76,26 @@ const actions = {
     },
     [AUTH_LOGOUT]: ({ commit }) => {
         return new Promise(resolve => {
-            commit(AUTH_LOGOUT);
-            localStorage.removeItem("user-token");
-            resolve();
+            let config = {
+                method: "post",
+                url: "auth/logout/",
+            };
+            request_service(
+                config,
+                function () {
+                    commit(AUTH_LOGOUT);
+                    resolve(true)
+                    //console.log(...resp.headers);
+                    //console.log(resp.data);
+                },
+                function () {
+                    commit(AUTH_ERROR);
+                    resolve(false)
+                    //console.log(...resp.headers);
+                    //console.log(resp.data);
+                },
+                //
+            );
         });
     }
 };

@@ -1,9 +1,10 @@
 from rest_framework.authtoken.views import ObtainAuthToken
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 #from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .serializers import EmailAuthTokenSerializer
-from django.views.decorators.csrf import csrf_exempt
+#from django.views.decorators.csrf import csrf_exempt
 
 class EmailObtainAuthToken(ObtainAuthToken):
     serializer_class = EmailAuthTokenSerializer
@@ -17,4 +18,12 @@ class EmailObtainAuthToken(ObtainAuthToken):
         login(request, user)
         return Response({'is_auth': True})
 
-obtain_auth_token = EmailObtainAuthToken.as_view()
+login_view = EmailObtainAuthToken.as_view()
+
+
+class LogoutView(APIView):
+    def post(self,request):
+        logout(request)
+        return Response({'is_auth': False})
+
+logout_view = LogoutView.as_view()
