@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import AuthLogin from '@/views/auth/AuthLogin';
+import AuthLogout from '@/views/auth/AuthLogout';
 import MainPage from '@/components/MainPage';
 import store from '@/store'
 import { AUTH_PING } from "@/store/actions/auth";
@@ -53,7 +54,7 @@ const routes = [
   {
     path: '/logout',
     name: "logout",
-    component: AuthLogin,
+    component: AuthLogout,
     beforeEnter: ifAuthenticated,
     meta: { requiresAuth: true }
   },
@@ -61,7 +62,7 @@ const routes = [
     path: '',
     name: "main",
     component: MainPage,
-    beforeEnter: ifAuthenticated,
+    //beforeEnter: ifAuthenticated,
     //meta: { requiresAuth: true }
   },
 

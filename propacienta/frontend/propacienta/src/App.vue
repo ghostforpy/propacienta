@@ -60,6 +60,9 @@
           </v-list-item>
         </v-list>
       </v-menu>
+      <v-btn icon v-else>
+        <v-icon @click="$router.push('/login')">mdi-lock</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer
