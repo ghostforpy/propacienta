@@ -115,6 +115,7 @@
   </v-app>
 </template>
 <script>
+import { AUTH_PING } from "@/store/actions/auth";
 export default {
   name: "App",
   data: () => ({
@@ -156,6 +157,9 @@ export default {
     group() {
       this.drawer = false;
     },
+  },
+  beforeCreate: async function () {
+    await this.$store.dispatch(AUTH_PING);
   },
   computed: {
     isAuthenticated: function () {
