@@ -24,11 +24,15 @@
                 v-model="password"
               ></v-text-field>
             </v-form>
+            <div v-if="loginError" v-bind:class="{ shake: animError }">
+              <v-alert transition="fade-transition" type="error">
+                {{ loginErrorText }}
+              </v-alert>
+            </div>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="cyan" v-on:click="onSubmit">Вход</v-btn>
-            <v-btn color="cyan" v-on:click="onMe">Me</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -37,7 +41,6 @@
 </template>
 
 <script>
-import request_service from "@/api/HTTP";
 import { AUTH_REQUEST } from "@/store/actions/auth";
 export default {
   name: "AuthLogin",
@@ -48,7 +51,22 @@ export default {
     return {
       email: null,
       password: null,
+      loginError: false,
+      animError: false,
     };
+  },
+  computed: {
+    // loginError: function () {
+    //   return this.$store.getters.authErrorStatus != 0;
+    // },
+    loginErrorText: function () {
+      if (this.loginError) {
+        if (this.$store.getters.authErrorStatus == 400) {
+          return "Неверный логин или пароль";
+        }
+      }
+      return "Сервер недоступен";
+    },
   },
   methods: {
     onSubmit: async function () {
@@ -56,8 +74,10 @@ export default {
         email: this.email,
         password: this.password,
       };
+      this.animError = false;
       const res = await this.$store.dispatch(AUTH_REQUEST, data);
       if (res) {
+        this.loginError = false;
         const path =
           this.$route.query.redirect != undefined
             ? this.$route.query.redirect
@@ -65,21 +85,12 @@ export default {
         this.$router.push({
           path: path,
         });
-      }
-    },
-    onMe: function () {
-      let config = {
-        method: "get",
-        url: "api/users/me",
-      };
-      request_service(
-        config,
-        function (resp) {
-          console.log(resp.data);
-          //alert(document.cookie);
+      } else {
+        if (this.loginError) {
+          this.animError = true;
         }
-        //
-      );
+        this.loginError = true;
+      }
     },
   },
 };
@@ -88,5 +99,43 @@ export default {
 <style>
 .v-btn__content {
   color: white;
+}
+/* .shake {
+  width: 200px;
+  height: 50px;
+} */
+.shake {
+  -webkit-animation: 1.2s ease-in-out 0s normal none 1 running
+    trambling-animation;
+  -moz-animation: 1.2s ease-in-out 0s normal none 1 running trambling-animation;
+  -o-animation: 1.2s ease-in-out 0s normal none 1 running trambling-animation;
+  animation: 1.2s ease-in-out 0s normal none 1 running trambling-animation;
+}
+@keyframes trambling-animation {
+  0%,
+  50%,
+  100% {
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+  }
+  10%,
+  30% {
+    transform: rotate(-3deg);
+    -webkit-transform: rotate(-3deg);
+    -moz-transform: rotate(-3deg);
+    -o-transform: rotate(-3deg);
+    -ms-transform: rotate(-3deg);
+  }
+  20%,
+  40% {
+    transform: rotate(3deg);
+    -webkit-transform: rotate(3deg);
+    -moz-transform: rotate(3deg);
+    -o-transform: rotate(3deg);
+    -ms-transform: rotate(3deg);
+  }
 }
 </style>
