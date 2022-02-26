@@ -3,17 +3,25 @@ import {
     AUTH_ERROR,
     AUTH_SUCCESS,
     AUTH_LOGOUT,
-    AUTH_PING
+    AUTH_PING,
+    LOGOUT_ERROR
 } from "../actions/auth";
 import request_service from "@/api/HTTP";
 const state = {
     isAuthenticated: '',
     authError: false,
+    authErrorStatus: 0,
+    logoutError: false,
+    logoutErrorStatus: 0,
+
 };
 
 const getters = {
     isAuthenticated: state => state.isAuthenticated,
     authError: state => state.authError,
+    authErrorStatus: state => state.authErrorStatus,
+    logoutError: state => state.logoutError,
+    logoutErrorStatus: state => state.logoutErrorStatus,
 };
 const actions = {
     [AUTH_PING]: ({ commit }) => {
@@ -46,11 +54,6 @@ const actions = {
 
     [AUTH_REQUEST]: ({ commit }, user_data) => {
         return new Promise((resolve) => {
-            //commit(AUTH_REQUEST);
-            //let user_data = {
-            //    email: this.email,
-            //    password: this.password,
-            //};
             let config = {
                 method: "post",
                 url: "auth/login/",
@@ -64,8 +67,8 @@ const actions = {
                     //console.log(...resp.headers);
                     //console.log(resp.data);
                 },
-                function () {
-                    commit(AUTH_ERROR);
+                function (error) {
+                    commit(AUTH_ERROR, error.response.status);
                     resolve(false)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
@@ -88,8 +91,8 @@ const actions = {
                     //console.log(...resp.headers);
                     //console.log(resp.data);
                 },
-                function () {
-                    commit(AUTH_ERROR);
+                function (error) {
+                    commit(LOGOUT_ERROR, error.response.status);
                     resolve(false)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
@@ -100,23 +103,27 @@ const actions = {
     }
 };
 const mutations = {
-    //[AUTH_REQUEST]: state => {
-    //    state.status = "loading";
-    //},
+
     [AUTH_SUCCESS]: (state) => {
         state.isAuthenticated = true;
         state.authError = false;
-        //state.token = resp.token;
-        //state.hasLoadedOnce = true;
+        state.authErrorStatus = 0
     },
-    [AUTH_ERROR]: state => {
+    [AUTH_ERROR]: (state, err) => {
+        state.authErrorStatus = err;
         state.authError = true;
         state.isAuthenticated = false;
     },
     [AUTH_LOGOUT]: state => {
         state.isAuthenticated = false;
-        state.authError = false;
-    }
+        state.logoutError = false;
+        state.logoutErrorStatus = 0
+    },
+    [LOGOUT_ERROR]: (state, err) => {
+        state.logoutErrorStatus = err;
+        state.logoutError = true;
+        //state.isAuthenticated = false;
+    },
 };
 
 export default {
