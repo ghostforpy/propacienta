@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from djoser.signals import user_registered
 # Create your models here.
 
 class DoctorSpecialization(models.Model):
@@ -64,3 +65,13 @@ class Doctor(models.Model):
 
     def __str__(self) -> str:
         return "{} {}".format(self.user.first_name, self.user.last_name)
+
+
+def user_created(signal=None, sender=None, user=None, request=None, **kwargs):
+    role_doctor = request.data['role_doctor']
+    if role_doctor:
+        pacient = Doctor.objects.create()
+        user.doctor = pacient
+        user.save()
+
+user_registered.connect(user_created)
