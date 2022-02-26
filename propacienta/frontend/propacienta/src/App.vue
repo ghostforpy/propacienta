@@ -160,7 +160,8 @@ export default {
     },
     computedDrawerMenuList: function () {
       return this.drawerMenuList.filter(
-        (item) => !item.needAuth || (!this.isAuthenticated && !item.needAuth)
+        (item) =>
+          this.isAuthenticated || (!this.isAuthenticated && !item.needAuth)
       );
     },
   },

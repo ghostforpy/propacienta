@@ -58,8 +58,12 @@ export default {
       };
       const res = await this.$store.dispatch(AUTH_REQUEST, data);
       if (res) {
+        const path =
+          this.$route.query.redirect != undefined
+            ? this.$route.query.redirect
+            : "/";
         this.$router.push({
-          path: this.$route.query.redirect,
+          path: path,
         });
       }
     },
