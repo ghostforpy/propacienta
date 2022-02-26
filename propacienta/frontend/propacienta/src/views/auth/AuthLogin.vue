@@ -9,7 +9,7 @@
           <v-card-text>
             <v-form>
               <v-text-field
-                prepend-icon="email"
+                prepend-icon="mdi-email"
                 name="login"
                 label="Адрес электронной почты"
                 type="text"
@@ -17,7 +17,7 @@
               ></v-text-field>
               <v-text-field
                 id="password"
-                prepend-icon="lock"
+                prepend-icon="mdi-lock"
                 name="password"
                 label="Пароль"
                 type="password"
