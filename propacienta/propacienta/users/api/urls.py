@@ -9,8 +9,11 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-router.register("users", UserViewSet, basename="users")
+#router.register("users", UserViewSet, basename="users")
+
+app_name = "users"
 
 urlpatterns = [
-    path("", include(router.urls)),
+    #path("", include(router.urls)),
+    path("", include("djoser.urls")),
 ]

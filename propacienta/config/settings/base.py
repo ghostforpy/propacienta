@@ -78,6 +78,7 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
+    'djoser',
 ]
 
 LOCAL_APPS = [
@@ -350,3 +351,49 @@ SPECTACULAR_SETTINGS = {
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
+# https://djoser.readthedocs.io/en/latest/settings.html
+DJOSER = {
+    #'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    #'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    #'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    #'SEND_ACTIVATION_EMAIL': True,
+    #'SERIALIZERS': {},
+    'USER_ID_FIELD' :'id',
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE':True,
+    'SERIALIZERS':{
+        'activation': 'djoser.serializers.ActivationSerializer',
+        'password_reset': 'djoser.serializers.SendEmailResetSerializer',
+        'password_reset_confirm': 'djoser.serializers.PasswordResetConfirmSerializer',
+        'password_reset_confirm_retype': 'djoser.serializers.PasswordResetConfirmRetypeSerializer',
+        'set_password': 'djoser.serializers.SetPasswordSerializer',
+        'set_password_retype': 'djoser.serializers.SetPasswordRetypeSerializer',
+        'set_username': 'djoser.serializers.SetUsernameSerializer',
+        'set_username_retype': 'djoser.serializers.SetUsernameRetypeSerializer',
+        'username_reset': 'djoser.serializers.SendEmailResetSerializer',
+        'username_reset_confirm': 'djoser.serializers.UsernameResetConfirmSerializer',
+        'username_reset_confirm_retype': 'djoser.serializers.UsernameResetConfirmRetypeSerializer',
+        'user_create': 'djoser.serializers.UserCreateSerializer',
+        'user_create_password_retype': 'djoser.serializers.UserCreatePasswordRetypeSerializer',
+        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+        'user': 'djoser.serializers.UserSerializer',
+        'current_user': 'djoser.serializers.UserSerializer',
+        #'token': 'djoser.serializers.TokenSerializer',
+        #'token_create': 'djoser.serializers.TokenCreateSerializer',
+    },
+    'PERMISSIONS':{
+        'activation': ['rest_framework.permissions.AllowAny'],
+        'password_reset': ['rest_framework.permissions.AllowAny'],
+        'password_reset_confirm': ['rest_framework.permissions.AllowAny'],
+        #'set_password': ['rest_framework.permissions.CurrentUserOrAdmin'],
+        'username_reset': ['rest_framework.permissions.AllowAny'],
+        'username_reset_confirm': ['rest_framework.permissions.AllowAny'],
+        #'set_username': ['rest_framework.permissions.CurrentUserOrAdmin'],
+        'user_create': ['rest_framework.permissions.AllowAny'],
+        #'user_delete': ['rest_framework.permissions.CurrentUserOrAdmin'],
+        #'user': ['rest_framework.permissions.CurrentUserOrAdmin'],
+        #'user_list': ['rest_framework.permissions.CurrentUserOrAdmin'],
+        #'token_create': ['rest_framework.permissions.AllowAny'],
+        #'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
+    }
+}

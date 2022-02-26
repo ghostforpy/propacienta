@@ -4,7 +4,7 @@ from rest_framework import serializers
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializerz(serializers.ModelSerializer):
     api_url = serializers.CharField(source="get_api_url")
     url = serializers.CharField(source="get_absolute_url")
     class Meta:

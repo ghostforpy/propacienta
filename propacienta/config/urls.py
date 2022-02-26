@@ -16,7 +16,7 @@ urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
-    path("users/", include("propacienta.users.urls", namespace="users")),
+    #path("users/", include("propacienta.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -27,12 +27,12 @@ urlpatterns += [
     path("api/", include("config.api_router")),
     # DRF auth token
     path("auth/", include("propacienta.auth.urls")),
-    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
-    path(
-        "api/docs/",
-        SpectacularSwaggerView.as_view(url_name="api-schema"),
-        name="api-docs",
-    ),
+    #path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    #path(
+    #    "api/docs/",
+    #    SpectacularSwaggerView.as_view(url_name="api-schema"),
+    #    name="api-docs",
+    #),
 ]
 
 if settings.DEBUG:
