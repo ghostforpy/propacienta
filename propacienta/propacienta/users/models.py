@@ -50,7 +50,7 @@ class User(AbstractUser):
     doctor = OneToOneField("doctors.doctor", on_delete=DO_NOTHING, null=True, related_name="user")
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'first_name', 'last_name', 'patronymic']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'patronymic']
 
     objects = CustomUserManager()
 
