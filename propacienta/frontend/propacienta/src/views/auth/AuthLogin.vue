@@ -36,6 +36,12 @@
             </div>
           </v-card-text>
           <v-card-actions>
+            <router-link
+              :to="{ name: 'registration' }"
+              block
+              class="registration-btn"
+              ><v-btn color="light-blue"> Регистрация</v-btn></router-link
+            >
             <v-spacer></v-spacer>
             <v-btn color="cyan" v-on:click="onSubmit">Вход</v-btn>
           </v-card-actions>
@@ -102,6 +108,13 @@ export default {
 </script>
 
 <style>
+.registration-btn {
+  all: unset;
+  color: rgb(255, 255, 255) !important;
+  text-decoration: none;
+  width: 100%;
+}
+
 .v-btn__content {
   color: white;
 }
