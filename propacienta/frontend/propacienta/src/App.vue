@@ -108,7 +108,7 @@
           {{ link }}
         </v-btn>
         <v-col class="cyan lighten-2 py-4 text-center white--text" cols="12">
-          {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+          {{ new Date().getFullYear() }} — <strong>Propacienta</strong>
         </v-col>
       </v-row>
     </v-footer>
