@@ -58,6 +58,7 @@ class Doctor(models.Model):
         verbose_name=_("Узкие специализации"),
         related_name="doctors"
     )
+    is_active = models.BooleanField(_("Активация"), default=False)
 
     class Meta:
         verbose_name = "Врач"
