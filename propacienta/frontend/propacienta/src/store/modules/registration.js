@@ -79,6 +79,12 @@ const mutations = {
                 state.registrationErrorPasswordState += ' ' + item
             })
         }
+        if (error_response.data.non_field_errors != undefined) {
+            error_response.data.non_field_errors.map(item => {
+                state.registrationErrorPasswordState += ' ' + item
+            })
+        }
+
     }
 };
 

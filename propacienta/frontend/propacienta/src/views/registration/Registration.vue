@@ -6,7 +6,7 @@
           <v-toolbar dark color="cyan darken-1">
             <v-toolbar-title>Регистрация</v-toolbar-title>
           </v-toolbar>
-          <v-card-text>
+          <v-card-text v-if="!registrationSuccess">
             <v-form>
               <v-text-field
                 name="email"
@@ -51,9 +51,24 @@
               </v-alert>
             </div>
           </v-card-text>
+          <v-card-text v-else>
+            Вам на электронную почту отправлено письмо с ссылкой для активации
+            аккаунта. <br />Для завершения регистрации перейдите по ссылке в
+            полученном электронном письме.
+            <span v-if="role_doctor"
+              ><br />Активация аккаунта с полномочиями "Доктор" осуществляется
+              администратором сервиса.</span
+            >
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="cyan" v-on:click="onSubmit">Зарегистрироваться</v-btn>
+            <v-btn
+              color="cyan"
+              v-on:click="onSubmit"
+              v-if="!registrationSuccess"
+              >Зарегистрироваться</v-btn
+            >
+            <v-btn color="cyan" v-on:click="onOk" v-else>Ok</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -78,18 +93,33 @@ export default {
       password: null,
       re_password: null,
       role_doctor: false,
-
+      registrationSuccess: false,
       registrationError: false,
       animError: false,
     };
   },
   computed: {
     errorsText: function () {
+      if (this.password != this.re_password) {
+        return "Два пароля не совпадают.";
+      }
       return `${this.$store.getters.registrationErrorEmailState} ${this.$store.getters.registrationErrorPasswordState}`;
     },
   },
   methods: {
+    onOk: function () {
+      this.$router.push({
+        path: "/",
+      });
+    },
     onSubmit: async function () {
+      if (this.password != this.re_password) {
+        if (this.registrationError) {
+          this.animError = true;
+        }
+        this.registrationError = true;
+        return;
+      }
       let data = {
         email: this.email,
         password: this.password,
@@ -102,13 +132,7 @@ export default {
 
       if (res) {
         this.registrationError = false;
-        // const path =
-        //   this.$route.query.redirect != undefined
-        //     ? this.$route.query.redirect
-        //     : "/";
-        // this.$router.push({
-        //   path: path,
-        // });
+        this.registrationSuccess = true;
       } else {
         if (this.registrationError) {
           this.animError = true;
