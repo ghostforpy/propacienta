@@ -353,15 +353,22 @@ SPECTACULAR_SETTINGS = {
 # ------------------------------------------------------------------------------
 # https://djoser.readthedocs.io/en/latest/settings.html
 DJOSER = {
-    #'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    #'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-    #'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    #'SEND_ACTIVATION_EMAIL': True,
-    #'SERIALIZERS': {},
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'accounts/activate/{uid}/{token}',
     'USER_ID_FIELD' : 'id',
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE':True,
-
+    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'EMAIL': {
+        'activation': 'djoser.email.ActivationEmail',
+        'confirmation': 'djoser.email.ConfirmationEmail',
+        'password_reset': 'djoser.email.PasswordResetEmail',
+        'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
+        'username_changed_confirmation': 'djoser.email.UsernameChangedConfirmationEmail',
+        'username_reset': 'djoser.email.UsernameResetEmail',
+    },
     'SERIALIZERS': {
         'activation': 'djoser.serializers.ActivationSerializer',
         'password_reset': 'djoser.serializers.SendEmailResetSerializer',
