@@ -6,13 +6,12 @@ import MainPage from '@/components/MainPage';
 // import store from '@/store'
 // import { AUTH_PING } from "@/store/actions/auth";
 import { ifAuthenticated, ifNotAuthenticated } from './utils';
-// import RegistrationRouter from './registration'
-import RegistrationView from '@/views/registration/Registration';
+import RegistrationRoutes from './registration'
 
 
 
 Vue.use(VueRouter)
-const routes = [
+const baseRoutes = [
   {
     path: '/login',
     name: "login",
@@ -27,20 +26,14 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/registration',
-    name: 'registration',
-    component: RegistrationView,
-    beforeEnter: ifNotAuthenticated,
-  },
-  {
     path: '',
     name: "main",
     component: MainPage,
     //beforeEnter: ifAuthenticated,
     //meta: { requiresAuth: true }
   },
-
 ]
+const routes = baseRoutes.concat(RegistrationRoutes);
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,

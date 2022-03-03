@@ -1,7 +1,11 @@
 import {
     REGISTRATION_ERROR,
     REGISTRATION_REQUEST,
-    REGISTRATION_SUCCESS
+    REGISTRATION_SUCCESS,
+    ACTIVATE_REGISTRATION_ERROR,
+    ACTIVATE_REGISTRATION_SUCCESS,
+    ACTIVATE_REGISTRATION_REQUEST,
+    ACTIVATE_ON_LOAD
 } from "../actions/registration";
 import request_service from "@/api/HTTP";
 const state = {
@@ -11,7 +15,10 @@ const state = {
     registrationErrorEmailState: '',
     registrationErrorPasswordStatus: false,
     registrationErrorPasswordState: '',
-
+    activateRegistrationStatus: false,
+    activateRegistrationError: false,
+    activateRegistrationErrorResponce: '',
+    activateOnLoad: false
 
 
 };
@@ -23,6 +30,9 @@ const getters = {
     registrationErrorEmailState: state => state.registrationErrorEmailState,
     registrationErrorPasswordStatus: state => state.registrationErrorPasswordStatus,
     registrationErrorPasswordState: state => state.registrationErrorPasswordState,
+    activateRegistrationStatus: state => state.activateRegistrationStatus,
+    activateRegistrationError: state => state.activateRegistrationError,
+    activateOnLoad: state => state.activateOnLoad,
 
 };
 const actions = {
@@ -35,8 +45,9 @@ const actions = {
             };
             request_service(
                 config,
-                function (resp) {
-                    console.log(resp.data);
+                function () {
+                    // function (resp) {
+                    // console.log(resp.data);
                     commit(REGISTRATION_SUCCESS);
                     resolve(true)
                     //console.log(...resp.headers);
@@ -51,7 +62,33 @@ const actions = {
                 //
             );
         });
-    }
+    },
+    [ACTIVATE_REGISTRATION_REQUEST]: ({ commit }, data) => {
+        return new Promise((resolve) => {
+            let config = {
+                method: "post",
+                url: "api/users/activation/",
+                data: data,
+            };
+            request_service(
+                config,
+                function () {
+                    commit(ACTIVATE_REGISTRATION_SUCCESS);
+                    resolve(true)
+                },
+                function (error) {
+                    commit(ACTIVATE_REGISTRATION_ERROR, error.response);
+                    resolve(false)
+                },
+            );
+        });
+    },
+    [ACTIVATE_ON_LOAD]: ({ commit }) => {
+        return new Promise((resolve) => {
+            commit(ACTIVATE_ON_LOAD);
+            resolve(true)
+        });
+    },
 };
 const mutations = {
     [REGISTRATION_SUCCESS]: (state) => {
@@ -85,7 +122,21 @@ const mutations = {
             })
         }
 
-    }
+    },
+    [ACTIVATE_REGISTRATION_SUCCESS]: (state) => {
+        state.activateRegistrationStatus = true;
+        state.activateRegistrationError = false;
+        state.activateOnLoad = false;
+    },
+    [ACTIVATE_REGISTRATION_ERROR]: (state, error_response) => {
+        state.activateRegistrationStatus = false;
+        state.activateRegistrationError = true;
+        state.activateRegistrationErrorResponce = error_response;
+        state.activateOnLoad = false;
+    },
+    [ACTIVATE_ON_LOAD]: (state) => {
+        state.activateOnLoad = true;
+    },
 };
 
 export default {
