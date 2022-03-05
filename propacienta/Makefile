@@ -3,6 +3,9 @@
 local:
 	docker-compose -f local.yml up $(SERVICE) --remove-orphans
 
+local_django:
+	docker-compose -f local.yml up django $(SERVICE) --remove-orphans
+
 local_nginx:
 	docker-compose -f local.yml up reverse_proxy
 
