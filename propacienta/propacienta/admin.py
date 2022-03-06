@@ -24,7 +24,8 @@ class MyAdminSite(admin.AdminSite):
             "Назначения врачей",
             "Клиники",
             "Медикаменты",
-            "Процедуры"
+            "Процедуры",
+            "Пользователи"
         ]
         for i in range(len(app_name_list)):
             ordering[app_name_list[i]] = i
