@@ -56,7 +56,7 @@ class User(AbstractUser):
     first_name = CharField(_("Имя"), blank=True, max_length=255)
     last_name = CharField(_("Фамилия"), blank=True, max_length=255)
     patronymic = CharField(_("Отчество"), blank=True, max_length=255)
-    birthday = DateField(_("Дата рождения"),null=True)
+    birthday = DateField(_("Дата рождения"), null=True)
     pacient = OneToOneField("pacients.pacient", on_delete=DO_NOTHING, null=True, related_name="user")
     doctor = OneToOneField("doctors.doctor", on_delete=DO_NOTHING, null=True, related_name="user")
 
