@@ -7,7 +7,7 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import UserSerializerz
+from .serializers import UserSerializer
 
 User = get_user_model()
 
@@ -27,7 +27,7 @@ User = get_user_model()
     tags=["users"]
 ))
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
-    serializer_class = UserSerializerz
+    serializer_class = UserSerializer
     queryset = User.objects.all()
     lookup_field = "id"
 
@@ -37,5 +37,5 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
 
     @action(detail=False)
     def me(self, request):
-        serializer = UserSerializerz(request.user, context={"request": request})
+        serializer = UserSerializer(request.user, context={"request": request})
         return Response(status=status.HTTP_200_OK, data=serializer.data)
