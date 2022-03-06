@@ -46,17 +46,20 @@ class Doctor(models.Model):
     hospitals = models.ManyToManyField(
         "hospitals.hospital",
         verbose_name=_("Клиники"),
-        related_name="doctors"
+        related_name="doctors",
+        blank=True
     )
     specializations = models.ManyToManyField(
         DoctorSpecialization,
         verbose_name=_("Специализации"),
-        related_name="doctors"
+        related_name="doctors",
+        blank=True
     )
     sub_specializations = models.ManyToManyField(
         DoctorSubSpecialization,
         verbose_name=_("Узкие специализации"),
-        related_name="doctors"
+        related_name="doctors",
+        blank=True
     )
     is_active = models.BooleanField(_("Активация"), default=False)
 
@@ -71,8 +74,8 @@ class Doctor(models.Model):
 def user_created(signal=None, sender=None, user=None, request=None, **kwargs):
     role_doctor = request.data['role_doctor']
     if role_doctor:
-        pacient = Doctor.objects.create()
-        user.doctor = pacient
+        doctor = Doctor.objects.create()
+        user.doctor = doctor
         user.save()
 
 user_registered.connect(user_created)
