@@ -7,7 +7,7 @@ from djoser.signals import user_registered
 
 class Pacient(models.Model):
     """Model for pacients."""
-    phone = models.CharField(_("Телефон"), max_length=30)
+    phone = models.CharField(_("Телефон"), max_length=30, unique=True)
     
     class Meta:
         verbose_name = "Пациент"
@@ -17,7 +17,8 @@ class Pacient(models.Model):
         return "{} {}".format(self.user.first_name, self.user.last_name)
 
 def user_created(signal=None, sender=None, user=None, request=None, **kwargs):
-    pacient = Pacient.objects.create()
+    phone_pacient = request.data['phone_pacient']
+    pacient = Pacient.objects.create(phone=phone_pacient)
     user.pacient = pacient
     user.save()
 

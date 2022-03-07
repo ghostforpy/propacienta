@@ -76,7 +76,7 @@ class MedicineCardModelAdmin(admin.StackedInline):
 # Register your models here.
 @admin.register(Pacient)
 class PacientAdmin(admin.ModelAdmin):
-    list_display = ("user_name", "phone",)
+    list_display = ("email","user_name", "phone",)
     list_select_related = True
     inlines = [
         UserModelAdmin,
@@ -91,3 +91,6 @@ class PacientAdmin(admin.ModelAdmin):
 
     def user_name(self, obj):
         return obj.__str__()
+
+    def email(self, obj):
+        return obj.user.email
