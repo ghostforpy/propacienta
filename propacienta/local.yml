@@ -3,6 +3,7 @@ version: '3'
 volumes:
   propacienta_local_postgres_data: {}
   propacienta_local_postgres_data_backups: {}
+  pgadmin-data: {}
 
 services:
   django: &django
@@ -97,3 +98,14 @@ services:
     volumes:
       - ./compose/local/nginx.conf:/etc/nginx/nginx.conf
     network_mode: host
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:5050"
+    depends_on:
+      - postgres
+    env_file:
+      - ./.envs/.local/.postgres
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
