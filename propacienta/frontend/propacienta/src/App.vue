@@ -43,19 +43,41 @@
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
 
-      <v-menu bottom transition="slide-y-transition" v-if="isAuthenticated">
+      <v-menu
+        bottom
+        transition="slide-y-transition"
+        v-if="isAuthenticated"
+        :close-on-content-click="false"
+        v-model="menu"
+      >
         <template v-slot:activator="{ on, attrs }">
           <v-btn dark icon v-bind="attrs" v-on="on">
-            <v-icon>mdi-account</v-icon>
+            <v-icon>{{ accountIcon }}</v-icon>
           </v-btn>
         </template>
 
         <v-list class="account-menu">
-          <v-list-item dense v-for="(item, i) in accountMenuList" :key="i">
+          <v-list-item
+            dense
+            v-for="(item, i) in accountMenuList"
+            :key="i"
+            @click="menu = false"
+          >
             <router-link :to="item.route"> {{ item.title }}</router-link>
           </v-list-item>
+          <v-divider v-if="docModeAvailable"></v-divider>
+          <v-list-item v-if="docModeAvailable">
+            <v-list-item-action
+              ><v-switch
+                color="cyan"
+                v-model="docMode"
+                inset
+                label="Режим врача"
+              ></v-switch
+            ></v-list-item-action>
+          </v-list-item>
           <v-divider></v-divider>
-          <v-list-item>
+          <v-list-item @click="menu = false">
             <router-link to="/logout">Выход</router-link>
           </v-list-item>
         </v-list>
@@ -96,7 +118,7 @@
       <router-view></router-view>
     </v-main>
 
-    <v-footer color="cyan lighten-1" padless app absolute="false">
+    <v-footer color="cyan lighten-1" padless app :absolute="true">
       <v-row justify="center" no-gutters>
         <v-btn
           v-for="link in links"
@@ -120,12 +142,15 @@ import { AUTH_PING } from "@/store/actions/auth";
 export default {
   name: "App",
   data: () => ({
+    docMode: false,
+    // docModeAvailable: false,
+    menu: false,
     drawer: false,
     group: null,
     links: ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"],
     accountMenuList: [
       { title: "Медицинская карта", route: "/my-medicine-card" },
-      { title: "Мой профиль", route: "/my-profile" },
+      { title: "Мой профиль", route: "/users/me" },
     ],
     drawerMenuList: [
       {
@@ -163,6 +188,12 @@ export default {
     await this.$store.dispatch(AUTH_PING);
   },
   computed: {
+    docModeAvailable: function () {
+      return this.$store.getters.docModeAvailable;
+    },
+    accountIcon: function () {
+      return !this.docMode ? "mdi-account" : "mdi-doctor";
+    },
     isAuthenticated: function () {
       return this.$store.getters.isAuthenticated;
     },
