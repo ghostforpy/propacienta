@@ -17,11 +17,14 @@ class UserModelAdmin(admin.StackedInline):
 # Register your models here.
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ("user_name", "phone", "is_active")
+    list_display = ("email", "user_name", "phone", "is_active")
     inlines = [UserModelAdmin]
 
     def user_name(self, obj):
         return obj.__str__()
+
+    def email(self, obj):
+        return obj.user.email
 
 admin.site.register(DoctorSpecialization)
 admin.site.register(DoctorSubSpecialization)

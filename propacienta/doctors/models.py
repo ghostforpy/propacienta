@@ -42,7 +42,7 @@ class DoctorSubSpecialization(models.Model):
 class Doctor(models.Model):
     """Model for doctors."""
     #user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
-    phone = models.CharField(_("Телефон"), max_length=30)
+    phone = models.CharField(_("Телефон"), max_length=30, unique=True)
     hospitals = models.ManyToManyField(
         "hospitals.hospital",
         verbose_name=_("Клиники"),
@@ -73,8 +73,9 @@ class Doctor(models.Model):
 
 def user_created(signal=None, sender=None, user=None, request=None, **kwargs):
     role_doctor = request.data['role_doctor']
+    phone_doctor = request.data['phone_doctor']
     if role_doctor:
-        doctor = Doctor.objects.create()
+        doctor = Doctor.objects.create(phone=phone_doctor)
         user.doctor = doctor
         user.save()
 
