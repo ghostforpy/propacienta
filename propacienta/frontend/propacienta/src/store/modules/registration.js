@@ -11,6 +11,7 @@ import request_service from "@/api/HTTP";
 const state = {
     registrationStatus: false,
     registrationError: false,
+    registrationErrorState: '',
     registrationErrorEmailStatus: false,
     registrationErrorEmailState: '',
     registrationErrorPasswordStatus: false,
@@ -18,6 +19,8 @@ const state = {
     activateRegistrationStatus: false,
     activateRegistrationError: false,
     activateRegistrationErrorResponce: '',
+    registrationErrorPhoneStatus: false,
+    registrationErrorPhoneState: '',
     activateOnLoad: false
 
 
@@ -26,12 +29,15 @@ const state = {
 const getters = {
     registrationStatus: state => state.registrationStatus,
     registrationError: state => state.registrationError,
+    registrationErrorState: state => state.registrationErrorState,
     registrationErrorEmailStatus: state => state.registrationErrorEmailStatus,
     registrationErrorEmailState: state => state.registrationErrorEmailState,
     registrationErrorPasswordStatus: state => state.registrationErrorPasswordStatus,
     registrationErrorPasswordState: state => state.registrationErrorPasswordState,
     activateRegistrationStatus: state => state.activateRegistrationStatus,
     activateRegistrationError: state => state.activateRegistrationError,
+    registrationErrorPhoneStatus: state => state.registrationErrorPhoneStatus,
+    registrationErrorPhoneState: state => state.registrationErrorPhoneState,
     activateOnLoad: state => state.activateOnLoad,
 
 };
@@ -53,7 +59,7 @@ const actions = {
                     //console.log(...resp.headers);
                 },
                 function (error) {
-                    console.log(error.response);
+                    // console.log(error.response);
                     commit(REGISTRATION_ERROR, error.response);
                     resolve(false)
                     //console.log(...resp.headers);
@@ -94,10 +100,13 @@ const mutations = {
     [REGISTRATION_SUCCESS]: (state) => {
         state.registrationStatus = true;
         state.registrationError = false;
+        state.registrationErrorState = '';
         state.registrationErrorEmailStatus = false;
         state.registrationErrorEmailState = '';
         state.registrationErrorPasswordStatus = false;
         state.registrationErrorPasswordState = '';
+        state.registrationErrorPhoneStatus = false;
+        state.registrationErrorPhoneState = '';
     },
     [REGISTRATION_ERROR]: (state, error_response) => {
         state.registrationStatus = false;
@@ -116,9 +125,22 @@ const mutations = {
                 state.registrationErrorPasswordState += ' ' + item
             })
         }
+        state.registrationErrorPhoneStatus = true;
+        state.registrationErrorPhoneState = '';
+        if (error_response.data.phone_doctor != undefined) {
+            error_response.data.phone_doctor.map(item => {
+                state.registrationErrorPhoneState += ' ' + item
+            })
+        }
+        if (error_response.data.phone_pacient != undefined) {
+            error_response.data.phone_pacient.map(item => {
+                state.registrationErrorPhoneState += ' ' + item
+            })
+        }
+        state.registrationErrorState = '';
         if (error_response.data.non_field_errors != undefined) {
             error_response.data.non_field_errors.map(item => {
-                state.registrationErrorPasswordState += ' ' + item
+                state.registrationErrorState += ' ' + item
             })
         }
 
