@@ -1,7 +1,7 @@
 <!-- App.vue -->
 <template>
   <v-app>
-    <v-app-bar color="cyan accent-4" dark absolute>
+    <v-app-bar color="cyan accent-4" dark absolute app>
       <v-app-bar-nav-icon
         @click.stop="drawer = !drawer"
         class="d-block d-md-none"
@@ -70,6 +70,7 @@
       absolute
       temporary
       class="nav-bar-drawer"
+      app
     >
       <v-list nav dense>
         <v-list-item-group
@@ -95,7 +96,7 @@
       <router-view></router-view>
     </v-main>
 
-    <v-footer color="cyan lighten-1" padless>
+    <v-footer color="cyan lighten-1" padless app absolute="false">
       <v-row justify="center" no-gutters>
         <v-btn
           v-for="link in links"
