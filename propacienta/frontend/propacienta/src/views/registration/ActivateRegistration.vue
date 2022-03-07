@@ -26,6 +26,7 @@
             <v-btn
               color="cyan"
               v-on:click="onOk"
+              class="white-content"
               :disabled="!activateRegistrationStatus"
               >Ok</v-btn
             >
@@ -77,7 +78,7 @@ export default {
 </script>
 
 <style>
-.v-btn__content {
+.white-content.v-btn {
   color: white;
 }
 /* .shake {

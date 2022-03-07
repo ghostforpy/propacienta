@@ -40,10 +40,14 @@
               :to="{ name: 'registration' }"
               block
               class="registration-btn"
-              ><v-btn color="light-blue"> Регистрация</v-btn></router-link
+              ><v-btn class="white-content" color="light-blue">
+                Регистрация</v-btn
+              ></router-link
             >
             <v-spacer></v-spacer>
-            <v-btn color="cyan" v-on:click="onSubmit">Вход</v-btn>
+            <v-btn class="white-content" color="cyan" v-on:click="onSubmit"
+              >Вход</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -52,7 +56,7 @@
 </template>
 
 <script>
-import { AUTH_REQUEST } from "@/store/actions/auth";
+import { AUTH_REQUEST, AUTH_PING } from "@/store/actions/auth";
 export default {
   name: "AuthLogin",
   props: {
@@ -88,6 +92,7 @@ export default {
       this.animError = false;
       const res = await this.$store.dispatch(AUTH_REQUEST, data);
       if (res) {
+        await this.$store.dispatch(AUTH_PING);
         this.loginError = false;
         const path =
           this.$route.query.redirect != undefined
@@ -115,7 +120,7 @@ export default {
   width: 100%;
 }
 
-.v-btn__content {
+.white-content.v-btn {
   color: white;
 }
 /* .shake {

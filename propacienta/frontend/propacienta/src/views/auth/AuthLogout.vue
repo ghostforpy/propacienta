@@ -14,8 +14,18 @@
           </div>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red accent-2" v-on:click="onSubmitExit">Выход</v-btn>
-            <v-btn color="cyan" v-on:click="$router.go(-1)">Отмена</v-btn>
+            <v-btn
+              color="red accent-2"
+              class="white-content"
+              v-on:click="onSubmitExit"
+              >Выход</v-btn
+            >
+            <v-btn
+              color="cyan"
+              class="white-content"
+              v-on:click="$router.go(-1)"
+              >Отмена</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -67,7 +77,7 @@ export default {
 </script>
 
 <style>
-.v-btn__content {
+.white-content.v-btn {
   color: white;
 }
 .shake {
