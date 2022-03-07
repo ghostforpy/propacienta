@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-//import user from "./modules/user";
+import user from "./modules/user";
 import auth from "./modules/auth";
 import registraion from "./modules/registration"
 
@@ -16,7 +16,7 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    //   user,
+    user,
     auth,
     registraion
   },
