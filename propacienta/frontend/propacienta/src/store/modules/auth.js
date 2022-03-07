@@ -6,6 +6,7 @@ import {
     AUTH_PING,
     LOGOUT_ERROR
 } from "../actions/auth";
+import { INIT_USER_STATE, CLEAR_USER_STATE } from "../actions/user"
 import request_service from "@/api/HTTP";
 const state = {
     isAuthenticated: '',
@@ -32,9 +33,10 @@ const actions = {
             };
             request_service(
                 config,
-                function () {
+                function (resp) {
                     commit(AUTH_SUCCESS);
                     console.log('ping sucsess')
+                    commit(INIT_USER_STATE, resp.data)
                     resolve(true)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
@@ -61,8 +63,9 @@ const actions = {
             };
             request_service(
                 config,
-                function () {
+                function (resp) {
                     commit(AUTH_SUCCESS);
+                    commit(INIT_USER_STATE, resp.data)
                     resolve(true)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
@@ -87,6 +90,7 @@ const actions = {
                 config,
                 function () {
                     commit(AUTH_LOGOUT);
+                    commit(CLEAR_USER_STATE);
                     resolve(true)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
