@@ -1,3 +1,8 @@
 export const USER_REQUEST = "USER_REQUEST";
 export const USER_SUCCESS = "USER_SUCCESS";
 export const USER_ERROR = "USER_ERROR";
+export const TOOGLE_DOC_MODE = "TOOGLE_DOC_MODE";
+export const CHANGE_USER_STATE = "CHANGE_USER_STATE";
+export const CHANGE_USER_ERORR = "CHANGE_USER_ERORR";
+export const INIT_USER_STATE = "INIT_USER_STATE";
+export const CLEAR_USER_STATE = "CLEAR_USER_STATE";
