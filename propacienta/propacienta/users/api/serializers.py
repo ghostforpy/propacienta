@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from djoser.serializers import UserCreatePasswordRetypeSerializer
+from doctors.models import Doctor
+from pacients.models import Pacient
 User = get_user_model()
 
 
@@ -53,13 +55,46 @@ class UserSerializer(serializers.ModelSerializer):
 class CUserCreateSerializer(UserCreatePasswordRetypeSerializer):
 
     role_doctor = serializers.BooleanField(write_only=True)
-    
+    phone_doctor = serializers.CharField(max_length=30, required=False, allow_null=True)
+    phone_pacient = serializers.CharField(max_length=30, required=True, allow_null=True)
+
     class Meta(UserCreatePasswordRetypeSerializer.Meta):
-        fields = tuple(UserCreatePasswordRetypeSerializer.Meta.fields) + ('role_doctor',)
-    
+        fields = tuple(UserCreatePasswordRetypeSerializer.Meta.fields) + (
+            'role_doctor',
+            'phone_doctor',
+            'phone_pacient'
+        )
+
     def save(self, **kwargs):
         return super().save(**kwargs)
-    
+
     def validate(self, attrs):
-        _ = attrs.pop("role_doctor", False)
+        role_doctor = attrs.pop("role_doctor", False)
+        _ = attrs.pop("phone_pacient", '')
+        phone_doctor = attrs.pop("phone_doctor", '')
+        if role_doctor:
+            if phone_doctor is None:
+                raise serializers.ValidationError("Поле телефона доктора является обязательным.")
         return super().validate(attrs)
+
+    def validate_phone_doctor(self, value):
+        """
+        Проверка телефона доктора.
+        """
+        if value is not None:
+            # добавить валидацию
+            if Doctor.objects.filter(phone=value).exists():
+                raise serializers.ValidationError("Доктор с таким телефоном уже существует.")
+        return value
+
+    def validate_phone_pacient(self, value):
+        """
+        Проверка телефона пациента.
+        """
+        if value is not None:
+            # добавить валидацию
+            if Pacient.objects.filter(phone=value).exists():
+                raise serializers.ValidationError("Пациент с таким телефоном уже существует.")
+        else:
+            raise serializers.ValidationError("Поле телефона является обязательным.")
+        return value

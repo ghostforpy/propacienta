@@ -88,6 +88,7 @@
               class="white-content"
               v-on:click="onSubmit"
               v-if="!registrationSuccess"
+              :disabled="!submitAvailable"
               ><span v-if="!loading">Зарегистрироваться</span
               ><v-progress-circular
                 v-else
@@ -130,21 +131,8 @@ export default {
       phone_doctor: null,
       same_phone: false,
       submitAvailableSt: false,
-      phoneRules: [
-        (value) => !!value || "Это поле является обязательным.",
-        (value) => {
-          const pattern = /^[+]*[0-9]{11}$/g;
-          return pattern.test(value) || "Неправильный формат номера.";
-        },
-      ],
-      emailRules: [
-        (value) => !!value || "Это поле является обязательным.",
-        (value) => {
-          const pattern =
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          return pattern.test(value) || "Неправильный формат номера.";
-        },
-      ],
+      phoneRules: [(value) => !!value || "Это поле является обязательным."],
+      emailRules: [(value) => !!value || "Это поле является обязательным."],
     };
   },
   computed: {
@@ -155,6 +143,24 @@ export default {
       return `${this.$store.getters.registrationErrorState} ${this.$store.getters.registrationErrorEmailState} 
       ${this.$store.getters.registrationErrorPasswordState} ${this.$store.getters.registrationErrorPhoneState}`;
     },
+    submitAvailable: function () {
+      const v =
+        this.email != null &&
+        this.email != "" &&
+        this.password != null &&
+        this.password != "" &&
+        this.re_password != null &&
+        this.re_password != "" &&
+        this.phone_pacient != null &&
+        this.phone_pacient != "" &&
+        this.password === this.re_password &&
+        !(
+          this.role_doctor &&
+          !this.same_phone &&
+          !(this.phone_doctor != null && this.phone_doctor != "")
+        );
+      return v;
+    },
   },
   methods: {
     onOk: function () {
@@ -162,31 +168,56 @@ export default {
         path: "/",
       });
     },
-    submitAvailable: function () {
-      return (
-        this.email != null &&
-        this.password != null &&
-        this.re_password != null &&
-        this.phone_pacient != null &&
-        this.$refs.email.valid &&
-        this.$refs.password.valid &&
-        this.$refs.re_password.valid &&
-        this.$refs.phone_pacient.valid &&
-        this.password === this.re_password &&
-        !(
-          this.role_doctor &&
-          !this.same_phone &&
-          !this.$refs.phone_doctor.valid
-        )
-      );
+    phoneValidate: function (phone) {
+      const pattern = /^[+]*[0-9]{11}$/g;
+      return pattern.test(phone);
+    },
+    pacientPhoneValidate: function () {
+      if (!this.phoneValidate(this.phone_pacient)) {
+        this.$refs.phone_pacient.valid = false;
+        this.$refs.phone_pacient.errorBucket.push(
+          "Неправильный формат номера."
+        );
+        return false;
+      }
+      return true;
+    },
+    doctorPhoneValidate: function () {
+      if (!this.phoneValidate(this.phone_doctor)) {
+        this.$refs.phone_doctor.valid = false;
+        this.$refs.phone_doctor.errorBucket.push("Неправильный формат номера.");
+        return false;
+      }
+      return true;
+    },
+    emailValidate: function () {
+      const pattern =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!pattern.test(this.email)) {
+        this.$refs.email.valid = false;
+        this.$refs.email.errorBucket.push("Неправильный формат адреса.");
+        return false;
+      }
+      return true;
     },
     onSubmit: async function () {
-      if (!this.submitAvailable()) {
+      if (!this.submitAvailable) {
         if (this.registrationError) {
           this.animError = true;
         }
         this.registrationError = true;
         return;
+      }
+      if (!this.emailValidate()) {
+        return;
+      }
+      if (!this.pacientPhoneValidate()) {
+        return;
+      }
+      if (this.role_doctor && !this.same_phone) {
+        if (!this.doctorPhoneValidate()) {
+          return;
+        }
       }
       if (this.password != this.re_password) {
         if (this.registrationError) {
