@@ -24,6 +24,7 @@
               labelname="Имя"
               v-model="first_name"
               @updated="updateHandl"
+              :rules="textRules"
             >
             </TextFieldUserOwner>
             <TextFieldUserOwner
@@ -31,6 +32,7 @@
               labelname="Фамилия"
               v-model="last_name"
               @updated="updateHandl"
+              :rules="textRules"
             >
             </TextFieldUserOwner>
             <TextFieldUserOwner
@@ -38,6 +40,7 @@
               labelname="Отчество"
               v-model="patronymic"
               @updated="updateHandl"
+              :rules="textRules"
             >
             </TextFieldUserOwner>
             <TextFieldUserOwner
@@ -105,6 +108,7 @@ export default {
       birthday: new Date(),
       applyBtn: false,
       loading: false,
+      textRules: [(value) => !!value || "Это поле является обязательным."],
       phoneRules: [
         (value) => !!value || "Это поле является обязательным.",
         (value) => {
@@ -125,9 +129,6 @@ export default {
     }
   },
   computed: {
-    onEdit: function () {
-      return `${this.$store.getters.registrationErrorEmailState} ${this.$store.getters.registrationErrorPasswordState}`;
-    },
     submitAvailable: function () {
       const v =
         this.first_name != null &&
@@ -159,20 +160,6 @@ export default {
         this.applyBtn = false;
       }
     },
-    phoneValidate: function (phone) {
-      const pattern = /^[+]*[0-9]{11}$/g;
-      return pattern.test(phone);
-    },
-    pacientPhoneValidate: function () {
-      if (!this.phoneValidate(this.pacient_phone)) {
-        this.$refs.pacient_phone.$refs.field.valid = false;
-        this.$refs.pacient_phone.$refs.field.errorBucket.push(
-          "Неправильный формат номера."
-        );
-        return false;
-      }
-      return true;
-    },
     onSubmit: async function () {
       if (!this.$refs.pacient_phone.$refs.field.valid) {
         return;
@@ -182,19 +169,18 @@ export default {
         first_name: this.first_name,
         last_name: this.last_name,
         patronymic: this.patronymic,
-        birthday: this.birthday,
+        birthday: this.birthday.toISOString().substr(0, 10),
+        phone_pacient: this.pacient_phone,
+        // phone_doctor: "1312312312",
       };
-      // нужно дописывать
+
       const res = await this.$store.dispatch(USER_REQUEST, data);
+      this.loading = false;
 
       if (res) {
-        this.registrationError = false;
-        this.registrationSuccess = true;
+        this.applyBtn = false;
       } else {
-        if (this.registrationError) {
-          this.animError = true;
-        }
-        this.registrationError = true;
+        console.log("wrong");
       }
     },
   },

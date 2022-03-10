@@ -386,7 +386,7 @@ DJOSER = {
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
         'user': 'djoser.serializers.UserSerializer',
         #'current_user': 'djoser.serializers.UserSerializer',
-        'current_user': 'propacienta.users.api.serializers.UserSerializer',
+        'current_user': 'propacienta.users.api.serializers.CUserSerializer',
         #'token': 'djoser.serializers.TokenSerializer',
         #'token_create': 'djoser.serializers.TokenCreateSerializer',
     },

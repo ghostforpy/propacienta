@@ -1,17 +1,21 @@
+from traceback import print_tb
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework.mixins import UpdateModelMixin
 from djoser.serializers import UserCreatePasswordRetypeSerializer
 from doctors.models import Doctor
 from pacients.models import Pacient
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class CUserSerializer(serializers.ModelSerializer):
     #api_url = serializers.CharField(source="get_api_url")
     # url = serializers.CharField(source="get_absolute_url")
     doc_mode_available = serializers.SerializerMethodField()
-    pacient_phone = serializers.CharField(source="pacient.phone")
+    pacient_phone = serializers.SerializerMethodField()
     doctor_phone = serializers.SerializerMethodField()
+    phone_pacient = serializers.CharField(write_only=True)
+    phone_doctor = serializers.CharField(write_only=True)
     pacient_id = serializers.IntegerField(source="pacient.id")
     doctor_id = serializers.SerializerMethodField()
     class Meta:
@@ -29,7 +33,9 @@ class UserSerializer(serializers.ModelSerializer):
             "pacient_phone",
             "doctor_phone",
             "pacient_id",
-            "doctor_id"
+            "doctor_id",
+            "phone_pacient",
+            "phone_doctor"
         ]
 
         #extra_kwargs = {
@@ -41,6 +47,9 @@ class UserSerializer(serializers.ModelSerializer):
                 return True
         return False
 
+    def get_pacient_phone(self, obj):
+        return obj.pacient.phone
+
     def get_doctor_phone(self, obj):
         if obj.doctor != None:
             if obj.doctor.is_active:
@@ -50,6 +59,20 @@ class UserSerializer(serializers.ModelSerializer):
         if obj.doctor != None:
             if obj.doctor.is_active:
                 return obj.doctor.id
+
+    def validate(self, attrs):
+        print(attrs)
+        return super().validate(attrs)
+
+    def save(self, *args, **kwargs):
+        print(self.validated_data)
+        if "phone_pacient" in self.validated_data:
+            self.instance.pacient.phone = self.validated_data["phone_pacient"]
+            self.instance.pacient.save()
+        if "phone_doctor" in self.validated_data:
+            self.instance.doctor.phone = self.validated_data["phone_doctor"]
+            self.instance.doctor.save()
+        return super().save(*args, **kwargs)
 
 
 class CUserCreateSerializer(UserCreatePasswordRetypeSerializer):

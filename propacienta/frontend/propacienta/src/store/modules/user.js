@@ -19,9 +19,8 @@ const state = {
     pacient_phone: '',
     doctor_phone: '',
     pacient_id: 0,
-    doctor_id: 0
-
-
+    doctor_id: 0,
+    error: false
 };
 
 const getters = {
@@ -42,14 +41,15 @@ const actions = {
     [USER_REQUEST]: ({ commit }, user_data) => {
         return new Promise((resolve) => {
             let config = {
-                method: "post",
-                url: "auth/login/",
+                method: "patch",
+                url: "api/users/me/",
                 data: user_data,
             };
             request_service(
                 config,
-                function () {
-                    commit(CHANGE_USER_STATE);
+                function (resp) {
+                    console.log(resp)
+                    commit(CHANGE_USER_STATE, user_data);
                     resolve(true)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
@@ -107,11 +107,17 @@ const mutations = {
         state.doctor_id = 0;
     },
     [CHANGE_USER_STATE]: (state, user_data) => {
+        state.error = false;
         state.email = user_data.email;
         state.first_name = user_data.first_name;
         state.last_name = user_data.last_name;
         state.patronymic = user_data.patronymic;
         state.birthday = user_data.birthday;
+        state.pacient_phone = user_data.pacient_phone;
+        state.doctor_phone = user_data.doctor_phone;
+    },
+    [CHANGE_USER_ERORR]: (state) => {
+        state.error = true;
     },
 
 };
