@@ -1,3 +1,4 @@
+from traceback import print_tb
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -14,7 +15,10 @@ class Pacient(models.Model):
         verbose_name_plural = "Пациенты"
 
     def __str__(self) -> str:
-        return "{} {}".format(self.user.first_name, self.user.last_name)
+        try:
+            return "{} {}".format(self.user.first_name, self.user.last_name)
+        except Pacient.user.RelatedObjectDoesNotExist:
+            return super().__str__()
 
 def user_created(signal=None, sender=None, user=None, request=None, **kwargs):
     phone_pacient = request.data['phone_pacient']

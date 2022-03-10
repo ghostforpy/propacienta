@@ -20,7 +20,7 @@ class UserAdmin(auth_admin.UserAdmin):
             {"fields": (
                 "name", "email", "first_name",
                 "last_name", "patronymic", "birthday",
-                #"pacient", "doctor"
+                "pacient", "doctor"
                 )}
         ),
         (
