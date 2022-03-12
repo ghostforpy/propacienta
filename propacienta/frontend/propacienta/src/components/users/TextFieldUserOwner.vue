@@ -3,7 +3,7 @@
     color="cyan"
     :name="fieldname"
     :label="labelname"
-    type="text"
+    :type="type"
     v-model="content"
     @input="$emit('input', content)"
     :readonly="fieldReadonly"
@@ -11,6 +11,7 @@
     @click:append="toggleFieldReadonly"
     :append-icon="fieldReadonly ? 'mdi-pencil' : 'mdi-check'"
     :rules="rules"
+    :suffix="suffix"
     ref="field"
   ></v-text-field>
 </template>
@@ -22,6 +23,11 @@ export default {
     labelname: String,
     value: String,
     rules: Array || undefined,
+    suffix: { type: String, default: "" },
+    type: {
+      type: String,
+      default: "text",
+    },
   },
   watch: {
     value: function (val) {
