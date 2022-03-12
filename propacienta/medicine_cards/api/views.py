@@ -24,7 +24,6 @@ class IsOwnerOfMedicineCardObject(BasePermission):
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         # # Instance must have an attribute named `owner`.
-        print(1111111111,request.user == obj.pacient.user)
         if request.user == obj.pacient.user:
             return True
         return False
