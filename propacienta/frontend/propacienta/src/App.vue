@@ -155,7 +155,7 @@ export default {
     drawerMenuList: [
       {
         title: "Медицинская карта",
-        route: "/medicine-card",
+        route: "/my-medicine-card",
         icon: "mdi-card-account-details-outline",
         needAuth: true,
       },
