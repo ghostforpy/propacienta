@@ -8,6 +8,7 @@ import MainPage from '@/components/MainPage';
 import { ifAuthenticated, ifNotAuthenticated } from './utils';
 import RegistrationRoutes from './registration'
 import UsersRoutes from './users'
+import MedicineCard from './medicinecard'
 
 
 Vue.use(VueRouter)
@@ -35,6 +36,7 @@ const baseRoutes = [
 ]
 var routes = baseRoutes.concat(UsersRoutes);
 routes = routes.concat(RegistrationRoutes)
+routes = routes.concat(MedicineCard)
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
