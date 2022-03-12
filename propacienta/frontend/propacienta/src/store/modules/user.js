@@ -19,6 +19,7 @@ const state = {
     pacient_phone: '',
     doctor_phone: '',
     pacient_id: 0,
+    medicine_card_id: 0,
     doctor_id: 0,
     error: false
 };
@@ -35,6 +36,7 @@ const getters = {
     pacient_phone: state => state.pacient_phone,
     doctor_phone: state => state.doctor_phone,
     pacient_id: state => state.pacient_id,
+    medicine_card_id: state => state.medicine_card_id,
     doctor_id: state => state.doctor_id,
 };
 const actions = {
@@ -92,6 +94,7 @@ const mutations = {
         state.doctor_phone = user_data.doctor_phone;
         state.pacient_id = user_data.pacient_id;
         state.doctor_id = user_data.doctor_id;
+        state.medicine_card_id = user_data.medicine_card;
     },
     [CLEAR_USER_STATE]: (state) => {
         state.docModeAvailable = false;
@@ -105,6 +108,7 @@ const mutations = {
         state.doctor_phone = '';
         state.pacient_id = 0;
         state.doctor_id = 0;
+        state.medicine_card_id = 0;
     },
     [CHANGE_USER_STATE]: (state, user_data) => {
         state.error = false;
