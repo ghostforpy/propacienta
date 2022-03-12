@@ -18,6 +18,7 @@ class CUserSerializer(serializers.ModelSerializer):
     phone_doctor = serializers.CharField(write_only=True)
     pacient_id = serializers.IntegerField(source="pacient.id")
     doctor_id = serializers.SerializerMethodField()
+    medicine_card = serializers.IntegerField(source="pacient.medicine_card.id")
     class Meta:
         model = User
         fields = [
@@ -35,7 +36,8 @@ class CUserSerializer(serializers.ModelSerializer):
             "pacient_id",
             "doctor_id",
             "phone_pacient",
-            "phone_doctor"
+            "phone_doctor",
+            "medicine_card"
         ]
 
         #extra_kwargs = {
@@ -60,9 +62,7 @@ class CUserSerializer(serializers.ModelSerializer):
             if obj.doctor.is_active:
                 return obj.doctor.id
 
-    def validate(self, attrs):
-        print(attrs)
-        return super().validate(attrs)
+    # дописать валидацию телефонов
 
     def save(self, *args, **kwargs):
         print(self.validated_data)
