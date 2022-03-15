@@ -340,16 +340,16 @@ from corsheaders.defaults import default_headers
 CORS_ALLOW_HEADERS = list(default_headers) + ['access-control-allow-credentials']
 # By Default swagger ui is available only to admin user. You can change permission classs to change that
 # See more configuration options at https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
-SPECTACULAR_SETTINGS = {
-    "TITLE": "propacienta API",
-    "DESCRIPTION": "Documentation of API endpoiints of propacienta",
-    "VERSION": "1.0.0",
-    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
-    "SERVERS": [
-        {"url": "https://127.0.0.1:8000", "description": "Local Development server"},
-        {"url": "https://propacienta.ru", "description": "Production server"},
-    ],
-}
+#SPECTACULAR_SETTINGS = {
+#    "TITLE": "propacienta API",
+#    "DESCRIPTION": "Documentation of API endpoiints of propacienta",
+#    "VERSION": "1.0.0",
+#    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
+#    "SERVERS": [
+#        {"url": "https://127.0.0.1:8000", "description": "Local Development server"},
+#        {"url": "https://propacienta.ru", "description": "Production server"},
+#    ],
+#}
 # Your stuff...
 # ------------------------------------------------------------------------------
 # https://djoser.readthedocs.io/en/latest/settings.html
