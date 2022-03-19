@@ -3,9 +3,9 @@ from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, DestroyAPIView
 from rest_framework.mixins import (ListModelMixin, RetrieveModelMixin,
-                                    UpdateModelMixin, CreateModelMixin)
+                                    UpdateModelMixin)
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import (IsAuthenticated,
@@ -48,11 +48,10 @@ class IsOwnerOfResultIndependentResearchObjects(BasePermission):
         #return request_by_doctor(request) is not None
 
     def has_object_permission(self, request, view, obj):
-        print('has_object_permission', view)
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         # # Instance must have an attribute named `owner`.
-        if request.user == obj.pacient.user:
+        if request.user == obj.medicine_card.pacient.user:
             return True
         return False
 #@method_decorator(name='list', decorator=swagger_auto_schema(
@@ -131,7 +130,7 @@ class IndependentResearchViewSet(ListModelMixin, GenericViewSet):
 #        return self.list(request)
 
 
-class ResultIndependentResearchList(ListAPIView):
+class ResultIndependentResearchList(DestroyAPIView, ListAPIView):
     """
     View to list ResultIndependentResearch.
     """
@@ -140,6 +139,7 @@ class ResultIndependentResearchList(ListAPIView):
     serializer_class = ResultIndependentResearchSerializer
     queryset = ResultIndependentResearch.objects.all()
     pagination_class = PageNumberPaginationBy50
+    lookup_url_kwarg = 'independent_research_result_id'
 
     def list(self, request, *args, **kwargs):
         """
@@ -152,7 +152,7 @@ class ResultIndependentResearchList(ListAPIView):
             ).filter(medicine_card__pacient__id=pacient_id)
         #serializer = ResultIndependentResearchSerializer(queryset, many=True)
         return super().list(request, *args, **kwargs)
-    
+
     def post(self, request, pacient_id=None, independent_research_id=None, format=None):
         """
         Return a list of all ResultIndependentResearch by pacient id and IndependentResearch id.

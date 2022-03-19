@@ -27,5 +27,9 @@ urlpatterns = [
         'independent-research-results/<int:pacient_id>/<int:independent_research_id>/',
         ResultIndependentResearchList.as_view()
     ),
+    path(
+        'independent-research-results/<int:pacient_id>/<int:independent_research_id>/<int:independent_research_result_id>/',
+        ResultIndependentResearchList.as_view()
+    ),
     path('', include(router.urls)),
 ]

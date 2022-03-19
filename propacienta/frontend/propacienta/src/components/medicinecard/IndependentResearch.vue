@@ -116,7 +116,27 @@ export default {
   },
   methods: {
     deleteHanlder: function (event) {
-      console.log(event);
+      var el = this;
+      let config = {
+        method: "delete",
+        url: `api/independent-research-results/${this.pacientId}/${this.select.id}/${event}/`,
+      };
+      request_service(
+        config,
+        function () {
+          var res = el.cache.get(el.select.id);
+          el.cache.set(
+            el.select.id,
+            res.filter(function (item) {
+              return item.id != event;
+            })
+          );
+          el.results = el.cache.get(el.select.id);
+        },
+        function (error) {
+          console.log(error);
+        }
+      );
     },
     loadHandler: function () {
       this.loading = true;
