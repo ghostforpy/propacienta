@@ -5,6 +5,7 @@ const HTTP = axios.create({
     baseURL: 'http://0.0.0.0/',
     //baseURL: url + '/api/',
     headers: {
+        // 'IsDoctor': true
         // 'X-CSRFToken': csrftoken,
         //'Access-Control-Allow-Credentials': true
         //'Access-Control-Allow-Origin' : '*',
