@@ -63,7 +63,7 @@ import {
   MEDICINECARD_COMMON_PATCH_REQUEST,
 } from "@/store/actions/pacient";
 export default {
-  name: "OwnerMedicineCommonData",
+  name: "OwnerMedicineCardCommonData",
   props: {
     pacientId: Number,
   },

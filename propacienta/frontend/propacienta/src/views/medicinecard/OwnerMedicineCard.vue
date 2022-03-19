@@ -10,16 +10,16 @@
       <v-tab>Анализы</v-tab>
       <v-tab>Хронические заболевания</v-tab>
       <v-tab-item>
-        <OwnerMedicineCommonData :pacientId="pacientId">
-        </OwnerMedicineCommonData>
+        <OwnerMedicineCardCommonData :pacientId="pacientId">
+        </OwnerMedicineCardCommonData>
       </v-tab-item>
       <v-tab-item>
-        <OwnerMedicineCommonData :pacientId="pacientId">
-        </OwnerMedicineCommonData>
+        <OwnerMedicineIndependentResearch :pacientId="pacientId">
+        </OwnerMedicineIndependentResearch>
       </v-tab-item>
       <v-tab-item>
-        <OwnerMedicineCommonData :pacientId="pacientId">
-        </OwnerMedicineCommonData>
+        <OwnerMedicineCardCommonData :pacientId="pacientId">
+        </OwnerMedicineCardCommonData>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -27,7 +27,8 @@
 
 <script>
 // import TextFieldUserOwner from "@/components/users/TextFieldUserOwner";
-import OwnerMedicineCommonData from "@/components/medicinecard/CommonData";
+import OwnerMedicineCardCommonData from "@/components/medicinecard/CommonData";
+import OwnerMedicineIndependentResearch from "@/components/medicinecard/IndependentResearch";
 import { INIT_PACIENT_STATE } from "@/store/actions/pacient";
 // import DateFieldUserOwner from "@/components/users/DateFieldUserOwner";
 // import { USER_REQUEST } from "@/store/actions/user";
@@ -37,7 +38,8 @@ export default {
     source: String,
   },
   components: {
-    OwnerMedicineCommonData,
+    OwnerMedicineCardCommonData,
+    OwnerMedicineIndependentResearch,
     // DateFieldUserOwner,
   },
   data: function () {
