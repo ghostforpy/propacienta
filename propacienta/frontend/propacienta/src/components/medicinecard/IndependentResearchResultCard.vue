@@ -19,9 +19,6 @@ export default {
     result: String,
     stamp: String,
   },
-  // components: {
-  //   TextFieldUserOwner,
-  // },
   data: function () {
     return {};
   },
@@ -31,42 +28,5 @@ export default {
       return d.toLocaleString();
     },
   },
-
-  // mounted: async function () {
-  //   let config = {
-  //     method: "get",
-  //     url: "api/independent-researchs/",
-  //   };
-  //   var el = this;
-  //   request_service(
-  //     config,
-  //     function (resp) {
-  //       el.items.push(...resp.data);
-  //     },
-  //     function (error) {
-  //       console.log(error.response);
-  //     }
-  //   );
-  // },
-  // methods: {
-  //   handleChangeSelect: function () {
-  //     let config = {
-  //       params: {
-  //         researchId: this.select.id,
-  //       },
-  //       method: "get",
-  //       url: "api/independent-research-results/my/",
-  //     };
-  //     request_service(
-  //       config,
-  //       function (resp) {
-  //         console.log(resp);
-  //       },
-  //       function (error) {
-  //         console.log(error.response);
-  //       }
-  //     );
-  //   },
-  // },
 };
 </script>
