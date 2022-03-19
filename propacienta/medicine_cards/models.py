@@ -51,10 +51,11 @@ class ResultIndependentResearch(models.Model):
         related_name="independent_research_results"
     )
     result = models.TextField(_("Результат"))
+    datetime_stamp = models.DateTimeField(_("Время проведения"), blank=True, null=True)
 
     class Meta:
         verbose_name = "Результат самостоятельного исследования"
         verbose_name_plural = "Результаты самостоятельных исследований"
 
     def __str__(self) -> str:
-        return self.title
+        return self.independent_research.title
