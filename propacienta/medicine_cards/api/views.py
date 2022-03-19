@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.generics import ListAPIView, DestroyAPIView
+from rest_framework.generics import ListAPIView, DestroyAPIView, CreateAPIView
 from rest_framework.mixins import (ListModelMixin, RetrieveModelMixin,
                                     UpdateModelMixin)
 from rest_framework.response import Response
@@ -130,7 +130,7 @@ class IndependentResearchViewSet(ListModelMixin, GenericViewSet):
 #        return self.list(request)
 
 
-class ResultIndependentResearchList(DestroyAPIView, ListAPIView):
+class ResultIndependentResearchList(CreateAPIView, DestroyAPIView, ListAPIView):
     """
     View to list ResultIndependentResearch.
     """
@@ -153,12 +153,20 @@ class ResultIndependentResearchList(DestroyAPIView, ListAPIView):
         #serializer = ResultIndependentResearchSerializer(queryset, many=True)
         return super().list(request, *args, **kwargs)
 
-    def post(self, request, pacient_id=None, independent_research_id=None, format=None):
-        """
-        Return a list of all ResultIndependentResearch by pacient id and IndependentResearch id.
-        """
-        queryset = ResultIndependentResearch.objects.filter(
-            independent_research__id=independent_research_id
-            ).filter(medicine_card__pacient__id=pacient_id)
-        serializer = ResultIndependentResearchSerializer(queryset, many=True)
-        return Response(serializer.data)
+    def post(self, request, *args, **kwargs):
+        pacient_id = kwargs["pacient_id"]
+        independent_research_id = kwargs["independent_research_id"]
+
+
+        return self.create(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        print(request.data)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save()

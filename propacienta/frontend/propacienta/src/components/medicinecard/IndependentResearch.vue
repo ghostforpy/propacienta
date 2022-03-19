@@ -15,7 +15,38 @@
             ></v-select
           ></v-col>
           <v-col cols="12">
-            <!-- компонент для добавления -->
+            <v-card class="mb-2">
+              <v-card-text>
+                <TextFieldUserOwner
+                  fieldname="result"
+                  labelname="Результат"
+                  v-model="resultAdd"
+                  :rules="numberRules"
+                  ref="result"
+                >
+                </TextFieldUserOwner>
+                <DateFieldUserOwner
+                  fieldname="resultDateAdd"
+                  labelname="Дата"
+                  v-model="resultDateAdd"
+                ></DateFieldUserOwner>
+                <TimeFieldUserOwner
+                  fieldname="resultTimeAdd"
+                  labelname="Время"
+                  v-model="resultTimeAdd"
+                ></TimeFieldUserOwner>
+              </v-card-text>
+              <v-card-actions class="d-flex justify-end">
+                <v-btn
+                  text
+                  color="cyan lighten-2"
+                  @click="handleAdd"
+                  :disabled="!selected"
+                >
+                  Добавить
+                </v-btn>
+              </v-card-actions>
+            </v-card>
             <div v-if="results.length > 0">
               <div v-for="item in results" :key="item.id" class="mb-2">
                 <IndependentResearchResultCard
@@ -52,6 +83,9 @@
 </template>
 <script>
 import IndependentResearchResultCard from "./IndependentResearchResultCard";
+import TextFieldUserOwner from "../users/TextFieldUserOwner";
+import DateFieldUserOwner from "../users/DateFieldUserOwner";
+import TimeFieldUserOwner from "../users/TimeFieldUserOwner";
 // import {
 //   MEDICINECARD_COMMON_GET,
 //   MEDICINECARD_COMMON_PATCH_REQUEST,
@@ -64,6 +98,9 @@ export default {
   },
   components: {
     IndependentResearchResultCard,
+    DateFieldUserOwner,
+    TextFieldUserOwner,
+    TimeFieldUserOwner,
   },
   data: function () {
     return {
@@ -73,6 +110,17 @@ export default {
       items: [],
       results: [],
       loading: false,
+      resultAdd: "",
+      resultDateAdd: new Date(),
+      resultTimeAdd: "",
+      selected: false,
+      numberRules: [
+        (value) => !!value || "Это поле является обязательным.",
+        (value) => {
+          const pattern = /^\d+$/g;
+          return pattern.test(value) || "Неправильный формат.";
+        },
+      ],
     };
   },
   // watch: {
@@ -115,6 +163,42 @@ export default {
     );
   },
   methods: {
+    clearForm: function () {
+      this.resultAdd = "";
+      // this.resultDateAdd = new Date();
+      this.resultTimeAdd = "";
+    },
+    handleAdd: function () {
+      this.resultDateAdd.setHours(
+        this.resultTimeAdd.split(":")[0],
+        this.resultTimeAdd.split(":")[1],
+        0
+      );
+      let config = {
+        method: "post",
+        url: `api/independent-research-results/${this.pacientId}/${this.select.id}/`,
+        data: {
+          independent_research: this.select.id,
+          result: this.resultAdd,
+          datetime_stamp: this.resultDateAdd,
+          medicine_card: this.$store.getters.medicineCardId,
+        },
+      };
+      var el = this;
+      request_service(
+        config,
+        function (resp) {
+          var res = el.cache.get(el.select.id);
+          res.push(resp.data);
+          el.cache.set(el.select.id, res);
+          el.results = el.cache.get(el.select.id);
+          el.clearForm();
+        },
+        function (error) {
+          console.log(error);
+        }
+      );
+    },
     deleteHanlder: function (event) {
       var el = this;
       let config = {
@@ -158,7 +242,7 @@ export default {
       request_service(
         config,
         function (resp) {
-          console.log(resp);
+          // console.log(resp);
           if (el.cache.has(el.select.id)) {
             el.results = el.cache.get(el.select.id);
             el.results.push(...resp.data.results);
@@ -182,6 +266,7 @@ export default {
       );
     },
     handleChangeSelect: function () {
+      this.selected = true;
       if (this.cache.has(this.select.id)) {
         this.results = this.cache.get(this.select.id);
       } else {
