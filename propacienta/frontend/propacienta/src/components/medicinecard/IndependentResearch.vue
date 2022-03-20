@@ -168,6 +168,17 @@ export default {
       // this.resultDateAdd = new Date();
       this.resultTimeAdd = "";
     },
+    compareResults: function (itemA, itemB) {
+      if (itemA.datetime_stamp > itemB.datetime_stamp) {
+        return 1;
+      }
+      if (itemA.datetime_stamp == itemB.datetime_stamp) {
+        return 0;
+      }
+      if (itemA.datetime_stamp < itemB.datetime_stamp) {
+        return -1;
+      }
+    },
     handleAdd: function () {
       if (!this.$refs.result.$refs.field.valid) {
         return;
@@ -189,13 +200,13 @@ export default {
           medicine_card: this.$store.getters.medicineCardId,
         },
       };
-      console.log(config);
       var el = this;
       request_service(
         config,
         function (resp) {
           var res = el.cache.get(el.select.id);
           res.push(resp.data);
+          res.sort(el.compareResults);
           el.cache.set(el.select.id, res);
           el.results = el.cache.get(el.select.id);
           el.clearForm();
@@ -251,9 +262,13 @@ export default {
           // console.log(resp);
           if (el.cache.has(el.select.id)) {
             el.results = el.cache.get(el.select.id);
-            el.results.push(...resp.data.results);
+            let r = resp.data.results;
+            r.sort(el.compareResults);
+            el.results.push(...r);
           } else {
-            el.cache.set(el.select.id, resp.data.results);
+            let r = resp.data.results;
+            r.sort(el.compareResults);
+            el.cache.set(el.select.id, r);
             el.results = resp.data.results;
           }
           if (resp.data.next != null) {
