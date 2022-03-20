@@ -169,11 +169,16 @@ export default {
       this.resultTimeAdd = "";
     },
     handleAdd: function () {
-      this.resultDateAdd.setHours(
-        this.resultTimeAdd.split(":")[0],
-        this.resultTimeAdd.split(":")[1],
-        0
-      );
+      if (!this.$refs.result.$refs.field.valid) {
+        return;
+      }
+      if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/i.test(this.resultTimeAdd)) {
+        this.resultDateAdd.setHours(
+          this.resultTimeAdd.split(":")[0],
+          this.resultTimeAdd.split(":")[1],
+          0
+        );
+      }
       let config = {
         method: "post",
         url: `api/independent-research-results/${this.pacientId}/${this.select.id}/`,
@@ -184,6 +189,7 @@ export default {
           medicine_card: this.$store.getters.medicineCardId,
         },
       };
+      console.log(config);
       var el = this;
       request_service(
         config,

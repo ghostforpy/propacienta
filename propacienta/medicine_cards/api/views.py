@@ -153,15 +153,8 @@ class ResultIndependentResearchList(CreateAPIView, DestroyAPIView, ListAPIView):
         #serializer = ResultIndependentResearchSerializer(queryset, many=True)
         return super().list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        pacient_id = kwargs["pacient_id"]
-        independent_research_id = kwargs["independent_research_id"]
-
-
-        return self.create(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
