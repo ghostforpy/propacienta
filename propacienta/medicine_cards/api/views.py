@@ -54,13 +54,8 @@ class IsOwnerOfResultIndependentResearchObjects(BasePermission):
         if request.user == obj.medicine_card.pacient.user:
             return True
         return False
-#@method_decorator(name='list', decorator=swagger_auto_schema(
-#    tags=["users"]
-#))
 
-#@method_decorator(name='me', decorator=swagger_auto_schema(
-#    tags=["users"]
-#))
+
 @method_decorator(name='retrieve', decorator=swagger_auto_schema(
     tags=["medicine-cards"]
 ))
@@ -80,10 +75,6 @@ class MedicineCardViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
         assert isinstance(self.request.user.id, int)
         return self.queryset.filter(id=self.request.user.id)
 
-#    @action(detail=False)
-#    def me(self, request):
-#        serializer = MedicineCard(request.user, context={"request": request})
-#        return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
     tags=["independent-research"]
@@ -94,52 +85,20 @@ class IndependentResearchViewSet(ListModelMixin, GenericViewSet):
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
 
-#@method_decorator(name='list', decorator=swagger_auto_schema(
-#    tags=["independent-research"]
-#))
-#@method_decorator(name='my', decorator=swagger_auto_schema(
-#    tags=["users"]
-#))
-#@method_decorator(name='retrieve', decorator=swagger_auto_schema(
-#    tags=["medicine-cards"]
-#))
-#@method_decorator(name='update', decorator=swagger_auto_schema(
-#    tags=["medicine-cards"]
-#))
-#@method_decorator(name='partial_update', decorator=swagger_auto_schema(
-#    tags=["medicine-cards"]
-#))
-#class ResultIndependentResearchViewSet(ListModelMixin,CreateModelMixin, #RetrieveModelMixin,
-#                                        UpdateModelMixin,
-#                                         GenericViewSet):
-#    serializer_class = ResultIndependentResearchSerializer
-#    queryset = ResultIndependentResearch.objects.all()
-#    lookup_field = "id"
-#    permission_classes = [IsAuthenticated|RequestByDoctor]
-
-#    def get_queryset(self):
-#        queryset = ResultIndependentResearch.objects.filter(
-#            independent_research__id=self.request.query_params.get("researchId")
-#            )
-#        if self.action == 'my':
-#            return queryset.filter(medicine_card__pacient=self.request.user.pacient)
-#        return queryset
-#
-#    @action(detail=False)
-#    def my(self, request):
-#        return self.list(request)
-
-
-class ResultIndependentResearchList(CreateAPIView, DestroyAPIView, ListAPIView):
+@method_decorator(name='post', decorator=swagger_auto_schema(
+    tags=["independent-research-results"]
+))
+@method_decorator(name='get', decorator=swagger_auto_schema(
+    tags=["independent-research-results"]
+))
+class ResultIndependentResearchCreateList(CreateAPIView, ListAPIView):
     """
-    View to list ResultIndependentResearch.
+    View to create and list ResultIndependentResearch.
     """
-    #authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [IsOwnerOfResultIndependentResearchObjects|RequestByDoctor]
     serializer_class = ResultIndependentResearchSerializer
     queryset = ResultIndependentResearch.objects.all()
     pagination_class = PageNumberPaginationBy50
-    lookup_url_kwarg = 'independent_research_result_id'
 
     def list(self, request, *args, **kwargs):
         """
@@ -150,16 +109,18 @@ class ResultIndependentResearchList(CreateAPIView, DestroyAPIView, ListAPIView):
         self.queryset = ResultIndependentResearch.objects.filter(
             independent_research__id=independent_research_id
             ).filter(medicine_card__pacient__id=pacient_id)
-        #serializer = ResultIndependentResearchSerializer(queryset, many=True)
         return super().list(request, *args, **kwargs)
 
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+@method_decorator(name='delete', decorator=swagger_auto_schema(
+    tags=["independent-research-results"]
+))
+class ResultIndependentResearchDestory(DestroyAPIView):
+    """
+    View to destroy ResultIndependentResearch.
+    """
+    permission_classes = [IsOwnerOfResultIndependentResearchObjects|RequestByDoctor]
+    serializer_class = ResultIndependentResearchSerializer
+    queryset = ResultIndependentResearch.objects.all()
+    lookup_url_kwarg = 'independent_research_result_id'
 
-    def perform_create(self, serializer):
-        serializer.save()
