@@ -36,6 +36,7 @@ app_name = "api"
 urlpatterns = [
     path("", include("propacienta.users.api.urls")),
     path('', include("medicine_cards.api.urls")),
+    path('', include("analisis.api.urls")),
     #path("", include("tom_tom.api.urls")),
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
