@@ -18,8 +18,7 @@
         </OwnerMedicineIndependentResearch>
       </v-tab-item>
       <v-tab-item>
-        <OwnerMedicineCardCommonData :pacientId="pacientId">
-        </OwnerMedicineCardCommonData>
+        <OwnerAnalisys :pacientId="pacientId"> </OwnerAnalisys>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -29,6 +28,7 @@
 // import TextFieldUserOwner from "@/components/users/TextFieldUserOwner";
 import OwnerMedicineCardCommonData from "@/components/medicinecard/CommonData";
 import OwnerMedicineIndependentResearch from "@/components/medicinecard/IndependentResearch";
+import OwnerAnalisys from "@/components/medicinecard/OwnerAnalisys";
 import { INIT_PACIENT_STATE } from "@/store/actions/pacient";
 // import DateFieldUserOwner from "@/components/users/DateFieldUserOwner";
 // import { USER_REQUEST } from "@/store/actions/user";
@@ -40,6 +40,7 @@ export default {
   components: {
     OwnerMedicineCardCommonData,
     OwnerMedicineIndependentResearch,
+    OwnerAnalisys,
     // DateFieldUserOwner,
   },
   data: function () {

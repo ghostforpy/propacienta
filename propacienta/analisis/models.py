@@ -1,7 +1,8 @@
-import imp
 from django.db import models
+# from django.urls import reverse
+from rest_framework.reverse import reverse
 from django.utils.translation import gettext_lazy as _
-from .utils import analisis_result_dir
+from .utils import analisis_results_files_dir, analisis_results_images_dir
 # Create your models here.
 
 class Analysis(models.Model):
@@ -14,7 +15,8 @@ class Analysis(models.Model):
     diseases = models.ManyToManyField(
         "diseases.disease",
         related_name="analyzis",
-        verbose_name="Заболевания"
+        verbose_name="Заболевания",
+        blank=True
     )
     
     class Meta:
@@ -49,14 +51,17 @@ class AnalysisResult(models.Model):
         "prescriptions.analisisprescription",
         on_delete=models.DO_NOTHING,
         verbose_name=_("Назначение"),
-        related_name="analysi_results"
+        related_name="analysi_results",
+        blank=True,
+        null=True
     )
-    result = models.TextField(_("Результаты анализа"))
+    result = models.TextField(_("Результаты анализа"), null=True)
     d = models.DateField(_("Дата сдачи анализа"))
     
     class Meta:
         verbose_name = "Результат анализа"
         verbose_name_plural = "Результаты анализов"
+        ordering = ["-d", "-id"]
 
     def __str__(self) -> str:
         return "{} {}".format(self.analysis, self.pacient)
@@ -65,12 +70,12 @@ class AnalysisResult(models.Model):
 class AnalysisResultsImage(models.Model):
     analysis_result = models.ForeignKey(
         AnalysisResult,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         related_name="analysis_images"
     )
     image = models.ImageField(
         _("Фото"),
-        upload_to=analisis_result_dir,
+        upload_to=analisis_results_images_dir,
         null=True,
         blank=True
     )
@@ -82,16 +87,18 @@ class AnalysisResultsImage(models.Model):
     def __str__(self) -> str:
         return "Изображение к {}".format(self.analysis_result)
 
+    def get_absolute_url(self):
+        return reverse("api:analysis-results-images-delete", kwargs={"pk": self.pk})
 
 class AnalysisResultsFile(models.Model):
     analysis_result = models.ForeignKey(
         AnalysisResult,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         related_name="analysis_files"
     )
     file = models.FileField(
         _("Файл"),
-        upload_to=analisis_result_dir,
+        upload_to=analisis_results_files_dir,
         null=True,
         blank=True
     )
@@ -102,3 +109,6 @@ class AnalysisResultsFile(models.Model):
 
     def __str__(self) -> str:
         return "Файл к {}".format(self.analysis_result)
+
+    def get_absolute_url(self):
+        return reverse("api:analysis-results-files-delete", kwargs={"pk": self.pk})

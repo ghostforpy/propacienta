@@ -1,13 +1,13 @@
 <template>
   <v-container fluid fill-height>
     <v-layout align-center justify-center>
-      <v-flex xs10 sm5 md4>
+      <v-flex xs10 sm8 md8>
         <v-row>
           <v-col cols="12">
             <v-select
               v-model="select"
               :items="items"
-              label="Исследования"
+              label="Анализы"
               item-text="title"
               item-value="id"
               return-object
@@ -21,7 +21,6 @@
                   fieldname="result"
                   labelname="Результат"
                   v-model="resultAdd"
-                  :rules="numberRules"
                   ref="result"
                 >
                 </TextFieldUserOwner>
@@ -30,11 +29,25 @@
                   labelname="Дата"
                   v-model="resultDateAdd"
                 ></DateFieldUserOwner>
-                <TimeFieldUserOwner
-                  fieldname="resultTimeAdd"
-                  labelname="Время"
-                  v-model="resultTimeAdd"
-                ></TimeFieldUserOwner>
+                <v-file-input
+                  show-size
+                  counter
+                  multiple
+                  label="Файлы"
+                  ref="files"
+                  @change="changeFiles"
+                  accept=".pdf|.doc|.docx"
+                ></v-file-input>
+                <v-file-input
+                  show-size
+                  counter
+                  multiple
+                  label="Изображения"
+                  ref="images"
+                  @change="changeImages"
+                  prepend-icon="mdi-file-image"
+                  accept=".png|.jpg|.jpeg"
+                ></v-file-input>
               </v-card-text>
               <v-card-actions class="d-flex justify-end">
                 <v-btn
@@ -47,15 +60,19 @@
                 </v-btn>
               </v-card-actions>
             </v-card>
-            <div v-if="results.length > 0">
-              <div v-for="item in results" :key="item.id" class="mb-2">
-                <IndependentResearchResultCard
+            <v-card v-if="results.length > 0" class="box-shadow-card-none">
+              <v-expansion-panels inset multiple>
+                <AnalisysResultCard
+                  v-for="item in results"
+                  :key="item.id"
                   v-on:delete="deleteHanlder"
                   :id="item.id"
                   :result="item.result"
-                  :stamp="item.datetime_stamp"
+                  :stamp="item.d"
+                  :images="item.analysis_images"
+                  :files="item.analysis_files"
                 />
-              </div>
+              </v-expansion-panels>
               <div class="d-flex justify-center">
                 <v-btn
                   v-if="cacheNextPage.get(select.id) != null"
@@ -69,10 +86,10 @@
                   Ещё
                 </v-btn>
               </div>
-            </div>
+            </v-card>
             <v-card v-else>
               <v-card-text>
-                <div class="text--primary">Исследований пока не было.</div>
+                <div class="text--primary">Анализов пока не было.</div>
               </v-card-text>
             </v-card>
           </v-col>
@@ -82,25 +99,25 @@
   </v-container>
 </template>
 <script>
-import IndependentResearchResultCard from "./IndependentResearchResultCard";
+import AnalisysResultCard from "./AnalisysResultCard";
 import TextFieldUserOwner from "../users/TextFieldUserOwner";
 import DateFieldUserOwner from "../users/DateFieldUserOwner";
-import TimeFieldUserOwner from "../users/TimeFieldUserOwner";
+// import TimeFieldUserOwner from "../users/TimeFieldUserOwner";
 // import {
 //   MEDICINECARD_COMMON_GET,
 //   MEDICINECARD_COMMON_PATCH_REQUEST,
 // } from "@/store/actions/pacient";
 import request_service from "@/api/HTTP";
 export default {
-  name: "OwnerMedicineIndependentResearch",
+  name: "OwnerAnalisys",
   props: {
     pacientId: Number,
   },
   components: {
-    IndependentResearchResultCard,
     DateFieldUserOwner,
     TextFieldUserOwner,
-    TimeFieldUserOwner,
+    // TimeFieldUserOwner,
+    AnalisysResultCard,
   },
   data: function () {
     return {
@@ -112,15 +129,11 @@ export default {
       loading: false,
       resultAdd: "",
       resultDateAdd: new Date(),
-      resultTimeAdd: "",
+      // resultTimeAdd: "",
+      filesAdd: [],
+      imagesAdd: [],
       selected: false,
-      numberRules: [
-        (value) => !!value || "Это поле является обязательным.",
-        (value) => {
-          const pattern = /^\d+$/g;
-          return pattern.test(value) || "Неправильный формат.";
-        },
-      ],
+      numberRules: [(value) => !!value || "Это поле является обязательным."],
     };
   },
   // watch: {
@@ -146,7 +159,7 @@ export default {
   mounted: async function () {
     let config = {
       method: "get",
-      url: "api/independent-researchs/",
+      url: "api/analisys/",
     };
     var el = this;
     request_service(
@@ -168,6 +181,12 @@ export default {
       // this.resultDateAdd = new Date();
       this.resultTimeAdd = "";
     },
+    changeFiles: function (event) {
+      this.filesAdd = event;
+    },
+    changeImages: function (event) {
+      this.imagesAdd = event;
+    },
     compareResults: function (itemA, itemB) {
       if (itemA.datetime_stamp > itemB.datetime_stamp) {
         return 1;
@@ -183,23 +202,32 @@ export default {
       if (!this.$refs.result.$refs.field.valid) {
         return;
       }
-      if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/i.test(this.resultTimeAdd)) {
-        this.resultDateAdd.setHours(
-          this.resultTimeAdd.split(":")[0],
-          this.resultTimeAdd.split(":")[1],
-          0
-        );
-      }
+      let form = new FormData();
+      this.filesAdd.forEach((file) => {
+        form.append("files", file);
+      });
+      this.imagesAdd.forEach((img) => {
+        form.append("images", img);
+      });
+      form.append("analysis", this.select.id);
+      form.append("pacient", this.pacientId);
+      form.append("medicine_card", this.$store.getters.medicineCardId);
+      form.append("result", this.resultAdd);
+      form.append(
+        "d",
+        `${this.resultDateAdd.getFullYear()}-${this.resultDateAdd.getMonth()}-${this.resultDateAdd.getDate()}`
+      );
+      // console.log(form);
       let config = {
         method: "post",
-        url: `api/independent-research-results/${this.pacientId}/${this.select.id}/`,
-        data: {
-          independent_research: this.select.id,
-          result: this.resultAdd,
-          datetime_stamp: this.resultDateAdd,
-          medicine_card: this.$store.getters.medicineCardId,
+        url: `api/analysis-results/${this.pacientId}/${this.select.id}/`,
+        data: form,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
         },
       };
+
       var el = this;
       request_service(
         config,
@@ -220,7 +248,7 @@ export default {
       var el = this;
       let config = {
         method: "delete",
-        url: `api/independent-research-results/${this.pacientId}/${this.select.id}/${event}/`,
+        url: `api/analysis-results-delete/${this.pacientId}/${event}/`,
       };
       request_service(
         config,
@@ -251,7 +279,7 @@ export default {
       var el = this;
       let config = {
         method: "get",
-        url: `api/independent-research-results/${this.pacientId}/${this.select.id}/`,
+        url: `api/analysis-results/${this.pacientId}/${this.select.id}/`,
         params: {
           page: this.cacheNextPage.get(this.select.id),
         },
@@ -300,5 +328,8 @@ export default {
 <style>
 .white-content.v-btn {
   color: white;
+}
+.box-shadow-card-none {
+  box-shadow: none !important;
 }
 </style>
