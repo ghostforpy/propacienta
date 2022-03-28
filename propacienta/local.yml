@@ -97,6 +97,7 @@ services:
     image: nginx:latest
     volumes:
       - ./compose/local/nginx.conf:/etc/nginx/nginx.conf
+      - ./propacienta/media:/web/media:z
     network_mode: host
 
   pgadmin:
