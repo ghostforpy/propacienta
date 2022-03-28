@@ -13,7 +13,10 @@ from rest_framework.permissions import (IsAuthenticated,
                                         SAFE_METHODS,
                                         BasePermission)
 from rest_framework.pagination import PageNumberPagination
-from doctors.utils import request_by_doctor, RequestByDoctor
+from ..utils import (RequestByTreatingDoctorMedicineCard,
+                    IsOwnerOfMedicineCardObject,
+                    IsOwnerOfResultIndependentResearchObjects,
+                    RequestByTreatingDoctorResultIndependentResearch)
 from .serializers import (MedicineCardSerializer,
                             IndependentResearchSerializer,
                             ResultIndependentResearchSerializer)
@@ -23,37 +26,6 @@ User = get_user_model()
 
 class PageNumberPaginationBy50(PageNumberPagination):
     page_size = 50
-
-class IsOwnerOfMedicineCardObject(BasePermission):
-    """
-    Object-level permission to only allow owners of an object.
-    """
-
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        # # Instance must have an attribute named `owner`.
-        if request.user == obj.pacient.user:
-            return True
-        return False
-
-
-class IsOwnerOfResultIndependentResearchObjects(BasePermission):
-    """
-    Object-level permission to only allow owners of an object.
-    """
-    def has_permission(self, request, view):
-        #print('has perm', view, view.args, view.kwargs)
-        return request.user.pacient.id == view.kwargs.get('pacient_id')
-        #return request_by_doctor(request) is not None
-
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        # # Instance must have an attribute named `owner`.
-        if request.user == obj.medicine_card.pacient.user:
-            return True
-        return False
 
 
 @method_decorator(name='retrieve', decorator=swagger_auto_schema(
@@ -69,7 +41,7 @@ class MedicineCardViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = MedicineCardSerializer
     queryset = MedicineCard.objects.all()
     lookup_field = "id"
-    permission_classes = [IsOwnerOfMedicineCardObject|RequestByDoctor]
+    permission_classes = [IsOwnerOfMedicineCardObject|RequestByTreatingDoctorMedicineCard]
 
     def get_queryset(self, *args, **kwargs):
         assert isinstance(self.request.user.id, int)
@@ -85,6 +57,7 @@ class IndependentResearchViewSet(ListModelMixin, GenericViewSet):
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
 
+
 @method_decorator(name='post', decorator=swagger_auto_schema(
     tags=["independent-research-results"]
 ))
@@ -95,7 +68,7 @@ class ResultIndependentResearchCreateList(CreateAPIView, ListAPIView):
     """
     View to create and list ResultIndependentResearch.
     """
-    permission_classes = [IsOwnerOfResultIndependentResearchObjects|RequestByDoctor]
+    permission_classes = [IsOwnerOfResultIndependentResearchObjects|RequestByTreatingDoctorResultIndependentResearch]
     serializer_class = ResultIndependentResearchSerializer
     queryset = ResultIndependentResearch.objects.all()
     pagination_class = PageNumberPaginationBy50
@@ -119,7 +92,7 @@ class ResultIndependentResearchDestory(DestroyAPIView):
     """
     View to destroy ResultIndependentResearch.
     """
-    permission_classes = [IsOwnerOfResultIndependentResearchObjects|RequestByDoctor]
+    permission_classes = [IsOwnerOfResultIndependentResearchObjects|RequestByTreatingDoctorResultIndependentResearch]
     serializer_class = ResultIndependentResearchSerializer
     queryset = ResultIndependentResearch.objects.all()
     lookup_url_kwarg = 'independent_research_result_id'

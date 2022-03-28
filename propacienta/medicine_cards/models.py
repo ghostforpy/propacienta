@@ -56,6 +56,7 @@ class ResultIndependentResearch(models.Model):
     class Meta:
         verbose_name = "Результат самостоятельного исследования"
         verbose_name_plural = "Результаты самостоятельных исследований"
+        ordering = ["-datetime_stamp", "-id"]
 
     def __str__(self) -> str:
         return self.independent_research.title
