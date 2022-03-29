@@ -1,18 +1,13 @@
 from drf_yasg.utils import swagger_auto_schema
 # from drf_yasg import openapi
-from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
 from rest_framework.generics import (ListAPIView, DestroyAPIView, 
                                     CreateAPIView, RetrieveAPIView, 
                                     get_object_or_404)
-from rest_framework.mixins import (ListModelMixin, RetrieveModelMixin,
-                                    UpdateModelMixin)
+from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.permissions import (IsAuthenticated,
-                                        # AllowAny,
-                                        # SAFE_METHODS,
-                                        BasePermission)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from ..utils import (RequestByTreatingDoctor, IsOwnerOfAnalisObject,
                     IsOwnerOfAnalisResultObject, RequestByTreatingDoctorAnalisResult,
@@ -21,7 +16,6 @@ from .serializers import (AnalysisResultsFileSerializer, AnalysisSimpleSerialize
                             AnalysisResultsImageSerializer,
                             AnalysisResultSerializer)
 from ..models import Analysis, AnalysisResultsFile, AnalysisResultsImage, AnalysisResult
-User = get_user_model()
 
 
 class PageNumberPaginationBy10(PageNumberPagination):
