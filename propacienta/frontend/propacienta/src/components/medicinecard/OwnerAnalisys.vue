@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height>
     <v-layout align-center justify-center>
-      <v-flex xs10 sm8 md8>
+      <v-flex xs10 sm8 md6>
         <v-row>
           <v-col cols="12">
             <v-select
