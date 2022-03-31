@@ -41,6 +41,9 @@ class CustomUserManager(UserManager):
 
         return self._create_user(email, password, **extra_fields)
 
+    def get_queryset(self):
+        return super().get_queryset().select_related("pacient", "doctor")
+
 
 class User(AbstractUser):
     """
