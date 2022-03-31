@@ -10,23 +10,24 @@ class AnalysisSerializer(serializers.ModelSerializer):
 
 
 class AnalysisSimpleSerializer(serializers.ModelSerializer):
-    results_count = serializers.SerializerMethodField()
+    # results_count = serializers.SerializerMethodField()
+    results_count = serializers.IntegerField(default=0)
     class Meta:
         model = Analysis
         exclude = ["diseases"]
-    
-    def get_results_count(self, obj):
-        queryparams = self.context["request"].GET.dict()
-        pacient_id = queryparams.get("pacientId", None)
-        if pacient_id is not None:
-            count = AnalysisResult.objects.filter(
-                analysis=obj
-                ).filter(
-                    pacient__id=pacient_id
-                    ).count()
-            if count > 0:
-                return count
-        return 0
+
+    # def get_results_count(self, obj):
+    #     queryparams = self.context["request"].GET.dict()
+    #     pacient_id = queryparams.get("pacientId", None)
+    #     if pacient_id is not None:
+    #         count = AnalysisResult.objects.filter(
+    #             analysis=obj
+    #             ).filter(
+    #                 pacient__id=pacient_id
+    #                 ).count()
+    #         if count > 0:
+    #             return count
+    #     return 0
 
 
 class AnalysisResultsFileSerializer(serializers.ModelSerializer):

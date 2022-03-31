@@ -1,4 +1,5 @@
 from drf_yasg.utils import swagger_auto_schema
+from django.db.models import Q, Count
 # from drf_yasg import openapi
 from django.utils.decorators import method_decorator
 from rest_framework.generics import (ListAPIView, DestroyAPIView, 
@@ -9,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
+from doctors.utils import request_by_doctor
 from ..utils import (RequestByTreatingDoctor, IsOwnerOfAnalisObject,
                     IsOwnerOfAnalisResultObject, RequestByTreatingDoctorAnalisResult,
                     IsOwnerOfAnalisResultFileAndImageObject, RequestByTreatingDoctorAnalisResultFileAndImage)
@@ -30,6 +32,32 @@ class AnalysisViewSet(ListModelMixin, GenericViewSet):
     queryset = Analysis.objects.all()
     lookup_field = "id"
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        doctor = request_by_doctor(self.request)
+        if doctor is not None:
+            queryparams = self.request.GET.dict()
+            pacient_id = queryparams.get("pacientId", None)
+            pacient = doctor.pacients.filter(id=pacient_id).count()
+            if pacient != 0:
+                pacient_id = 0
+                # queryset = self.queryset.annotate(
+                #         results_count=Count(
+                #             "analysi_results",
+                #             distinct=False,
+                #             filter=Q(analysi_results__pacient__id=pacient_id)
+                #         ),
+                #     )
+        else:
+            pacient_id = self.request.user.pacient.id
+        queryset = self.queryset.annotate(
+            results_count=Count(
+                "analysi_results",
+                distinct=False,
+                filter=Q(analysi_results__pacient__id=pacient_id)
+            ),
+        )
+        return queryset
 
 
 @method_decorator(name='get', decorator=swagger_auto_schema(
