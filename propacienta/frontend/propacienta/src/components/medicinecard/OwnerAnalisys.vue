@@ -12,8 +12,31 @@
               item-value="id"
               return-object
               @change="handleChangeSelect"
-            ></v-select
-          ></v-col>
+            >
+              <template #item="{ item }">
+                <span>{{ item.title }}</span>
+                <v-chip
+                  v-if="item.results_count > 0"
+                  color="pink"
+                  small
+                  text-color="white"
+                >
+                  {{ item.results_count }}
+                </v-chip>
+              </template>
+              <template #selection="{ item }">
+                <span>{{ item.title }}</span>
+                <v-chip
+                  v-if="item.results_count > 0"
+                  color="pink"
+                  small
+                  text-color="white"
+                >
+                  {{ item.results_count }}
+                </v-chip>
+              </template>
+            </v-select></v-col
+          >
           <v-col cols="12">
             <v-card class="mb-2">
               <v-card-text>
@@ -160,6 +183,9 @@ export default {
     let config = {
       method: "get",
       url: "api/analisys/",
+      params: {
+        pacientId: this.pacientId,
+      },
     };
     var el = this;
     request_service(
