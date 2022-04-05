@@ -2,7 +2,11 @@ from django.contrib import admin
 from .models import Analysis, AnalysisResult, AnalysisResultsFile, AnalysisResultsImage
 # Register your models here.
 
-admin.site.register(Analysis)
+@admin.register(Analysis)
+class AnalysisAdmin(admin.ModelAdmin):
+    list_display = ("title",)
+    search_fields = ["title", "diseases__title"]
+
 
 class AnalysisResultsFileAdmin(admin.TabularInline):
     model = AnalysisResultsFile
@@ -10,6 +14,7 @@ class AnalysisResultsFileAdmin(admin.TabularInline):
 
 class AnalysisResultsImageAdmin(admin.TabularInline):
     model = AnalysisResultsImage
+
 
 @admin.register(AnalysisResult)
 class AnalysisResultAdmin(admin.ModelAdmin):
