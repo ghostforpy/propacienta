@@ -8,6 +8,7 @@
       <v-tab>Общие данные</v-tab>
       <v-tab>Исследования</v-tab>
       <v-tab>Анализы</v-tab>
+      <v-tab>Перенесенные заболевания</v-tab>
       <v-tab>Хронические заболевания</v-tab>
       <v-tab-item>
         <OwnerMedicineCardCommonData :pacientId="pacientId">
@@ -20,6 +21,10 @@
       <v-tab-item>
         <OwnerAnalisys :pacientId="pacientId"> </OwnerAnalisys>
       </v-tab-item>
+      <v-tab-item>
+        <OwnerTransferedDiseases :pacientId="pacientId">
+        </OwnerTransferedDiseases>
+      </v-tab-item>
     </v-tabs>
   </div>
 </template>
@@ -29,6 +34,7 @@
 import OwnerMedicineCardCommonData from "@/components/medicinecard/CommonData";
 import OwnerMedicineIndependentResearch from "@/components/medicinecard/IndependentResearch";
 import OwnerAnalisys from "@/components/medicinecard/OwnerAnalisys";
+import OwnerTransferedDiseases from "@/components/medicinecard/OwnerTransferedDiseases";
 import { INIT_PACIENT_STATE } from "@/store/actions/pacient";
 // import DateFieldUserOwner from "@/components/users/DateFieldUserOwner";
 // import { USER_REQUEST } from "@/store/actions/user";
@@ -41,7 +47,7 @@ export default {
     OwnerMedicineCardCommonData,
     OwnerMedicineIndependentResearch,
     OwnerAnalisys,
-    // DateFieldUserOwner,
+    OwnerTransferedDiseases,
   },
   data: function () {
     return {
