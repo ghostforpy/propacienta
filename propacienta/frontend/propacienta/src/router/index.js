@@ -1,14 +1,15 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import MainPage from '@/components/MainPage';
+import NotFound from '@/components/NotFound';
 import AuthLogin from '@/views/auth/AuthLogin';
 import AuthLogout from '@/views/auth/AuthLogout';
-import MainPage from '@/components/MainPage';
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import MedicineCard from './medicinecard';
+import RegistrationRoutes from './registration';
+import UsersRoutes from './users';
 // import store from '@/store'
 // import { AUTH_PING } from "@/store/actions/auth";
 import { ifAuthenticated, ifNotAuthenticated } from './utils';
-import RegistrationRoutes from './registration'
-import UsersRoutes from './users'
-import MedicineCard from './medicinecard'
 
 
 Vue.use(VueRouter)
@@ -32,6 +33,12 @@ const baseRoutes = [
     component: MainPage,
     //beforeEnter: ifAuthenticated,
     //meta: { requiresAuth: true }
+  },
+  {
+    path: '*',
+    name: "notfound",
+    component: NotFound,
+    // beforeEnter: ifNotAuthenticated,
   },
 ]
 var routes = baseRoutes.concat(UsersRoutes);
