@@ -18,6 +18,7 @@
         append-icon="mdi-pencil"
         @click:append="modal = true"
         ref="field"
+        :rules="rules"
       ></v-text-field>
     </template>
     <v-date-picker
@@ -39,6 +40,7 @@ export default {
     fieldname: String,
     labelname: String,
     value: Date,
+    rules: Array || undefined,
   },
   watch: {
     value: function (val) {
@@ -53,7 +55,7 @@ export default {
     };
   },
   created: function () {
-    if (this.value != "") {
+    if (this.value != "" && this.value != null) {
       this.date = this.value.toISOString().substr(0, 10);
     }
   },
