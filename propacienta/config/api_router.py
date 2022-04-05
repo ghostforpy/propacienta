@@ -37,6 +37,7 @@ urlpatterns = [
     path("", include("propacienta.users.api.urls")),
     path('', include("medicine_cards.api.urls")),
     path('', include("analisis.api.urls")),
+    path('', include("diseases.api.urls")),
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
         schema_view.without_ui(cache_timeout=0),
