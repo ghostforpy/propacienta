@@ -11,6 +11,7 @@
                   :items="items"
                   label="Заболевания"
                   item-text="title"
+                  :filter="filterAutocomplete"
                   item-value="id"
                   return-object
                   @change="handleChangeSelect"
@@ -200,6 +201,14 @@ export default {
     this.getResults();
   },
   methods: {
+    filterAutocomplete: function (item, queryText) {
+      return (
+        item.title.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) >
+          -1 ||
+        item.code.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) >
+          -1
+      );
+    },
     clearForm: function () {
       this.resultAdd = "";
       // this.resultDateAdd = new Date();
