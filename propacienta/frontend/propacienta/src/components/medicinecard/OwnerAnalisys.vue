@@ -4,7 +4,7 @@
       <v-flex xs10 sm8 md6>
         <v-row>
           <v-col cols="12">
-            <v-select
+            <v-autocomplete
               v-model="select"
               :items="items"
               label="Анализы"
@@ -35,7 +35,7 @@
                   {{ item.results_count }}
                 </v-chip>
               </template>
-            </v-select></v-col
+            </v-autocomplete></v-col
           >
           <v-col cols="12">
             <v-card class="mb-2">

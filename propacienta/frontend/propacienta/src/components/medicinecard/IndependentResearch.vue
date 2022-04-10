@@ -4,7 +4,7 @@
       <v-flex xs10 sm5 md4>
         <v-row>
           <v-col cols="12">
-            <v-select
+            <v-autocomplete
               v-model="select"
               :items="items"
               label="Исследования"
@@ -12,7 +12,7 @@
               item-value="id"
               return-object
               @change="handleChangeSelect"
-            ></v-select
+            ></v-autocomplete
           ></v-col>
           <v-col cols="12">
             <v-card class="mb-2">

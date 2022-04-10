@@ -6,7 +6,7 @@
           <v-col cols="12">
             <v-card class="mb-2">
               <v-card-text>
-                <v-select
+                <v-autocomplete
                   v-model="select"
                   :items="items"
                   label="Заболевания"
@@ -14,7 +14,7 @@
                   item-value="id"
                   return-object
                   @change="handleChangeSelect"
-                ></v-select>
+                ></v-autocomplete>
                 <!-- <TextFieldUserOwner
                   fieldname="diagnose"
                   labelname="Диагноз"
