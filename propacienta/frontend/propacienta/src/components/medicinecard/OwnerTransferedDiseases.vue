@@ -181,6 +181,7 @@ export default {
       url: "api/diseases/",
       params: {
         pacientId: this.pacientId,
+        // diseaseType: "transferred",
       },
     };
     var el = this;
