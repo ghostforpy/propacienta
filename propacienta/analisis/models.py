@@ -1,8 +1,9 @@
 from django.db import models
-# from django.urls import reverse
-from rest_framework.reverse import reverse
 from django.utils.translation import gettext_lazy as _
+from rest_framework.reverse import reverse
+
 from .utils import analisis_results_files_dir, analisis_results_images_dir
+
 # Create your models here.
 
 class Analysis(models.Model):

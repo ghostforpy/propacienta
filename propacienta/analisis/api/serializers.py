@@ -1,5 +1,5 @@
-from itertools import count
 from rest_framework import serializers
+
 from ..models import Analysis, AnalysisResult, AnalysisResultsFile, AnalysisResultsImage
 
 
@@ -12,6 +12,7 @@ class AnalysisSerializer(serializers.ModelSerializer):
 class AnalysisSimpleSerializer(serializers.ModelSerializer):
     # results_count = serializers.SerializerMethodField()
     results_count = serializers.IntegerField(default=0)
+
     class Meta:
         model = Analysis
         exclude = ["diseases"]
