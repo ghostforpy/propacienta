@@ -6,7 +6,7 @@ from ..models import Analysis, AnalysisResult, AnalysisResultsFile, AnalysisResu
 class ValidatePacientIdMixin:
     def validate_pacient(self, value):
         pacient_id = self.context['view'].kwargs["pacient_id"]
-        if value != pacient_id:
+        if value.id != pacient_id:
             raise serializers.ValidationError("Wrong pacientId.")
         return value
 

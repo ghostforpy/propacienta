@@ -261,16 +261,22 @@ export default {
       form.append("diagnosis", this.diagnoseAdd);
       form.append(
         "diagnosis_date",
-        `${this.diagnoseDateAdd.getFullYear()}-${this.diagnoseDateAdd.getMonth()}-${this.diagnoseDateAdd.getDate()}`
+        `${this.diagnoseDateAdd.getFullYear()}-${
+          this.diagnoseDateAdd.getMonth() + 1
+        }-${this.diagnoseDateAdd.getDate()}`
       );
       form.append("diagnosis_year", `${this.diagnoseDateAdd.getFullYear()}`);
       form.append(
         "treatment_date",
-        `${this.startTreatmentDateAdd.getFullYear()}-${this.startTreatmentDateAdd.getMonth()}-${this.startTreatmentDateAdd.getDate()}`
+        `${this.startTreatmentDateAdd.getFullYear()}-${
+          this.startTreatmentDateAdd.getMonth() + 1
+        }-${this.startTreatmentDateAdd.getDate()}`
       );
       form.append(
         "treatment_end_date",
-        `${this.endTreatmentDateAdd.getFullYear()}-${this.endTreatmentDateAdd.getMonth()}-${this.endTreatmentDateAdd.getDate()}`
+        `${this.endTreatmentDateAdd.getFullYear()}-${
+          this.endTreatmentDateAdd.getMonth() + 1
+        }-${this.endTreatmentDateAdd.getDate()}`
       );
       // console.log(form);
       let config = {

@@ -241,7 +241,9 @@ export default {
       form.append("result", this.resultAdd);
       form.append(
         "d",
-        `${this.resultDateAdd.getFullYear()}-${this.resultDateAdd.getMonth()}-${this.resultDateAdd.getDate()}`
+        `${this.resultDateAdd.getFullYear()}-${
+          this.resultDateAdd.getMonth() + 1
+        }-${this.resultDateAdd.getDate()}`
       );
       // console.log(form);
       let config = {
