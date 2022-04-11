@@ -73,6 +73,7 @@
                 v-model="docMode"
                 inset
                 label="Режим врача"
+                @click="clickSwitcherDocMode"
               ></v-switch
             ></v-list-item-action>
           </v-list-item>
@@ -139,6 +140,8 @@
 </template>
 <script>
 import { AUTH_PING } from "@/store/actions/auth";
+import { TOOGLE_DOC_MODE } from "@/store/actions/user";
+
 export default {
   name: "App",
   data: () => ({
@@ -186,6 +189,12 @@ export default {
   },
   beforeCreate: async function () {
     await this.$store.dispatch(AUTH_PING);
+    this.docMode = this.$store.getters.docMode;
+  },
+  methods: {
+    clickSwitcherDocMode: async function () {
+      await this.$store.dispatch(TOOGLE_DOC_MODE, this.docMode);
+    },
   },
   computed: {
     docModeAvailable: function () {

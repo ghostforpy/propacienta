@@ -1,4 +1,4 @@
-import store from '@/store'
+import store from '@/store';
 import { AUTH_PING } from "@/store/actions/auth";
 
 export const ifAuthenticated = async (to, from, next) => {
@@ -34,4 +34,16 @@ export const ifNotAuthenticated = async (to, from, next) => {
         return
     }
     next()
+}
+
+
+export const isDoctor = async (to, from, next) => {
+    if (store.getters.docMode) {
+        console.log("docmode on")
+        next()
+        return
+    }
+    console.log("docmode off")
+    next({ name: 'login', query: { redirect: to.fullPath } })
+    return
 }

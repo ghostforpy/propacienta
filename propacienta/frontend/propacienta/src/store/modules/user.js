@@ -1,14 +1,9 @@
-import {
-    TOOGLE_DOC_MODE,
-    CHANGE_USER_STATE,
-    INIT_USER_STATE,
-    CHANGE_USER_ERORR,
-    USER_REQUEST,
-    CLEAR_USER_STATE
-} from "../actions/user";
 import request_service from "@/api/HTTP";
+import {
+    CHANGE_USER_ERORR, CHANGE_USER_STATE, CLEAR_USER_STATE, INIT_USER_STATE, TOOGLE_DOC_MODE, USER_REQUEST
+} from "../actions/user";
 const state = {
-    docMode: false,
+    docMode: localStorage.getItem("docMode") == "true",
     docModeAvailable: false,
     id: 0,
     email: '',
@@ -76,11 +71,21 @@ const actions = {
             //
         );
     },
+    [TOOGLE_DOC_MODE]: ({ commit }, docMode) => {
+        return new Promise((resolve) => {
+            commit(TOOGLE_DOC_MODE, docMode);
+            resolve(true)
+            //console.log(...resp.headers);
+            //console.log(resp.data);
+        }
+            //
+        );
+    },
 };
 const mutations = {
-
-    [TOOGLE_DOC_MODE]: (state) => {
-        state.docMode = !state.docMode;
+    [TOOGLE_DOC_MODE]: (state, docMode) => {
+        state.docMode = docMode;
+        localStorage.setItem("docMode", docMode);
     },
     [INIT_USER_STATE]: (state, user_data) => {
         state.docModeAvailable = user_data.doc_mode_available;

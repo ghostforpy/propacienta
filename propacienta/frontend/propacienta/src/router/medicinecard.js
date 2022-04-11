@@ -1,5 +1,5 @@
 import OwnerMedicineCardView from '@/views/medicinecard/OwnerMedicineCard';
-import { ifAuthenticated } from './utils'
+import { ifAuthenticated, isDoctor } from './utils';
 
 export default [
     {
@@ -12,6 +12,6 @@ export default [
         path: '/medicine-card/:id',
         component: OwnerMedicineCardView,
         name: 'pacient-medicine-card',
-        beforeEnter: ifAuthenticated,
+        beforeEnter: async (to, from, next) => { await ifAuthenticated(to, from, next), await isDoctor(to, from, next) },
     },
 ]
