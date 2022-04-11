@@ -91,6 +91,11 @@ class AnalysisResultsImage(models.Model):
     def get_absolute_url(self):
         return reverse("api:analysis-results-images-delete", kwargs={"pk": self.pk})
 
+    def delete(self, *args, **kwargs):
+        self.image.delete()
+        super().delete(*args, **kwargs)
+
+
 class AnalysisResultsFile(models.Model):
     analysis_result = models.ForeignKey(
         AnalysisResult,
@@ -113,3 +118,7 @@ class AnalysisResultsFile(models.Model):
 
     def get_absolute_url(self):
         return reverse("api:analysis-results-files-delete", kwargs={"pk": self.pk})
+
+    def delete(self, *args, **kwargs):
+        self.file.delete()
+        super().delete(*args, **kwargs)
