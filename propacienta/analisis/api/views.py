@@ -81,8 +81,10 @@ class AnalysisViewSet(ListModelMixin, GenericViewSet):
     tags=["auth-requests-private-media"]
 ))
 class BaseAuthRetrieveAnalysisResultsView(RetrieveAPIView):
-    permission_classes = [IsOwnerOfAnalisResultFileAndImageObject|RequestByTreatingDoctorAnalisResultFileAndImage]
-    field_name = None #str
+    permission_classes = [
+        IsOwnerOfAnalisResultFileAndImageObject | RequestByTreatingDoctorAnalisResultFileAndImage
+    ]
+    field_name = None  # str
 
     def retrieve(self, request, *args, **kwargs):
         _ = self.get_object()
@@ -93,7 +95,7 @@ class BaseAuthRetrieveAnalysisResultsView(RetrieveAPIView):
         pacient_id = self.request.headers['Pacientid']
         qs = self.queryset.filter(
             analysis_result__pacient__id=pacient_id
-        ).filter(**{self.field_name+"__iendswith":filename})
+        ).filter(**{self.field_name+"__iendswith": filename})
         obj = get_object_or_404(qs)
         self.check_object_permissions(self.request, obj)
         return obj
@@ -116,6 +118,7 @@ class AuthRetrieveAnalysisResultsFileView(BaseAuthRetrieveAnalysisResultsView):
     queryset = AnalysisResultsFile.objects.all()
     field_name = "file"
 
+
 @method_decorator(name='post', decorator=swagger_auto_schema(
     tags=["analysis-results"]
 ))
@@ -126,7 +129,7 @@ class AnalysisResultCreateListView(CreateAPIView, ListAPIView):
     """
     View to create and list AnalysisResult.
     """
-    permission_classes = [IsOwnerOfAnalisObject|RequestByTreatingDoctor]
+    permission_classes = [IsOwnerOfAnalisObject | RequestByTreatingDoctor]
     serializer_class = AnalysisResultSerializer
     queryset = AnalysisResult.objects.all()
     pagination_class = PageNumberPaginationBy10
@@ -150,7 +153,7 @@ class AnalysisResultDestoryView(DestroyAPIView):
     """
     View to destroy AnalysisResult.
     """
-    permission_classes = [IsOwnerOfAnalisResultObject|RequestByTreatingDoctorAnalisResult]
+    permission_classes = [IsOwnerOfAnalisResultObject | RequestByTreatingDoctorAnalisResult]
     serializer_class = AnalysisResultSerializer
     queryset = AnalysisResult.objects.all()
     lookup_url_kwarg = 'analysis_result_id'
@@ -161,7 +164,7 @@ class AnalysisResultDestoryView(DestroyAPIView):
 ))
 class AnalysisResultImageDeleteView(DestroyAPIView):
     queryset = AnalysisResultsImage.objects.all()
-    permission_classes = [IsOwnerOfAnalisObject|RequestByTreatingDoctor]
+    permission_classes = [IsOwnerOfAnalisObject | RequestByTreatingDoctor]
 
 
 @method_decorator(name='delete', decorator=swagger_auto_schema(
@@ -169,4 +172,4 @@ class AnalysisResultImageDeleteView(DestroyAPIView):
 ))
 class AnalysisResultFileDeleteView(DestroyAPIView):
     queryset = AnalysisResultsFile.objects.all()
-    permission_classes = [IsOwnerOfAnalisObject|RequestByTreatingDoctor]
+    permission_classes = [IsOwnerOfAnalisObject | RequestByTreatingDoctor]

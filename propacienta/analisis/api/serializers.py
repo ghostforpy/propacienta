@@ -3,6 +3,14 @@ from rest_framework import serializers
 from ..models import Analysis, AnalysisResult, AnalysisResultsFile, AnalysisResultsImage
 
 
+class ValidatePacientIdMixin:
+    def validate_pacient(self, value):
+        pacient_id = self.context['view'].kwargs["pacient_id"]
+        if value != pacient_id:
+            raise serializers.ValidationError("Wrong pacientId.")
+        return value
+
+
 class AnalysisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Analysis
@@ -53,7 +61,7 @@ class AnalysisResultsImageSerializer(serializers.ModelSerializer):
         exclude = ["analysis_result", "id"]
 
 
-class AnalysisResultSerializer(serializers.ModelSerializer):
+class AnalysisResultSerializer(ValidatePacientIdMixin, serializers.ModelSerializer):
     analysis_files = AnalysisResultsFileSerializer(many=True, required=False)
     analysis_images = AnalysisResultsImageSerializer(many=True, required=False)
 
