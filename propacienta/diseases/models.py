@@ -43,7 +43,7 @@ class ChronicDisease(models.Model):
         verbose_name=_("Пациент"),
         related_name="chronic_diseases"
     )
-    treatment = models.TextField(_("Лечение"), blank=True)
+    treatment = models.TextField(_("Лечение"), null=True, blank=True)
 
     class Meta:
         verbose_name = "Хроническое заболевание"
@@ -70,7 +70,7 @@ class DischargeEpicris(models.Model):
         related_name="discharge_epicrisis"
     )
     d = models.DateField(_("Дата"))
-    epicris = models.TextField(_("Эпикриз"), blank=True)
+    epicris = models.TextField(_("Эпикриз"), null=True, blank=True)
 
     class Meta:
         verbose_name = "Выписной эпикриз"
@@ -174,10 +174,10 @@ class TransferredDisease(models.Model):
         related_name="transferred_diseases"
     )
     diagnosis = models.CharField(_("Диагноз"), max_length=250)
-    diagnosis_date = models.DateField(_("Дата постановки диагноза"), blank=True)
-    diagnosis_year = models.PositiveIntegerField(_("Год постановки диагноза"), blank=True)
-    treatment_date = models.DateField(_("Дата начала лечения"), blank=True)
-    treatment_end_date = models.DateField(_("Дата окончания лечения"), blank=True)
+    diagnosis_date = models.DateField(_("Дата постановки диагноза"), null=True)
+    diagnosis_year = models.PositiveIntegerField(_("Год постановки диагноза"), null=True)
+    treatment_date = models.DateField(_("Дата начала лечения"), null=True)
+    treatment_end_date = models.DateField(_("Дата окончания лечения"), null=True)
 
     class Meta:
         verbose_name = "Перенесенное заболевание"
