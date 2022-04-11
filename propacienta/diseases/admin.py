@@ -4,7 +4,10 @@ from .models import (Disease, ChronicDisease, DischargeEpicris,
                      TransferredDisease)
 # Register your models here.
 
-admin.site.register(Disease)
+@admin.register(Disease)
+class DiseaseAdmin(admin.ModelAdmin):
+    search_fields = ["title", "code"]
+    list_display = ("title", "code")
 
 
 class DischargeEpicrisFilesAdmin(admin.TabularInline):
