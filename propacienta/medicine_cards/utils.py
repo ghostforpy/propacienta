@@ -28,7 +28,17 @@ class RequestByTreatingDoctorResultIndependentResearch(BasePermission):
     Object-level permission to only allow requests by active treating doctors.
     """
     def has_permission(self, request, view):
-        return request_by_doctor(request) is not None
+        doctor = request_by_doctor(request)
+        if doctor is not None:
+            pacient_id = view.kwargs.get('pacient_id')
+            try:
+                pacient = doctor.pacients.filter(
+                    id=int(pacient_id)
+                ).get()
+                return pacient is not None
+            except:
+                pass
+        return False
 
     def has_object_permission(self, request, view, obj):
         doctor = request_by_doctor(request)

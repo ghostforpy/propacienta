@@ -1,26 +1,30 @@
-from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.generics import ListAPIView, DestroyAPIView, CreateAPIView
-from rest_framework.mixins import (ListModelMixin, RetrieveModelMixin,
-                                    UpdateModelMixin)
-from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.permissions import (IsAuthenticated,
-                                        AllowAny,
-                                        SAFE_METHODS,
-                                        BasePermission)
+from drf_yasg.utils import swagger_auto_schema
+# from rest_framework import status
+# from rest_framework.decorators import action
+from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.pagination import PageNumberPagination
-from ..utils import (RequestByTreatingDoctorMedicineCard,
-                    IsOwnerOfMedicineCardObject,
-                    IsOwnerOfResultIndependentResearchObjects,
-                    RequestByTreatingDoctorResultIndependentResearch)
-from .serializers import (MedicineCardSerializer,
-                            IndependentResearchSerializer,
-                            ResultIndependentResearchSerializer)
-from ..models import MedicineCard, IndependentResearch, ResultIndependentResearch
+from rest_framework.permissions import (  # SAFE_METHODS,; AllowAny,; BasePermission,
+    IsAuthenticated,
+)
+# from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
+from ..models import IndependentResearch, MedicineCard, ResultIndependentResearch
+from ..utils import (
+    IsOwnerOfMedicineCardObject,
+    IsOwnerOfResultIndependentResearchObjects,
+    RequestByTreatingDoctorMedicineCard,
+    RequestByTreatingDoctorResultIndependentResearch,
+)
+from .serializers import (
+    IndependentResearchSerializer,
+    MedicineCardSerializer,
+    ResultIndependentResearchSerializer,
+)
+
 User = get_user_model()
 
 
@@ -41,11 +45,12 @@ class MedicineCardViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = MedicineCardSerializer
     queryset = MedicineCard.objects.all()
     lookup_field = "id"
-    permission_classes = [IsOwnerOfMedicineCardObject|RequestByTreatingDoctorMedicineCard]
+    permission_classes = [IsOwnerOfMedicineCardObject | RequestByTreatingDoctorMedicineCard]
 
-    def get_queryset(self, *args, **kwargs):
-        assert isinstance(self.request.user.id, int)
-        return self.queryset.filter(id=self.request.user.id)
+    # def get_queryset(self, *args, **kwargs):
+    #     if req
+    #     assert isinstance(self.request.user.id, int)
+    #     return self.queryset.filter(id=self.request.user.id)
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
@@ -68,7 +73,10 @@ class ResultIndependentResearchCreateList(CreateAPIView, ListAPIView):
     """
     View to create and list ResultIndependentResearch.
     """
-    permission_classes = [IsOwnerOfResultIndependentResearchObjects|RequestByTreatingDoctorResultIndependentResearch]
+    permission_classes = [
+        IsOwnerOfResultIndependentResearchObjects |
+        RequestByTreatingDoctorResultIndependentResearch
+    ]
     serializer_class = ResultIndependentResearchSerializer
     queryset = ResultIndependentResearch.objects.all()
     pagination_class = PageNumberPaginationBy50
@@ -92,7 +100,10 @@ class ResultIndependentResearchDestory(DestroyAPIView):
     """
     View to destroy ResultIndependentResearch.
     """
-    permission_classes = [IsOwnerOfResultIndependentResearchObjects|RequestByTreatingDoctorResultIndependentResearch]
+    permission_classes = [
+        IsOwnerOfResultIndependentResearchObjects |
+        RequestByTreatingDoctorResultIndependentResearch
+    ]
     serializer_class = ResultIndependentResearchSerializer
     queryset = ResultIndependentResearch.objects.all()
     lookup_url_kwarg = 'independent_research_result_id'
