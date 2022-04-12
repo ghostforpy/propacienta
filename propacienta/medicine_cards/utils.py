@@ -1,8 +1,12 @@
-from doctors.utils import request_by_doctor
 from rest_framework.permissions import BasePermission
 
+from doctors.utils import request_by_doctor
+
+
 def analisis_result_dir(instance, filename: str) -> str:
-    return "private/analisis_results/pacient_%s/%s" % (instance.analysis_result.pacient.id, filename)
+    return "private/analisis_results/pacient_%s/%s" % (
+        instance.analysis_result.pacient.id, filename
+    )
 
 
 class RequestByTreatingDoctorMedicineCard(BasePermission):
@@ -16,7 +20,7 @@ class RequestByTreatingDoctorMedicineCard(BasePermission):
         doctor = request_by_doctor(request)
         if doctor is None:
             return False
-        return doctor in obj.pacient.treating_doctors
+        return doctor in obj.pacient.treating_doctors.all()
 
 
 class RequestByTreatingDoctorResultIndependentResearch(BasePermission):
@@ -30,7 +34,7 @@ class RequestByTreatingDoctorResultIndependentResearch(BasePermission):
         doctor = request_by_doctor(request)
         if doctor is None:
             return False
-        return doctor in obj.medicine_card.pacient.treating_doctors
+        return doctor in obj.medicine_card.pacient.treating_doctors.all()
 
 
 class IsOwnerOfMedicineCardObject(BasePermission):

@@ -41,13 +41,13 @@ class IndependentResearch(models.Model):
 class ResultIndependentResearch(models.Model):
     independent_research = models.ForeignKey(
         IndependentResearch,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         verbose_name=(_("Самостоятельное исследование")),
         related_name="independent_research_results"
     )
     medicine_card = models.ForeignKey(
         MedicineCard,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         related_name="independent_research_results"
     )
     result = models.TextField(_("Результат"))
