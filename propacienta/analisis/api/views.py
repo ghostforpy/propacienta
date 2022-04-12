@@ -129,7 +129,7 @@ class AnalysisResultCreateListView(CreateAPIView, ListAPIView):
     """
     View to create and list AnalysisResult.
     """
-    permission_classes = [IsOwnerOfAnalisObject | RequestByTreatingDoctor]
+    permission_classes = [IsOwnerOfAnalisResultObject | RequestByTreatingDoctorAnalisResult]
     serializer_class = AnalysisResultSerializer
     queryset = AnalysisResult.objects.all()
     pagination_class = PageNumberPaginationBy10

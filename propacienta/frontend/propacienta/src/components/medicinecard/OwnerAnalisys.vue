@@ -135,6 +135,7 @@ export default {
   name: "OwnerAnalisys",
   props: {
     pacientId: Number,
+    medicineCard: Number,
   },
   components: {
     DateFieldUserOwner,
@@ -187,6 +188,13 @@ export default {
         pacientId: this.pacientId,
       },
     };
+    if (
+      this.$store.getters.docMode &&
+      this.$store.getters.pacientId != this.pacientId
+    ) {
+      config.headers = { IsDoctor: true };
+      // config.data.medicine_card = this.medicineCard;
+    }
     var el = this;
     request_service(
       config,
@@ -237,7 +245,14 @@ export default {
       });
       form.append("analysis", this.select.id);
       form.append("pacient", this.pacientId);
-      form.append("medicine_card", this.$store.getters.medicineCardId);
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        form.append("medicine_card", this.medicineCard);
+      } else {
+        form.append("medicine_card", this.$store.getters.medicineCardId);
+      }
       form.append("result", this.resultAdd);
       form.append(
         "d",
@@ -255,7 +270,13 @@ export default {
           "Content-Type": "multipart/form-data",
         },
       };
-
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+        // config.data.medicine_card = this.medicineCard;
+      }
       var el = this;
       request_service(
         config,
@@ -278,6 +299,12 @@ export default {
         method: "delete",
         url: `api/analysis-results-delete/${this.pacientId}/${event}/`,
       };
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+      }
       request_service(
         config,
         function () {
@@ -312,6 +339,12 @@ export default {
           page: this.cacheNextPage.get(this.select.id),
         },
       };
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+      }
       request_service(
         config,
         function (resp) {

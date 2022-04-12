@@ -26,9 +26,11 @@ class RequestByTreatingDoctor(BasePermission):
     Object-level permission to only allow requests by active treating doctors.
     """
     # def has_permission(self, request, view):
+    #     print(111111)
     #     return request_by_doctor(request) is not None
 
     def has_object_permission(self, request, view, obj):
+        print(22222)
         doctor = request_by_doctor(request)
         if doctor is None:
             return False
@@ -56,7 +58,17 @@ class RequestByTreatingDoctorAnalisResult(BasePermission):
     Object-level permission to only allow requests by active treating doctors.
     """
     def has_permission(self, request, view):
-        return request_by_doctor(request) is not None
+        doctor = request_by_doctor(request)
+        if doctor is not None:
+            try:
+                pacient_id = view.kwargs.get('pacient_id')
+                pacient = doctor.pacients.filter(
+                    id=int(pacient_id)
+                ).get()
+                return pacient is not None
+            except:
+                pass
+        return False
 
     def has_object_permission(self, request, view, obj):
         doctor = request_by_doctor(request)
@@ -116,8 +128,8 @@ class RequestByTreatingDoctorAnalisResultFileAndImage(BasePermission):
                 pass
         return False
 
-    # def has_object_permission(self, request, view, obj):
-    #     doctor = request_by_doctor(request)
-    #     if doctor is None:
-    #         return False
-    #     return doctor in obj.analysis_result.pacient.treating_doctors
+    def has_object_permission(self, request, view, obj):
+        doctor = request_by_doctor(request)
+        if doctor is None:
+            return False
+        return doctor in obj.analysis_result.pacient.treating_doctors.all()

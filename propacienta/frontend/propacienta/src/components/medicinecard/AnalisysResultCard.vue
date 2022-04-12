@@ -10,6 +10,7 @@
           :key="image.delete_url"
           :href="image.image"
           :download="image.image.split('/').pop()"
+          @click="downloadFileImageHandler"
         >
           <v-list-item-avatar>
             <v-icon class="grey lighten-1" dark> mdi-file-image </v-icon>
@@ -37,6 +38,7 @@
           :key="file.delete_url"
           :href="file.file"
           :download="file.file.split('/').pop()"
+          @click="downloadFileImageHandler"
         >
           <v-list-item-avatar>
             <v-icon class="grey lighten-1" dark> mdi-file </v-icon>
@@ -93,18 +95,50 @@ export default {
     },
   },
   methods: {
+    downloadFileImageHandler: function (event) {
+      if (this.$store.getters.docMode) {
+        event.stopPropagation();
+        event.preventDefault();
+        var a = event.target.parentNode.parentNode;
+        var href = a.href;
+        var download = a.download;
+        let config = {
+          method: "get",
+          url: href,
+          headers: { IsDoctor: true },
+          responseType: "blob",
+        };
+        request_service(
+          config,
+          function (resp) {
+            const url = window.URL.createObjectURL(new Blob([resp.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", download);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          },
+          function (error) {
+            console.log(error);
+          }
+        );
+      }
+    },
     deleteFileImg: function (id, url, event, type) {
+      event.stopPropagation();
       event.preventDefault();
       var el = this;
-      console.log(url);
       let config = {
         method: "delete",
         url: url,
       };
+      if (this.$store.getters.docMode) {
+        config.headers = { IsDoctor: true };
+      }
       request_service(
         config,
         function () {
-          console.log("sucess");
           if (type == "files") {
             el.fils = el.fils.filter((item, idx) => {
               return idx != id;
