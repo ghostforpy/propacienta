@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from djoser.signals import user_registered
-# Create your models here.
+
 
 class DoctorSpecialization(models.Model):
     title = models.CharField(
@@ -9,7 +9,7 @@ class DoctorSpecialization(models.Model):
         max_length=250,
         unique=True
         )
-    
+
     class Meta:
         verbose_name = "Специализация"
         verbose_name_plural = "Специализации"
@@ -30,7 +30,7 @@ class DoctorSubSpecialization(models.Model):
         verbose_name=_("Специализация"),
         related_name="sub_specializations"
         )
-    
+
     class Meta:
         verbose_name = "Узкая специализация"
         verbose_name_plural = "Узкие специализации"
@@ -41,7 +41,7 @@ class DoctorSubSpecialization(models.Model):
 
 class Doctor(models.Model):
     """Model for doctors."""
-    #user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
+    # user = models.OneToOneField(get_user_model(), on_delete=models.DO_NOTHING)
     phone = models.CharField(_("Телефон"), max_length=30, unique=True)
     hospitals = models.ManyToManyField(
         "hospitals.hospital",
@@ -68,7 +68,10 @@ class Doctor(models.Model):
         verbose_name_plural = "Врачи"
 
     def __str__(self) -> str:
-        return "{} {}".format(self.user.first_name, self.user.last_name)
+        try:
+            return "{} {}".format(self.user.first_name, self.user.last_name)
+        except Doctor.user.RelatedObjectDoesNotExist:
+            return super().__str__()
 
 
 def user_created(signal=None, sender=None, user=None, request=None, **kwargs):
@@ -78,5 +81,6 @@ def user_created(signal=None, sender=None, user=None, request=None, **kwargs):
         doctor = Doctor.objects.create(phone=phone_doctor)
         user.doctor = doctor
         user.save()
+
 
 user_registered.connect(user_created)
