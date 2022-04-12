@@ -1,19 +1,18 @@
 from django.conf import settings
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter, SimpleRouter
-from django.urls import path, include
-from .views import UserViewSet
 
+from .views import PacientViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
 else:
     router = SimpleRouter()
 
-#router.register("users", UserViewSet, basename="users")
+router.register("pacients", PacientViewSet, basename="pacients")
 
-app_name = "users"
+app_name = "pacients"
 
 urlpatterns = [
-    #path("", include(router.urls)),
-    path("", include("djoser.urls")),
+    path("", include(router.urls)),
 ]

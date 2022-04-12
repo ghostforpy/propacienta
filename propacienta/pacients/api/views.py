@@ -1,41 +1,64 @@
-from drf_yasg.utils import swagger_auto_schema
-from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
-from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import BasePermission
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import CUserSerializer
+from doctors.utils import request_by_doctor
 
-User = get_user_model()
+from ..models import Pacient
+from .serializers import PacientSerializer
 
-#@method_decorator(name='list', decorator=swagger_auto_schema(
-#    tags=["users"]
-#))
-#@method_decorator(name='retrieve', decorator=swagger_auto_schema(
-#    tags=["users"]
-#))
-#@method_decorator(name='update', decorator=swagger_auto_schema(
-#    tags=["users"]
-#))
-#@method_decorator(name='partial_update', decorator=swagger_auto_schema(
-#    tags=["users"]
-#))
-#@method_decorator(name='me', decorator=swagger_auto_schema(
-#    tags=["users"]
-#))
-class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
-    serializer_class = CUserSerializer
-    queryset = User.objects.all()
+
+class RequestByDoctor(BasePermission):
+    """
+    Object-level permission to only allow requests by active doctors.
+    """
+    def has_permission(self, request, view):
+        return request_by_doctor(request) is not None
+
+    def has_object_permission(self, request, view, obj):
+        doctor = request_by_doctor(request)
+        if doctor is not None:
+            return doctor in obj.treating_doctors.all()
+        return False
+
+
+class PageNumberPaginationBy10(PageNumberPagination):
+    page_size = 10
+
+
+@method_decorator(name='list', decorator=swagger_auto_schema(
+   tags=["pacients"]
+))
+@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+   tags=["pacients"]
+))
+class PacientViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
+    pagination_class = PageNumberPaginationBy10
+    queryset = Pacient.objects.all()
+    serializer_class = PacientSerializer
     lookup_field = "id"
+    permission_classes = [RequestByDoctor]
 
-    def get_queryset(self, *args, **kwargs):
-        assert isinstance(self.request.user.id, int)
-        return self.queryset.filter(id=self.request.user.id)
+    # def get_permissions(self):
 
-    @action(detail=False)
-    def me(self, request):
-        serializer = CUserSerializer(request.user, context={"request": request})
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
+    #     if self.action == 'list':
+    #         permission_classes = [AllowAny]
+    #     elif self.action in ['my_list', 'create', 'create_by_breport']:
+    #         permission_classes = [IsAuthenticated]
+    #     elif self.action in [
+    #         'get_updated_portfolio',
+    #         'update',
+    #         'partial_update',
+    #         'private'
+    #     ]:
+    #         permission_classes = [IsOwnerOfPortfolioObject]
+    #         #permission_classes = [IsOwnerOrReadOnlyAuthorized]
+    #     elif self.action in ['follow', 'like']:
+    #         permission_classes = [FollowLikePermission]
+    #     else:
+    #        # permission_classes = [IsOwnerOrReadOnlyAuthorized]
+    #         permission_classes = [IsAuthenticated]
+    #     return [permission() for permission in permission_classes]
