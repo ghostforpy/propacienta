@@ -95,6 +95,7 @@ export default {
   name: "OwnerMedicineIndependentResearch",
   props: {
     pacientId: Number,
+    medicineCard: Number,
   },
   components: {
     IndependentResearchResultCard,
@@ -200,6 +201,13 @@ export default {
           medicine_card: this.$store.getters.medicineCardId,
         },
       };
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+        config.data.medicine_card = this.medicineCard;
+      }
       var el = this;
       request_service(
         config,
@@ -222,6 +230,9 @@ export default {
         method: "delete",
         url: `api/independent-research-results/${this.pacientId}/${this.select.id}/${event}/`,
       };
+      if (this.$store.getters.docMode) {
+        config.headers = { IsDoctor: true };
+      }
       request_service(
         config,
         function () {
@@ -256,6 +267,9 @@ export default {
           page: this.cacheNextPage.get(this.select.id),
         },
       };
+      if (this.$store.getters.docMode) {
+        config.headers = { IsDoctor: true };
+      }
       request_service(
         config,
         function (resp) {
