@@ -32,25 +32,25 @@ class AnalysisResult(models.Model):
     """Модель результата анализа."""
     analysis = models.ForeignKey(
         Analysis,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         verbose_name=_("Анализ"),
         related_name="analysi_results"
     )
     pacient = models.ForeignKey(
         "pacients.pacient",
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         verbose_name=_("Пациент"),
         related_name="analysi_results"
     )
     medicine_card = models.ForeignKey(
         "medicine_cards.medicinecard",
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         verbose_name=_("Медицинская карта"),
         related_name="analysi_results"
     )
     prescription = models.ForeignKey(
         "prescriptions.analisisprescription",
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         verbose_name=_("Назначение"),
         related_name="analysi_results",
         blank=True,

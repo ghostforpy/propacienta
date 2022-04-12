@@ -94,8 +94,7 @@ class RequestByTreatingDoctorDischargeEpicrisImageOrFile(BasePermission):
         doctor = request_by_doctor(request)
         if doctor is None:
             return False
-        return doctor in obj.discharge_epicris.pacient.treating_doctors
-
+        return doctor in obj.discharge_epicris.pacient.treating_doctors.all()
 
 
 class IsOwnerOfDischargeEpicrisImageAndFileObject(BasePermission):
@@ -116,6 +115,7 @@ class IsOwnerOfDischargeEpicrisImageAndFileObject(BasePermission):
     #         return True
     #     return False
 
+
 class RequestByTreatingDoctorDischargeEpicrisImageAndFile(BasePermission):
     """
     Object-level permission to only allow requests by active treating doctors.
@@ -124,7 +124,9 @@ class RequestByTreatingDoctorDischargeEpicrisImageAndFile(BasePermission):
         doctor = request_by_doctor(request)
         if doctor is not None:
             try:
-                pacient = doctor.pacients.filter(id=int(request.headers.get("Pacientid", None))).get()
+                pacient = doctor.pacients.filter(
+                    id=int(request.headers.get("Pacientid", None))
+                ).get()
                 return pacient is not None
             except:
                 pass

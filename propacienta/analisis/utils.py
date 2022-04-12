@@ -1,14 +1,24 @@
-from doctors.utils import request_by_doctor
 from rest_framework.permissions import BasePermission
 
+from doctors.utils import request_by_doctor
+
+
 def analisis_result_dir(instance, filename: str) -> str:
-    return "private/analisis_results/pacient_%s/%s" % (instance.analysis_result.pacient.id, filename)
+    return "private/analisis_results/pacient_%s/%s" % (
+        instance.analysis_result.pacient.id, filename
+    )
+
 
 def analisis_results_images_dir(instance, filename: str) -> str:
-    return "private/analisis_results/images/pacient_%s/%s" % (instance.analysis_result.pacient.id, filename)
+    return "private/analisis_results/images/pacient_%s/%s" % (
+        instance.analysis_result.pacient.id, filename
+    )
+
 
 def analisis_results_files_dir(instance, filename: str) -> str:
-    return "private/analisis_results/files/pacient_%s/%s" % (instance.analysis_result.pacient.id, filename)
+    return "private/analisis_results/files/pacient_%s/%s" % (
+        instance.analysis_result.pacient.id, filename
+    )
 
 
 class RequestByTreatingDoctor(BasePermission):
@@ -22,8 +32,7 @@ class RequestByTreatingDoctor(BasePermission):
         doctor = request_by_doctor(request)
         if doctor is None:
             return False
-        return doctor in obj.analysis_result.pacient.treating_doctors
-
+        return doctor in obj.analysis_result.pacient.treating_doctors.all()
 
 
 class IsOwnerOfAnalisObject(BasePermission):
@@ -41,6 +50,7 @@ class IsOwnerOfAnalisObject(BasePermission):
             return True
         return False
 
+
 class RequestByTreatingDoctorAnalisResult(BasePermission):
     """
     Object-level permission to only allow requests by active treating doctors.
@@ -52,8 +62,7 @@ class RequestByTreatingDoctorAnalisResult(BasePermission):
         doctor = request_by_doctor(request)
         if doctor is None:
             return False
-        return doctor in obj.pacient.treating_doctors
-
+        return doctor in obj.pacient.treating_doctors.all()
 
 
 class IsOwnerOfAnalisResultObject(BasePermission):
@@ -90,6 +99,7 @@ class IsOwnerOfAnalisResultFileAndImageObject(BasePermission):
     #         return True
     #     return False
 
+
 class RequestByTreatingDoctorAnalisResultFileAndImage(BasePermission):
     """
     Object-level permission to only allow requests by active treating doctors.
@@ -98,7 +108,9 @@ class RequestByTreatingDoctorAnalisResultFileAndImage(BasePermission):
         doctor = request_by_doctor(request)
         if doctor is not None:
             try:
-                pacient = doctor.pacients.filter(id=int(request.headers.get("Pacientid", None))).get()
+                pacient = doctor.pacients.filter(
+                    id=int(request.headers.get("Pacientid", None))
+                ).get()
                 return pacient is not None
             except:
                 pass
