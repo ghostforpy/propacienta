@@ -135,14 +135,15 @@
     <v-footer color="cyan lighten-1" padless app :absolute="true">
       <v-row justify="center" no-gutters>
         <v-btn
-          v-for="link in links"
-          :key="link"
+          v-for="item in footerMenuList"
+          :key="item"
           color="white"
           text
           rounded
           class="my-2"
+          :to="item.route"
         >
-          {{ link }}
+          {{ item.title }}
         </v-btn>
         <v-col class="cyan lighten-2 py-4 text-center white--text" cols="12">
           {{ new Date().getFullYear() }} — <strong>Propacienta</strong>
@@ -192,6 +193,24 @@ export default {
         route: "/doctors",
         icon: "mdi-doctor",
         needAuth: false,
+      },
+    ],
+    footerMenuList: [
+      {
+        title: "О нас",
+        route: "/about-us",
+      },
+      {
+        title: "Команда",
+        route: "/team",
+      },
+      {
+        title: "Политика конфиденциальности",
+        route: "/privacy",
+      },
+      {
+        title: "Контакты",
+        route: "/contacts",
       },
     ],
   }),
