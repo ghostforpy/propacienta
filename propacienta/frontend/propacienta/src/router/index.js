@@ -2,6 +2,7 @@ import MainPage from '@/components/MainPage';
 import NotFound from '@/components/NotFound';
 import AuthLogin from '@/views/auth/AuthLogin';
 import AuthLogout from '@/views/auth/AuthLogout';
+import PasswordForgot from '@/views/auth/PasswordForgot';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import MedicineCard from './medicinecard';
@@ -33,6 +34,12 @@ const baseRoutes = [
     component: MainPage,
     //beforeEnter: ifAuthenticated,
     //meta: { requiresAuth: true }
+  },
+  {
+    path: '/recover-password',
+    name: "recover-password",
+    component: PasswordForgot,
+    beforeEnter: ifNotAuthenticated,
   },
   {
     path: '*',
