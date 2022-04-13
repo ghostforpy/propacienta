@@ -15,7 +15,17 @@
                   item-value="id"
                   return-object
                   @change="handleChangeSelect"
-                ></v-autocomplete>
+                >
+                  <template #item="{ item }">
+                    <span>{{ item.title }} (код {{ item.code }})</span>
+                    <v-icon v-if="item.diseases_count > 0" color="pink"
+                      >mdi-circle-medium</v-icon
+                    >
+                  </template>
+                  <template #selection="{ item }">
+                    <span>{{ item.title }} (код {{ item.code }})</span>
+                  </template></v-autocomplete
+                >
                 <!-- <TextFieldUserOwner
                   fieldname="diagnose"
                   labelname="Диагноз"
@@ -182,7 +192,7 @@ export default {
       url: "api/diseases/",
       params: {
         pacientId: this.pacientId,
-        // diseaseType: "transferred",
+        diseaseType: "transferred",
       },
     };
     var el = this;

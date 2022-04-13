@@ -69,7 +69,7 @@ class DiseasesViewSet(ListModelMixin, GenericViewSet):
             disease_type = queryparams.get("diseaseType", None)  # chronic or transferred
             if disease_type in (
                 "chronic",
-                # "transferred"
+                "transferred"
             ):
                 queryset = self.queryset.annotate(
                     diseases_count=Count(
