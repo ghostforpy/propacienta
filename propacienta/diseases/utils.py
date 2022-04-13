@@ -107,13 +107,13 @@ class IsOwnerOfDischargeEpicrisImageAndFileObject(BasePermission):
         except:
             return False
 
-    # def has_object_permission(self, request, view, obj):
-    #     # Read permissions are allowed to any request,
-    #     # so we'll always allow GET, HEAD or OPTIONS requests.
-    #     # # Instance must have an attribute named `owner`.
-    #     if request.user == obj.analysis_result.pacient.user:
-    #         return True
-    #     return False
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        # # Instance must have an attribute named `owner`.
+        if request.user == obj.discharge_epicris.pacient.user:
+            return True
+        return False
 
 
 class RequestByTreatingDoctorDischargeEpicrisImageAndFile(BasePermission):
@@ -121,6 +121,7 @@ class RequestByTreatingDoctorDischargeEpicrisImageAndFile(BasePermission):
     Object-level permission to only allow requests by active treating doctors.
     """
     def has_permission(self, request, view):
+        print(1111111)
         doctor = request_by_doctor(request)
         if doctor is not None:
             try:
@@ -130,10 +131,12 @@ class RequestByTreatingDoctorDischargeEpicrisImageAndFile(BasePermission):
                 return pacient is not None
             except:
                 pass
+        print(7777777)
         return False
 
-    # def has_object_permission(self, request, view, obj):
-    #     doctor = request_by_doctor(request)
-    #     if doctor is None:
-    #         return False
-    #     return doctor in obj.analysis_result.pacient.treating_doctors
+    def has_object_permission(self, request, view, obj):
+        print(2222222)
+        doctor = request_by_doctor(request)
+        if doctor is None:
+            return False
+        return doctor in obj.discharge_epicris.pacient.treating_doctors.all()

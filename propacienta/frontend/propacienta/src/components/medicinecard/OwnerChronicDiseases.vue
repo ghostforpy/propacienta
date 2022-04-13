@@ -204,6 +204,13 @@ export default {
         diseaseType: "chronic",
       },
     };
+    if (
+      this.$store.getters.docMode &&
+      this.$store.getters.pacientId != this.pacientId
+    ) {
+      config.headers = { IsDoctor: true };
+      // config.data.medicine_card = this.medicineCard;
+    }
     var el = this;
     request_service(
       config,
@@ -302,7 +309,13 @@ export default {
         url: `api/chronic-diseases-epicrisis/${this.pacientId}/${this.select.id}/`,
         data: form,
       };
-
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+        // config.data.medicine_card = this.medicineCard;
+      }
       var el = this;
       request_service(
         config,
@@ -325,6 +338,13 @@ export default {
         method: "delete",
         url: `api/chronic-diseases-epicrisis-delete/${this.pacientId}/${event}/`,
       };
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+        // config.data.medicine_card = this.medicineCard;
+      }
       request_service(
         config,
         function () {
@@ -359,6 +379,13 @@ export default {
           page: this.cacheNextPage.get(this.select.id),
         },
       };
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+        // config.data.medicine_card = this.medicineCard;
+      }
       request_service(
         config,
         function (resp) {

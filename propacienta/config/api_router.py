@@ -1,14 +1,11 @@
 from django.conf import settings
-from django.urls import path, include, re_path
-from rest_framework.routers import DefaultRouter, SimpleRouter
+from django.urls import include, path, re_path
 from drf_yasg import openapi
-from rest_framework import permissions
 from drf_yasg.views import get_schema_view
-
+from rest_framework import permissions
+from rest_framework.routers import DefaultRouter, SimpleRouter
 
 from propacienta.users.api.views import UserViewSet
-
-
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -38,6 +35,7 @@ urlpatterns = [
     path('', include("medicine_cards.api.urls")),
     path('', include("analisis.api.urls")),
     path('', include("diseases.api.urls")),
+    path('', include("pacients.api.urls")),
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
         schema_view.without_ui(cache_timeout=0),

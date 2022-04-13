@@ -1,5 +1,7 @@
 import OwnerMedicineCardView from '@/views/medicinecard/OwnerMedicineCard';
-import { ifAuthenticated, isDoctor } from './utils';
+import PacientMedicineCard from '@/views/medicinecard/PacientMedicineCard';
+import { ifAuthenticated } from './utils';
+
 
 export default [
     {
@@ -9,9 +11,10 @@ export default [
         beforeEnter: ifAuthenticated,
     },
     {
-        path: '/medicine-card/:id',
-        component: OwnerMedicineCardView,
+        path: '/pacient-medicine-card/:pacientId',
+        component: PacientMedicineCard,
         name: 'pacient-medicine-card',
-        beforeEnter: async (to, from, next) => { await ifAuthenticated(to, from, next), await isDoctor(to, from, next) },
+        beforeEnter: ifAuthenticated,
+        // beforeEnter: async (to, from, next) => { await ifAuthenticated(to, from, next), await isDoctor(to, from, next) },
     },
 ]
