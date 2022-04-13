@@ -138,6 +138,7 @@ export default {
   name: "OwnerTransferedDiseases",
   props: {
     pacientId: Number,
+    medicineCard: Number,
   },
   components: {
     DateFieldUserOwner,
@@ -195,6 +196,13 @@ export default {
         diseaseType: "transferred",
       },
     };
+    if (
+      this.$store.getters.docMode &&
+      this.$store.getters.pacientId != this.pacientId
+    ) {
+      config.headers = { IsDoctor: true };
+      // config.data.medicine_card = this.medicineCard;
+    }
     var el = this;
     request_service(
       config,
@@ -267,7 +275,14 @@ export default {
       let form = new FormData();
       form.append("disease", this.select.id);
       form.append("pacient", this.pacientId);
-      form.append("medicine_card", this.$store.getters.medicineCardId);
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        form.append("medicine_card", this.medicineCard);
+      } else {
+        form.append("medicine_card", this.$store.getters.medicineCardId);
+      }
       form.append("diagnosis", this.diagnoseAdd);
       form.append(
         "diagnosis_date",
@@ -294,7 +309,13 @@ export default {
         url: `api/transferred-diseases/${this.pacientId}/`,
         data: form,
       };
-
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+        // config.data.medicine_card = this.medicineCard;
+      }
       var el = this;
       request_service(
         config,
@@ -317,6 +338,13 @@ export default {
         method: "delete",
         url: `api/transferred-diseases-delete/${this.pacientId}/${event}/`,
       };
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+        // config.data.medicine_card = this.medicineCard;
+      }
       request_service(
         config,
         function () {
@@ -353,6 +381,13 @@ export default {
           page: this.nextPage,
         },
       };
+      if (
+        this.$store.getters.docMode &&
+        this.$store.getters.pacientId != this.pacientId
+      ) {
+        config.headers = { IsDoctor: true };
+        // config.data.medicine_card = this.medicineCard;
+      }
       request_service(
         config,
         function (resp) {

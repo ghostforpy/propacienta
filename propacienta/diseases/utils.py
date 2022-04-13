@@ -40,7 +40,7 @@ class RequestByTreatingDoctorTransferredOrChronicDisease(BasePermission):
         doctor = request_by_doctor(request)
         if doctor is None:
             return False
-        return doctor in obj.pacient.treating_doctors
+        return doctor in obj.pacient.treating_doctors.all()
 
 
 class IsOwnerOfTransferredOrChronicDiseaseObject(BasePermission):
