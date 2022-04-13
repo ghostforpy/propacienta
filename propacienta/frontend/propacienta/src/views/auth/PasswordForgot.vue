@@ -57,7 +57,6 @@
 </template>
 
 <script>
-// import { AUTH_REQUEST, AUTH_PING } from "@/store/actions/auth";
 import request_service from "@/api/HTTP";
 export default {
   name: "PasswordForgot",
@@ -72,19 +71,6 @@ export default {
       sendError: false,
       sendErrorText: "Что-то пошло не так. Попробуйте позже.",
     };
-  },
-  computed: {
-    // loginError: function () {
-    //   return this.$store.getters.authErrorStatus != 0;
-    // },
-    // loginErrorText: function () {
-    //   if (this.loginError) {
-    //     if (this.$store.getters.authErrorStatus == 400) {
-    //       return "Неверный логин или пароль";
-    //     }
-    //   }
-    //   return "Сервер недоступен";
-    // },
   },
   methods: {
     emailValidate: function () {
@@ -118,14 +104,6 @@ export default {
           console.log(resp);
           el.okSender = true;
           el.sendError = false;
-          // el.docModeError = false;
-          // // console.log(resp);
-          // el.firstName = resp.data.first_name;
-          // el.lastName = resp.data.last_name;
-          // el.patronymic = resp.data.patronymic;
-          // el.medicineCardId = resp.data.medicinecard;
-          // el.birthday = resp.data.birthday;
-          // el.phone = resp.data.phone;
         },
         function (error) {
           console.log(error);
@@ -135,40 +113,8 @@ export default {
             el.animError = true;
           }
           el.loginError = true;
-
-          // el.docModeError = true;
-          // if (error.response.status == 404) {
-          //   el.$router.push({ name: "notfound" });
-          //   return;
-          // }
-          // if (error.response.status == 403) {
-          //   el.docModeError = true;
-          //   el.errorToolbarText =
-          //     "Вы не являетесь лечащим врачом данного пациента.";
-          //   return;
-          // }
-          // el.$router.push({ name: "main" });
         }
       );
-
-      // this.animError = false;
-      // const res = await this.$store.dispatch(AUTH_REQUEST, data);
-      // if (res) {
-      //   await this.$store.dispatch(AUTH_PING);
-      //   this.loginError = false;
-      //   const path =
-      //     this.$route.query.redirect != undefined
-      //       ? this.$route.query.redirect
-      //       : "/";
-      //   this.$router.push({
-      //     path: path,
-      //   });
-      // } else {
-      //   if (this.loginError) {
-      //     this.animError = true;
-      //   }
-      //   this.loginError = true;
-      // }
     },
   },
 };
