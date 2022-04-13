@@ -1,13 +1,9 @@
-import {
-    AUTH_REQUEST,
-    AUTH_ERROR,
-    AUTH_SUCCESS,
-    AUTH_LOGOUT,
-    AUTH_PING,
-    LOGOUT_ERROR
-} from "../actions/auth";
-import { INIT_USER_STATE, CLEAR_USER_STATE } from "../actions/user"
 import request_service from "@/api/HTTP";
+import {
+    AUTH_ERROR, AUTH_LOGOUT,
+    AUTH_PING, AUTH_REQUEST, AUTH_SUCCESS, LOGOUT_ERROR
+} from "../actions/auth";
+import { CLEAR_USER_STATE, INIT_USER_STATE } from "../actions/user";
 const state = {
     isAuthenticated: '',
     authError: false,
@@ -35,7 +31,7 @@ const actions = {
                 config,
                 function (resp) {
                     commit(AUTH_SUCCESS);
-                    console.log('ping sucsess')
+                    // console.log('ping sucsess')
                     commit(INIT_USER_STATE, resp.data)
                     resolve(true)
                     //console.log(...resp.headers);
@@ -43,7 +39,7 @@ const actions = {
                 },
                 function () {
                     commit(AUTH_ERROR);
-                    console.log("auth ping err")
+                    // console.log("auth ping err")
                     resolve(false)
                     //console.log(...resp.headers);
                     //console.log(resp.data);
