@@ -42,6 +42,6 @@ export const isDoctor = async (to, from, next) => {
         next()
         return
     }
-    next({ name: 'login', query: { redirect: to.fullPath } })
+    next({ name: 'main' })
     return
 }

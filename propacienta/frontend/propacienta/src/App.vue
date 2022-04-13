@@ -77,6 +77,19 @@
               ></v-switch
             ></v-list-item-action>
           </v-list-item>
+          <v-list-item v-if="docMode" dense @click="menu = false">
+            <router-link :to="{ name: 'my-doctor-profile' }">
+              Мой профиль врача</router-link
+            >
+          </v-list-item>
+          <v-list-item v-if="docMode" dense @click="menu = false">
+            <router-link :to="{ name: 'my-pacients' }">
+              Мои пациенты</router-link
+            >
+          </v-list-item>
+          <v-list-item v-if="docMode" dense @click="menu = false">
+            <router-link :to="{ name: 'main' }"> Мой календарь</router-link>
+          </v-list-item>
           <v-divider></v-divider>
           <v-list-item @click="menu = false">
             <router-link to="/logout">Выход</router-link>
