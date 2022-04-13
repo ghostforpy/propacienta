@@ -337,6 +337,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://django:8000",
 ]
 from corsheaders.defaults import default_headers
+
 CORS_ALLOW_HEADERS = list(default_headers) + ['access-control-allow-credentials']
 # By Default swagger ui is available only to admin user. You can change permission classs to change that
 # See more configuration options at https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
@@ -354,7 +355,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + ['access-control-allow-credentials'
 # ------------------------------------------------------------------------------
 # https://djoser.readthedocs.io/en/latest/settings.html
 DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password-reset-confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'accounts/activate/{uid}/{token}',
     'USER_ID_FIELD' : 'id',

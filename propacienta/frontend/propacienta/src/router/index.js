@@ -3,6 +3,7 @@ import NotFound from '@/components/NotFound';
 import AuthLogin from '@/views/auth/AuthLogin';
 import AuthLogout from '@/views/auth/AuthLogout';
 import PasswordForgot from '@/views/auth/PasswordForgot';
+import PasswordForgotConfirm from '@/views/auth/PasswordForgotConfirm';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import MedicineCard from './medicinecard';
@@ -11,6 +12,7 @@ import UsersRoutes from './users';
 // import store from '@/store'
 // import { AUTH_PING } from "@/store/actions/auth";
 import { ifAuthenticated, ifNotAuthenticated } from './utils';
+
 
 
 Vue.use(VueRouter)
@@ -39,6 +41,12 @@ const baseRoutes = [
     path: '/recover-password',
     name: "recover-password",
     component: PasswordForgot,
+    beforeEnter: ifNotAuthenticated,
+  },
+  {
+    path: '/password-reset-confirm/:uid/:token',
+    name: "password-reset-confirm",
+    component: PasswordForgotConfirm,
     beforeEnter: ifNotAuthenticated,
   },
   {
