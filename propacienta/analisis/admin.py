@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from .models import Analysis, AnalysisResult, AnalysisResultsFile, AnalysisResultsImage
+
 # Register your models here.
 
 @admin.register(Analysis)
@@ -21,3 +23,7 @@ class AnalysisResultAdmin(admin.ModelAdmin):
     list_display = ("pacient", "analysis",)
     list_select_related = True
     inlines = [AnalysisResultsFileAdmin, AnalysisResultsImageAdmin]
+    list_filter = ("analysis",)
+    search_fields = ("pacient__user__email", "pacient__user__last_name",
+                    "pacient__user__first_name", "pacient__user__patronymic",
+                    "pacient__phone",)
