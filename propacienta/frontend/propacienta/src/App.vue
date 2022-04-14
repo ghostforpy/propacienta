@@ -135,8 +135,8 @@
     <v-footer color="cyan lighten-1" padless app :absolute="true">
       <v-row justify="center" no-gutters>
         <v-btn
-          v-for="item in footerMenuList"
-          :key="item"
+          v-for="(item, id) in footerMenuList"
+          :key="id"
           color="white"
           text
           rounded
