@@ -52,7 +52,8 @@ const baseRoutes = [
     beforeEnter: ifNotAuthenticated,
   },
   {
-    path: '*',
+    path: '/error404',
+    alias: '*',
     name: "notfound",
     component: NotFound,
     // beforeEnter: ifNotAuthenticated,
