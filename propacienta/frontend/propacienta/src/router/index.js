@@ -9,6 +9,7 @@ import VueRouter from 'vue-router';
 import DoctorsRoutes from './doctors';
 import MedicineCard from './medicinecard';
 import PacientsRoutes from './pacients';
+import PagesRoutes from './pages';
 import RegistrationRoutes from './registration';
 import UsersRoutes from './users';
 // import store from '@/store'
@@ -64,6 +65,7 @@ routes = routes.concat(RegistrationRoutes)
 routes = routes.concat(MedicineCard)
 routes = routes.concat(DoctorsRoutes)
 routes = routes.concat(PacientsRoutes)
+routes = routes.concat(PagesRoutes)
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
