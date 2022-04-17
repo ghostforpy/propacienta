@@ -1,5 +1,6 @@
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import filters
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import BasePermission
@@ -41,24 +42,19 @@ class PacientViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     serializer_class = PacientSerializer
     lookup_field = "id"
     permission_classes = [RequestByDoctor]
+    search_fields = ['user__first_name', 'user__last_name', "user__patronymic", "phone"]
+    filter_backends = [filters.SearchFilter]
 
-    # def get_permissions(self):
+    def get_queryset(self):
+        if self.action == 'list':
+            queryparams = self.request.GET.dict()
+            search = queryparams.get("search", None)
+            if search is not None and search != "":
+                return self.queryset
+            doctor = self.request.user.doctor
+            return doctor.pacients.all()
+        elif self.action == 'retrieve':
+            return self.queryset
+        else:
+            return self.queryset.none()
 
-    #     if self.action == 'list':
-    #         permission_classes = [AllowAny]
-    #     elif self.action in ['my_list', 'create', 'create_by_breport']:
-    #         permission_classes = [IsAuthenticated]
-    #     elif self.action in [
-    #         'get_updated_portfolio',
-    #         'update',
-    #         'partial_update',
-    #         'private'
-    #     ]:
-    #         permission_classes = [IsOwnerOfPortfolioObject]
-    #         #permission_classes = [IsOwnerOrReadOnlyAuthorized]
-    #     elif self.action in ['follow', 'like']:
-    #         permission_classes = [FollowLikePermission]
-    #     else:
-    #        # permission_classes = [IsOwnerOrReadOnlyAuthorized]
-    #         permission_classes = [IsAuthenticated]
-    #     return [permission() for permission in permission_classes]

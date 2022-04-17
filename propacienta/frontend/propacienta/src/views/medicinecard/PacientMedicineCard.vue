@@ -136,8 +136,11 @@ export default {
           el.phone = resp.data.phone;
         },
         function (error) {
+          console.log(error);
+          console.log(error.response);
           el.docModeError = true;
           if (error.response.status == 404) {
+            console.log(404);
             el.$router.push({ name: "notfound" });
             return;
           }
