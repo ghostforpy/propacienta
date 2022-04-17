@@ -166,7 +166,7 @@ export default {
     group: null,
     // links: ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"],
     accountMenuList: [
-      { title: "Медицинская карта", route: "/my-medicine-card" },
+      { title: "Моя медицинская карта", route: "/my-medicine-card" },
       { title: "Мой профиль", route: "/users/me" },
     ],
     drawerMenuList: [
