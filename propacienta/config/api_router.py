@@ -26,16 +26,16 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-#router.register("users", UserViewSet)
+# router.register("users", UserViewSet)
 
 
 app_name = "api"
 urlpatterns = [
     path("", include("propacienta.users.api.urls")),
-    path('', include("medicine_cards.api.urls")),
-    path('', include("analisis.api.urls")),
-    path('', include("diseases.api.urls")),
-    path('', include("pacients.api.urls")),
+    path("", include("medicine_cards.api.urls")),
+    path("", include("analisis.api.urls")),
+    path("", include("diseases.api.urls")),
+    path("", include("pacients.api.urls")),
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
         schema_view.without_ui(cache_timeout=0),

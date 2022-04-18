@@ -62,12 +62,12 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
-    #"django.contrib.admin",
-    'propacienta.apps.MyAdminConfig', # Custom admin panel
+    # "django.contrib.admin",
+    "propacienta.apps.MyAdminConfig",  # Custom admin panel
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
-    'drf_yasg',
+    "drf_yasg",
     "crispy_forms",
     "crispy_bootstrap5",
     "allauth",
@@ -78,7 +78,7 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
-    'djoser',
+    "djoser",
 ]
 
 LOCAL_APPS = [
@@ -319,15 +319,15 @@ SOCIALACCOUNT_FORMS = {"signup": "propacienta.users.forms.UserSocialSignupForm"}
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
-        #"rest_framework.authentication.TokenAuthentication",
+        # "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-#    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    #    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
-#CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://0.0.0.0:8080",
@@ -338,10 +338,10 @@ CORS_ALLOWED_ORIGINS = [
 ]
 from corsheaders.defaults import default_headers
 
-CORS_ALLOW_HEADERS = list(default_headers) + ['access-control-allow-credentials']
+CORS_ALLOW_HEADERS = list(default_headers) + ["access-control-allow-credentials"]
 # By Default swagger ui is available only to admin user. You can change permission classs to change that
 # See more configuration options at https://drf-spectacular.readthedocs.io/en/latest/settings.html#settings
-#SPECTACULAR_SETTINGS = {
+# SPECTACULAR_SETTINGS = {
 #    "TITLE": "propacienta API",
 #    "DESCRIPTION": "Documentation of API endpoiints of propacienta",
 #    "VERSION": "1.0.0",
@@ -350,61 +350,77 @@ CORS_ALLOW_HEADERS = list(default_headers) + ['access-control-allow-credentials'
 #        {"url": "https://127.0.0.1:8000", "description": "Local Development server"},
 #        {"url": "https://propacienta.ru", "description": "Production server"},
 #    ],
-#}
+# }
 # Your stuff...
 # ------------------------------------------------------------------------------
 # https://djoser.readthedocs.io/en/latest/settings.html
 DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': 'password-reset-confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': 'accounts/activate/{uid}/{token}',
-    'USER_ID_FIELD' : 'id',
-    'LOGIN_FIELD': 'email',
-    'USER_CREATE_PASSWORD_RETYPE':True,
-    'SEND_ACTIVATION_EMAIL': True,
-    'SEND_CONFIRMATION_EMAIL': True,
-    'EMAIL': {
-        'activation': 'djoser.email.ActivationEmail',
-        'confirmation': 'djoser.email.ConfirmationEmail',
-        'password_reset': 'djoser.email.PasswordResetEmail',
-        'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
-        'username_changed_confirmation': 'djoser.email.UsernameChangedConfirmationEmail',
-        'username_reset': 'djoser.email.UsernameResetEmail',
+    "PASSWORD_RESET_CONFIRM_URL": "password-reset-confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "#/username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "accounts/activate/{uid}/{token}",
+    "USER_ID_FIELD": "id",
+    "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "EMAIL": {
+        "activation": "djoser.email.ActivationEmail",
+        "confirmation": "djoser.email.ConfirmationEmail",
+        "password_reset": "djoser.email.PasswordResetEmail",
+        "password_changed_confirmation": "djoser.email.PasswordChangedConfirmationEmail",
+        "username_changed_confirmation": "djoser.email.UsernameChangedConfirmationEmail",
+        "username_reset": "djoser.email.UsernameResetEmail",
     },
-    'SERIALIZERS': {
-        'activation': 'djoser.serializers.ActivationSerializer',
-        'password_reset': 'djoser.serializers.SendEmailResetSerializer',
-        'password_reset_confirm': 'djoser.serializers.PasswordResetConfirmSerializer',
-        'password_reset_confirm_retype': 'djoser.serializers.PasswordResetConfirmRetypeSerializer',
-        'set_password': 'djoser.serializers.SetPasswordSerializer',
-        'set_password_retype': 'djoser.serializers.SetPasswordRetypeSerializer',
-        'set_username': 'djoser.serializers.SetUsernameSerializer',
-        'set_username_retype': 'djoser.serializers.SetUsernameRetypeSerializer',
-        'username_reset': 'djoser.serializers.SendEmailResetSerializer',
-        'username_reset_confirm': 'djoser.serializers.UsernameResetConfirmSerializer',
-        'username_reset_confirm_retype': 'djoser.serializers.UsernameResetConfirmRetypeSerializer',
-        'user_create': 'propacienta.users.api.serializers.CUserCreateSerializer',
-        'user_create_password_retype': 'propacienta.users.api.serializers.CUserCreateSerializer',
-        'user_delete': 'djoser.serializers.UserDeleteSerializer',
-        'user': 'djoser.serializers.UserSerializer',
+    "SERIALIZERS": {
+        "activation": "djoser.serializers.ActivationSerializer",
+        "password_reset": "djoser.serializers.SendEmailResetSerializer",
+        "password_reset_confirm": "djoser.serializers.PasswordResetConfirmSerializer",
+        "password_reset_confirm_retype": "djoser.serializers.PasswordResetConfirmRetypeSerializer",
+        "set_password": "djoser.serializers.SetPasswordSerializer",
+        "set_password_retype": "djoser.serializers.SetPasswordRetypeSerializer",
+        "set_username": "djoser.serializers.SetUsernameSerializer",
+        "set_username_retype": "djoser.serializers.SetUsernameRetypeSerializer",
+        "username_reset": "djoser.serializers.SendEmailResetSerializer",
+        "username_reset_confirm": "djoser.serializers.UsernameResetConfirmSerializer",
+        "username_reset_confirm_retype": "djoser.serializers.UsernameResetConfirmRetypeSerializer",
+        "user_create": "propacienta.users.api.serializers.CUserCreateSerializer",
+        "user_create_password_retype": "propacienta.users.api.serializers.CUserCreateSerializer",
+        "user_delete": "djoser.serializers.UserDeleteSerializer",
+        "user": "djoser.serializers.UserSerializer",
         #'current_user': 'djoser.serializers.UserSerializer',
-        'current_user': 'propacienta.users.api.serializers.CUserSerializer',
+        "current_user": "propacienta.users.api.serializers.CUserSerializer",
         #'token': 'djoser.serializers.TokenSerializer',
         #'token_create': 'djoser.serializers.TokenCreateSerializer',
     },
-    'PERMISSIONS' : {
-        'activation': ['rest_framework.permissions.AllowAny'],
-        'password_reset': ['rest_framework.permissions.AllowAny'],
-        'password_reset_confirm': ['rest_framework.permissions.AllowAny'],
-        'set_password': ['propacienta.users.utils.DenyAll'],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
-        'username_reset': ['propacienta.users.utils.DenyAll'],  # ['rest_framework.permissions.DenyAll'],
-        'username_reset_confirm': ['propacienta.users.utils.DenyAll'],  # ['rest_framework.permissions.DenyAll'],
-        'set_username': ['propacienta.users.utils.DenyAll'],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
-        'user_create': ['rest_framework.permissions.AllowAny'],
-        'user_delete': ['propacienta.users.utils.DenyAll'],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
+    "PERMISSIONS": {
+        "activation": ["rest_framework.permissions.AllowAny"],
+        "password_reset": ["rest_framework.permissions.AllowAny"],
+        "password_reset_confirm": ["rest_framework.permissions.AllowAny"],
+        "set_password": [
+            "propacienta.users.utils.DenyAll"
+        ],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
+        "username_reset": [
+            "propacienta.users.utils.DenyAll"
+        ],  # ['rest_framework.permissions.DenyAll'],
+        "username_reset_confirm": [
+            "propacienta.users.utils.DenyAll"
+        ],  # ['rest_framework.permissions.DenyAll'],
+        "set_username": [
+            "propacienta.users.utils.DenyAll"
+        ],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
+        "user_create": ["rest_framework.permissions.AllowAny"],
+        "user_delete": [
+            "propacienta.users.utils.DenyAll"
+        ],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
         #'user': ['rest_framework.permissions.CurrentUserOrAdmin'],
-        'user_list':  ['propacienta.users.utils.DenyAll'],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
-        'token_create': ['propacienta.users.utils.DenyAll'],  # ['rest_framework.permissions.AllowAny'],
-        'token_destroy': ['propacienta.users.utils.DenyAll'],  # ['rest_framework.permissions.IsAuthenticated'],
-    }
+        "user_list": [
+            "propacienta.users.utils.DenyAll"
+        ],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
+        "token_create": [
+            "propacienta.users.utils.DenyAll"
+        ],  # ['rest_framework.permissions.AllowAny'],
+        "token_destroy": [
+            "propacienta.users.utils.DenyAll"
+        ],  # ['rest_framework.permissions.IsAuthenticated'],
+    },
 }
