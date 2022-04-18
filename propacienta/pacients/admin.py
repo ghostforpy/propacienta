@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils.encoding import force_text
+from django.utils.html import format_html, format_html_join, html_safe
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from diseases.models import ChronicDisease, TransferredDisease
@@ -22,11 +24,17 @@ class EditMixin:
 
     def get_edit_link(self, obj=None):
         if obj.pk:  # if object has already been saved and has a primary key, show link to it
-            url = reverse('admin:%s_%s_change' % (obj._meta.app_label, obj._meta.model_name), args=[force_text(obj.pk)])
-            return """<a href="{url}">{text}</a>""".format(
-                url=url,
-                text=_("Edit this %s separately") % obj._meta.verbose_name,
+            url = reverse(
+                'admin:%s_%s_change' % (obj._meta.app_label, obj._meta.model_name),
+                args=[force_text(obj.pk)]
             )
+            return format_html(
+                '<a href="{url}">{text}</a>',
+                url=url,
+                # text=_("%s") % obj.__str__()
+                text="Перейти на страницу"
+            )
+
         return _("(save and continue editing to create a link)")
     get_edit_link.short_description = _("Просмотреть и изменить")
     get_edit_link.allow_tags = True
