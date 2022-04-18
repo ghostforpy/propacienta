@@ -67,9 +67,9 @@ class AppointmentSurvey(models.Model):
         verbose_name=_("Заказ на приём врача"),
         related_name="survey"
     )
-    complaints = models.TextField(_("Жалобы"))
-    complaints_date = models.DateField(_("Когда впервые появились жалобы"))
-    treatment = models.TextField(_("Лечение"))
+    complaints = models.TextField(_("Жалобы"), blank=True, default="")
+    complaints_date = models.DateField(_("Когда впервые появились жалобы"), blank=True)
+    treatment = models.TextField(_("Лечение"), blank=True, default="")
 
     class Meta:
         verbose_name = "Опросник перед приёмом врача"
@@ -102,7 +102,7 @@ class DoctorAppointment(models.Model):
         blank=True,
         null=True
     )
-    anamnesis = models.TextField(_("Анамнез"))
+    anamnesis = models.TextField(_("Анамнез"), blank=True, default="")
     medicine_card = models.ForeignKey(
         "medicine_cards.medicinecard",
         on_delete=models.DO_NOTHING,
@@ -132,11 +132,11 @@ class DoctorAppointment(models.Model):
         related_name="doctor_appointments",
         null=True
     )
-    complaints = models.TextField(_("Жалобы"))
-    complaints_date = models.DateField(_("Когда впервые появились жалобы"))
-    treatment = models.TextField(_("Лечение"))
-    rating_for_pacient = models.FloatField(_("Оценка пациенту"))
-    rating_for_doctor = models.FloatField(_("Оценка доктору"))
+    complaints = models.TextField(_("Жалобы"), default="", blank=True)
+    complaints_date = models.DateField(_("Когда впервые появились жалобы"), blank=True)
+    treatment = models.TextField(_("Лечение"), default="", blank=True)
+    rating_for_pacient = models.FloatField(_("Оценка пациенту"), blank=True, null=True)
+    rating_for_doctor = models.FloatField(_("Оценка доктору"), blank=True, null=True)
 
     class Meta:
         verbose_name = "Приём врача"
