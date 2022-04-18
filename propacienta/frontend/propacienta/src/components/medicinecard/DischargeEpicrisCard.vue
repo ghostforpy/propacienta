@@ -126,9 +126,10 @@ export default {
       }
     },
     deleteFileImg: function (id, url, event, type) {
+      event.stopPropagation();
       event.preventDefault();
       var el = this;
-      console.log(url);
+      // console.log(url);
       let config = {
         method: "delete",
         url: url,
@@ -139,7 +140,7 @@ export default {
       request_service(
         config,
         function () {
-          console.log("sucess");
+          // console.log("sucess");
           if (type == "files") {
             el.fils = el.fils.filter((item, idx) => {
               return idx != id;

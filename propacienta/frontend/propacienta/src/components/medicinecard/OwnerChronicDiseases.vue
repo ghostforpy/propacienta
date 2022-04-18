@@ -4,7 +4,7 @@
       <v-flex xs10 sm8 md6>
         <v-row>
           <!-- начало формы диалога -->
-          <v-dialog v-model="dialog" persistent max-width="600px">
+          <v-dialog v-model="dialog" max-width="600px">
             <v-card>
               <v-card-title>
                 <span class="text-h5">Добавить выписной эпикриз</span>
@@ -265,11 +265,6 @@ export default {
     },
     validateFields: function () {
       this.error = false;
-      console.log(
-        this.epicrisAdd == null,
-        this.filesAdd.length == 0 || this.filesAdd == null,
-        this.imagesAdd.length == 0 || this.imagesAdd == null
-      );
       if (
         this.epicrisAdd == null &&
         (this.filesAdd.length == 0 || this.filesAdd == null) &&
