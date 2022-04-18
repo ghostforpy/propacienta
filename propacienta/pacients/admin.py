@@ -2,8 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils.encoding import force_text
-from django.utils.html import format_html, format_html_join, html_safe
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from diseases.models import ChronicDisease, TransferredDisease
