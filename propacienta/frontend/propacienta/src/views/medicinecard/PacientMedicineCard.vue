@@ -5,12 +5,16 @@
     </v-toolbar>
     <v-tabs background-color="cyan" dark show-arrows centered>
       <v-tabs-slider color="yellow"></v-tabs-slider>
-      <v-tab>Общие данные</v-tab>
-      <v-tab>Исследования</v-tab>
-      <v-tab>Анализы</v-tab>
-      <v-tab>Перенесенные заболевания</v-tab>
-      <v-tab>Хронические заболевания</v-tab>
-      <v-tab-item>
+      <v-tab href="#common-data" @click="handleClickTab">Общие данные</v-tab>
+      <v-tab href="#research" @click="handleClickTab">Исследования</v-tab>
+      <v-tab href="#analisis" @click="handleClickTab">Анализы</v-tab>
+      <v-tab href="#transfered-diseases" @click="handleClickTab"
+        >Перенесенные заболевания</v-tab
+      >
+      <v-tab href="#chronic-diseases" @click="handleClickTab"
+        >Хронические заболевания</v-tab
+      >
+      <v-tab-item id="common-data">
         <CommonDataMedicineCardDoctor
           :pacientId="pacientId"
           :medicineCard="medicineCardId"
@@ -22,25 +26,25 @@
         >
         </CommonDataMedicineCardDoctor>
       </v-tab-item>
-      <v-tab-item>
+      <v-tab-item id="research">
         <OwnerMedicineIndependentResearch
           :pacientId="pacientId"
           :medicineCard="medicineCardId"
         >
         </OwnerMedicineIndependentResearch>
       </v-tab-item>
-      <v-tab-item>
+      <v-tab-item id="analisis">
         <OwnerAnalisys :pacientId="pacientId" :medicineCard="medicineCardId">
         </OwnerAnalisys>
       </v-tab-item>
-      <v-tab-item>
+      <v-tab-item id="transfered-diseases">
         <OwnerTransferedDiseases
           :pacientId="pacientId"
           :medicineCard="medicineCardId"
         >
         </OwnerTransferedDiseases>
       </v-tab-item>
-      <v-tab-item>
+      <v-tab-item id="chronic-diseases">
         <OwnerChronicDiseases :pacientId="pacientId"> </OwnerChronicDiseases>
       </v-tab-item>
     </v-tabs>
@@ -87,6 +91,7 @@ export default {
   },
   data: function () {
     return {
+      page: "",
       docModeError: false,
       errorToolbarTitle: "В доступе отказано",
       errorToolbarText: 'Для доступа требуется активировать режим "Врач".',
@@ -154,6 +159,9 @@ export default {
         }
       );
     }
+    if (this.$route.hash != "") {
+      this.page = this.$route.hash.replace("#", "");
+    }
   },
   computed: {
     pacientId: function () {
@@ -174,6 +182,16 @@ export default {
     // },
   },
   methods: {
+    handleClickTab: function (event) {
+      var hash = event.target.hash;
+      if (this.$route.hash != hash) {
+        this.$router.replace({
+          name: this.$route.name,
+          hash: hash,
+          params: { pacientId: this.$route.params.pacientId },
+        });
+      }
+    },
     // updateHandl: function () {
     // if (
     //   this.first_name != this.$store.state.user.first_name ||
