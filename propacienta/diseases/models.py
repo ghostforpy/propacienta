@@ -7,11 +7,8 @@ from .utils import discharge_epicrisis_files_dir, discharge_epicrisis_images_dir
 
 class Disease(models.Model):
     """Модель заболевания."""
-    title = models.CharField(
-        _("Наименование"),
-        max_length=250,
-        unique=True
-        )
+
+    title = models.CharField(_("Наименование"), max_length=250, unique=True)
     code = models.CharField(_("Код"), max_length=50, unique=True)
 
     class Meta:
@@ -25,27 +22,30 @@ class Disease(models.Model):
 
 class TransferredDisease(models.Model):
     """Модель перенесенного заболевания."""
+
     disease = models.ForeignKey(
         Disease,
         on_delete=models.CASCADE,
         verbose_name=_("Заболевание"),
-        related_name="transferred_diseases"
+        related_name="transferred_diseases",
     )
     medicine_card = models.ForeignKey(
         "medicine_cards.medicinecard",
         on_delete=models.CASCADE,
         verbose_name=_("Медицинская карта"),
-        related_name="transferred_diseases"
+        related_name="transferred_diseases",
     )
     pacient = models.ForeignKey(
         "pacients.pacient",
         on_delete=models.CASCADE,
         verbose_name=_("Пациент"),
-        related_name="transferred_diseases"
+        related_name="transferred_diseases",
     )
     diagnosis = models.CharField(_("Диагноз"), max_length=250)
     diagnosis_date = models.DateField(_("Дата постановки диагноза"), null=True)
-    diagnosis_year = models.PositiveIntegerField(_("Год постановки диагноза"), null=True)
+    diagnosis_year = models.PositiveIntegerField(
+        _("Год постановки диагноза"), null=True
+    )
     treatment_date = models.DateField(_("Дата начала лечения"), null=True)
     treatment_end_date = models.DateField(_("Дата окончания лечения"), null=True)
 
@@ -60,23 +60,24 @@ class TransferredDisease(models.Model):
 
 class ChronicDisease(models.Model):
     """Модель хронических заболеваний."""
+
     disease = models.ForeignKey(
         Disease,
         on_delete=models.CASCADE,
         verbose_name=_("Заболенивание"),
-        related_name="chronic_diseases"
+        related_name="chronic_diseases",
     )
     medicine_card = models.ForeignKey(
         "medicine_cards.medicinecard",
         on_delete=models.CASCADE,
         verbose_name=_("Медицинская карта"),
-        related_name="chronic_diseases"
+        related_name="chronic_diseases",
     )
     pacient = models.ForeignKey(
         "pacients.pacient",
         on_delete=models.CASCADE,
         verbose_name=_("Пациент"),
-        related_name="chronic_diseases"
+        related_name="chronic_diseases",
     )
     treatment = models.TextField(_("Лечение"), default="", blank=True)
 
@@ -84,7 +85,7 @@ class ChronicDisease(models.Model):
         verbose_name = "Хроническое заболевание"
         verbose_name_plural = "Хронические заболевания"
         ordering = ["-id"]
-        unique_together = ['disease', 'pacient']
+        unique_together = ["disease", "pacient"]
 
     def __str__(self) -> str:
         return "{} {}".format(self.pacient, self.disease)
@@ -92,13 +93,14 @@ class ChronicDisease(models.Model):
 
 class DischargeEpicris(models.Model):
     """Модель выписного эпикриза для хронических заболеваний."""
+
     chronic_disease = models.ForeignKey(
         ChronicDisease,
         on_delete=models.CASCADE,
         verbose_name=_("Хроничекое заболенивание"),
         related_name="discharge_epicrisis",
         blank=True,
-        null=True
+        null=True,
     )
     transferred_disease = models.OneToOneField(
         TransferredDisease,
@@ -106,13 +108,13 @@ class DischargeEpicris(models.Model):
         verbose_name=_("Перенесённое заболенивание"),
         related_name="discharge_epicris",
         blank=True,
-        null=True
+        null=True,
     )
     pacient = models.ForeignKey(
         "pacients.pacient",
         on_delete=models.CASCADE,
         verbose_name=_("Пациент"),
-        related_name="discharge_epicrisis"
+        related_name="discharge_epicrisis",
     )
     d = models.DateField(_("Дата"))
     epicris = models.TextField(_("Эпикриз"), default="", blank=True)
@@ -124,32 +126,30 @@ class DischargeEpicris(models.Model):
 
     def __str__(self) -> str:
         return "Выписной эпикриз {} {} {}".format(
-            self.pacient,
-            self.chronic_disease.disease,
-            self.d
+            self.pacient, self.chronic_disease.disease, self.d
         )
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
-        if DischargeEpicris.objects.filter(
-            chronic_disease=self.chronic_disease,
-            pacient=self.pacient
-        ).count() <= 0:
+        if (
+            DischargeEpicris.objects.filter(
+                chronic_disease=self.chronic_disease, pacient=self.pacient
+            ).count()
+            <= 0
+        ):
             self.chronic_disease.delete()
 
 
 class DischargeEpicrisImage(models.Model):
     """Модель изображения выпиского эпикриза."""
+
     discharge_epicris = models.ForeignKey(
         DischargeEpicris,
         on_delete=models.CASCADE,
-        related_name="discharge_epicrisis_images"
+        related_name="discharge_epicrisis_images",
     )
     image = models.ImageField(
-        _("Фото"),
-        upload_to=discharge_epicrisis_images_dir,
-        null=True,
-        blank=True
+        _("Фото"), upload_to=discharge_epicrisis_images_dir, null=True, blank=True
     )
 
     class Meta:
@@ -170,16 +170,14 @@ class DischargeEpicrisImage(models.Model):
 
 class DischargeEpicrisFiles(models.Model):
     """Модель файла выпиского эпикриза."""
+
     discharge_epicris = models.ForeignKey(
         DischargeEpicris,
         on_delete=models.CASCADE,
-        related_name="discharge_epicrisis_files"
+        related_name="discharge_epicrisis_files",
     )
     file = models.FileField(
-        _("Файл"),
-        upload_to=discharge_epicrisis_files_dir,
-        null=True,
-        blank=True
+        _("Файл"), upload_to=discharge_epicrisis_files_dir, null=True, blank=True
     )
 
     class Meta:
@@ -196,6 +194,3 @@ class DischargeEpicrisFiles(models.Model):
     def delete(self, *args, **kwargs):
         self.file.delete()
         super().delete(*args, **kwargs)
-
-
-

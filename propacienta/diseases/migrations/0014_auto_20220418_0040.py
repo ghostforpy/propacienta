@@ -7,18 +7,25 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('diseases', '0013_auto_20220418_0028'),
+        ("diseases", "0013_auto_20220418_0028"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='dischargeepicris',
-            name='chronic_disease',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='discharge_epicrisis', to='diseases.chronicdisease', verbose_name='Хроничекое заболенивание'),
+            model_name="dischargeepicris",
+            name="chronic_disease",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="discharge_epicrisis",
+                to="diseases.chronicdisease",
+                verbose_name="Хроничекое заболенивание",
+            ),
         ),
         migrations.AlterField(
-            model_name='dischargeepicris',
-            name='epicris',
-            field=models.TextField(blank=True, default='', verbose_name='Эпикриз'),
+            model_name="dischargeepicris",
+            name="epicris",
+            field=models.TextField(blank=True, default="", verbose_name="Эпикриз"),
         ),
     ]

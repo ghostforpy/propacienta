@@ -6,32 +6,56 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('diseases', '0003_alter_disease_code'),
+        ("diseases", "0003_alter_disease_code"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='chronicdisease',
-            options={'ordering': ['-id'], 'verbose_name': 'Хроническое заболевание', 'verbose_name_plural': 'Хронические заболевания'},
+            name="chronicdisease",
+            options={
+                "ordering": ["-id"],
+                "verbose_name": "Хроническое заболевание",
+                "verbose_name_plural": "Хронические заболевания",
+            },
         ),
         migrations.AlterModelOptions(
-            name='dischargeepicris',
-            options={'ordering': ['-d', '-id'], 'verbose_name': 'Выписной эпикриз', 'verbose_name_plural': 'Выписные эпикризы'},
+            name="dischargeepicris",
+            options={
+                "ordering": ["-d", "-id"],
+                "verbose_name": "Выписной эпикриз",
+                "verbose_name_plural": "Выписные эпикризы",
+            },
         ),
         migrations.AlterModelOptions(
-            name='dischargeepicrisfiles',
-            options={'ordering': ['-id'], 'verbose_name': 'Файл выписного эпикриза', 'verbose_name_plural': 'Файлы выписных эпикризов'},
+            name="dischargeepicrisfiles",
+            options={
+                "ordering": ["-id"],
+                "verbose_name": "Файл выписного эпикриза",
+                "verbose_name_plural": "Файлы выписных эпикризов",
+            },
         ),
         migrations.AlterModelOptions(
-            name='dischargeepicrisimage',
-            options={'ordering': ['-id'], 'verbose_name': 'Изображение выписного эпикриза', 'verbose_name_plural': 'Изображения выписных эпикризов'},
+            name="dischargeepicrisimage",
+            options={
+                "ordering": ["-id"],
+                "verbose_name": "Изображение выписного эпикриза",
+                "verbose_name_plural": "Изображения выписных эпикризов",
+            },
         ),
         migrations.AlterModelOptions(
-            name='disease',
-            options={'ordering': ['-id'], 'verbose_name': 'Болезнь', 'verbose_name_plural': 'Болезни'},
+            name="disease",
+            options={
+                "ordering": ["-id"],
+                "verbose_name": "Болезнь",
+                "verbose_name_plural": "Болезни",
+            },
         ),
         migrations.AlterModelOptions(
-            name='transferreddisease',
-            options={'ordering': ['-treatment_end_date', '-treatment_date', '-id'], 'verbose_name': 'Перенесенное заболевание', 'verbose_name_plural': 'Перенесенные заболевания'},
+            name="transferreddisease",
+            options={
+                "ordering": ["-treatment_end_date", "-treatment_date", "-id"],
+                "verbose_name": "Перенесенное заболевание",
+                "verbose_name_plural": "Перенесенные заболевания",
+            },
         ),
     ]

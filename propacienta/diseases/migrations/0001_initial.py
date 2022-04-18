@@ -10,84 +10,190 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('medicine_cards', '0003_auto_20220212_1109'),
-        ('pacients', '0003_alter_pacient_options'),
+        ("medicine_cards", "0003_auto_20220212_1109"),
+        ("pacients", "0003_alter_pacient_options"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ChronicDisease',
+            name="ChronicDisease",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('treatment', models.TextField(verbose_name='Лечение')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("treatment", models.TextField(verbose_name="Лечение")),
             ],
             options={
-                'verbose_name': 'Хроническое заболевание',
-                'verbose_name_plural': 'Хронические заболевания',
+                "verbose_name": "Хроническое заболевание",
+                "verbose_name_plural": "Хронические заболевания",
             },
         ),
         migrations.CreateModel(
-            name='DischargeEpicris',
+            name="DischargeEpicris",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('d', models.DateField(verbose_name='Дата')),
-                ('chronic_disease', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='discharge_epicrisis', to='diseases.chronicdisease', verbose_name='Хроничекое заболенивание')),
-                ('pacient', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='discharge_epicrisis', to='pacients.pacient', verbose_name='Пациент')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("d", models.DateField(verbose_name="Дата")),
+                (
+                    "chronic_disease",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="discharge_epicrisis",
+                        to="diseases.chronicdisease",
+                        verbose_name="Хроничекое заболенивание",
+                    ),
+                ),
+                (
+                    "pacient",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="discharge_epicrisis",
+                        to="pacients.pacient",
+                        verbose_name="Пациент",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Выписной эпикриз',
-                'verbose_name_plural': 'Выписные эпикризы',
+                "verbose_name": "Выписной эпикриз",
+                "verbose_name_plural": "Выписные эпикризы",
             },
         ),
         migrations.CreateModel(
-            name='Disease',
+            name="Disease",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=250, unique=True, verbose_name='Наименование')),
-                ('code', models.CharField(max_length=50, verbose_name='Код')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        max_length=250, unique=True, verbose_name="Наименование"
+                    ),
+                ),
+                ("code", models.CharField(max_length=50, verbose_name="Код")),
             ],
             options={
-                'verbose_name': 'Болезнь',
-                'verbose_name_plural': 'Болезни',
+                "verbose_name": "Болезнь",
+                "verbose_name_plural": "Болезни",
             },
         ),
         migrations.CreateModel(
-            name='DischargeEpicrisImage',
+            name="DischargeEpicrisImage",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(blank=True, null=True, upload_to=diseases.utils.discharge_epicrisis_dir, verbose_name='Фото')),
-                ('discharge_epicris', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='discharge_epicrisis_images', to='diseases.dischargeepicris')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to=diseases.utils.discharge_epicrisis_dir,
+                        verbose_name="Фото",
+                    ),
+                ),
+                (
+                    "discharge_epicris",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="discharge_epicrisis_images",
+                        to="diseases.dischargeepicris",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Изображение выписного эпикриза',
-                'verbose_name_plural': 'Изображения выписных эпикризов',
+                "verbose_name": "Изображение выписного эпикриза",
+                "verbose_name_plural": "Изображения выписных эпикризов",
             },
         ),
         migrations.CreateModel(
-            name='DischargeEpicrisFiles',
+            name="DischargeEpicrisFiles",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(blank=True, null=True, upload_to=diseases.utils.discharge_epicrisis_dir, verbose_name='Файл')),
-                ('discharge_epicris', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='discharge_epicrisis_files', to='diseases.dischargeepicris')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "file",
+                    models.FileField(
+                        blank=True,
+                        null=True,
+                        upload_to=diseases.utils.discharge_epicrisis_dir,
+                        verbose_name="Файл",
+                    ),
+                ),
+                (
+                    "discharge_epicris",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="discharge_epicrisis_files",
+                        to="diseases.dischargeepicris",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Файл выписного эпикриза',
-                'verbose_name_plural': 'Файлы выписных эпикризов',
+                "verbose_name": "Файл выписного эпикриза",
+                "verbose_name_plural": "Файлы выписных эпикризов",
             },
         ),
         migrations.AddField(
-            model_name='chronicdisease',
-            name='disease',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='chronic_diseases', to='diseases.disease', verbose_name='Заболенивание'),
+            model_name="chronicdisease",
+            name="disease",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="chronic_diseases",
+                to="diseases.disease",
+                verbose_name="Заболенивание",
+            ),
         ),
         migrations.AddField(
-            model_name='chronicdisease',
-            name='medicine_card',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='chronic_diseases', to='medicine_cards.medicinecard', verbose_name='Медицинская карта'),
+            model_name="chronicdisease",
+            name="medicine_card",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="chronic_diseases",
+                to="medicine_cards.medicinecard",
+                verbose_name="Медицинская карта",
+            ),
         ),
         migrations.AddField(
-            model_name='chronicdisease',
-            name='pacient',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='chronic_diseases', to='pacients.pacient', verbose_name='Пациент'),
+            model_name="chronicdisease",
+            name="pacient",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="chronic_diseases",
+                to="pacients.pacient",
+                verbose_name="Пациент",
+            ),
         ),
     ]

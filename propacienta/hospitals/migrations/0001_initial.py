@@ -8,24 +8,57 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='HospitalTown',
+            name="HospitalTown",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=150, unique=True, verbose_name='Наименование')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        max_length=150, unique=True, verbose_name="Наименование"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Hospital',
+            name="Hospital",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=150, unique=True, verbose_name='Наименование')),
-                ('address', models.CharField(max_length=250, verbose_name='Адрес')),
-                ('town', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='hospitals', to='hospitals.hospitaltown', verbose_name='Населенный пункт')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        max_length=150, unique=True, verbose_name="Наименование"
+                    ),
+                ),
+                ("address", models.CharField(max_length=250, verbose_name="Адрес")),
+                (
+                    "town",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="hospitals",
+                        to="hospitals.hospitaltown",
+                        verbose_name="Населенный пункт",
+                    ),
+                ),
             ],
         ),
     ]

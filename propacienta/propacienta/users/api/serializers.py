@@ -5,11 +5,12 @@ from rest_framework.mixins import UpdateModelMixin
 from djoser.serializers import UserCreatePasswordRetypeSerializer
 from doctors.models import Doctor
 from pacients.models import Pacient
+
 User = get_user_model()
 
 
 class CUserSerializer(serializers.ModelSerializer):
-    #api_url = serializers.CharField(source="get_api_url")
+    # api_url = serializers.CharField(source="get_api_url")
     # url = serializers.CharField(source="get_absolute_url")
     doc_mode_available = serializers.SerializerMethodField()
     pacient_phone = serializers.SerializerMethodField()
@@ -19,16 +20,17 @@ class CUserSerializer(serializers.ModelSerializer):
     pacient_id = serializers.IntegerField(source="pacient.id")
     doctor_id = serializers.SerializerMethodField()
     medicine_card = serializers.IntegerField(source="pacient.medicine_card.id")
+
     class Meta:
         model = User
         fields = [
-            "first_name", 
-            "last_name", 
-            "email", 
-            "patronymic", 
+            "first_name",
+            "last_name",
+            "email",
+            "patronymic",
             "id",
-            #"api_url",
-            #"url",
+            # "api_url",
+            # "url",
             "birthday",
             "doc_mode_available",
             "pacient_phone",
@@ -37,12 +39,13 @@ class CUserSerializer(serializers.ModelSerializer):
             "doctor_id",
             "phone_pacient",
             "phone_doctor",
-            "medicine_card"
+            "medicine_card",
         ]
 
-        #extra_kwargs = {
+        # extra_kwargs = {
         #    "url": {"view_name": "api:users-detail", "lookup_field": "id"}
-        #}
+        # }
+
     def get_doc_mode_available(self, obj):
         if obj.doctor != None:
             if obj.doctor.is_active:
@@ -83,9 +86,9 @@ class CUserCreateSerializer(UserCreatePasswordRetypeSerializer):
 
     class Meta(UserCreatePasswordRetypeSerializer.Meta):
         fields = tuple(UserCreatePasswordRetypeSerializer.Meta.fields) + (
-            'role_doctor',
-            'phone_doctor',
-            'phone_pacient'
+            "role_doctor",
+            "phone_doctor",
+            "phone_pacient",
         )
 
     def save(self, **kwargs):
@@ -93,11 +96,13 @@ class CUserCreateSerializer(UserCreatePasswordRetypeSerializer):
 
     def validate(self, attrs):
         role_doctor = attrs.pop("role_doctor", False)
-        _ = attrs.pop("phone_pacient", '')
-        phone_doctor = attrs.pop("phone_doctor", '')
+        _ = attrs.pop("phone_pacient", "")
+        phone_doctor = attrs.pop("phone_doctor", "")
         if role_doctor:
             if phone_doctor is None:
-                raise serializers.ValidationError("Поле телефона доктора является обязательным.")
+                raise serializers.ValidationError(
+                    "Поле телефона доктора является обязательным."
+                )
         return super().validate(attrs)
 
     def validate_phone_doctor(self, value):
@@ -107,7 +112,9 @@ class CUserCreateSerializer(UserCreatePasswordRetypeSerializer):
         if value is not None:
             # добавить валидацию
             if Doctor.objects.filter(phone=value).exists():
-                raise serializers.ValidationError("Доктор с таким телефоном уже существует.")
+                raise serializers.ValidationError(
+                    "Доктор с таким телефоном уже существует."
+                )
         return value
 
     def validate_phone_pacient(self, value):
@@ -117,7 +124,9 @@ class CUserCreateSerializer(UserCreatePasswordRetypeSerializer):
         if value is not None:
             # добавить валидацию
             if Pacient.objects.filter(phone=value).exists():
-                raise serializers.ValidationError("Пациент с таким телефоном уже существует.")
+                raise serializers.ValidationError(
+                    "Пациент с таким телефоном уже существует."
+                )
         else:
             raise serializers.ValidationError("Поле телефона является обязательным.")
         return value

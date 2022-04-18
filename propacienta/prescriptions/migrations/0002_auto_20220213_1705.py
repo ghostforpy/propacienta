@@ -7,24 +7,42 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pacients', '0003_alter_pacient_options'),
-        ('prescriptions', '0001_initial'),
+        ("pacients", "0003_alter_pacient_options"),
+        ("prescriptions", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='analisisprescription',
-            name='pacient',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='analisisprescription', to='pacients.pacient', verbose_name='Пациент'),
+            model_name="analisisprescription",
+            name="pacient",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="analisisprescription",
+                to="pacients.pacient",
+                verbose_name="Пациент",
+            ),
         ),
         migrations.AddField(
-            model_name='medicineprescription',
-            name='pacient',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='medicineprescription', to='pacients.pacient', verbose_name='Пациент'),
+            model_name="medicineprescription",
+            name="pacient",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="medicineprescription",
+                to="pacients.pacient",
+                verbose_name="Пациент",
+            ),
         ),
         migrations.AddField(
-            model_name='procedureprescription',
-            name='pacient',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='procedureprescription', to='pacients.pacient', verbose_name='Пациент'),
+            model_name="procedureprescription",
+            name="pacient",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="procedureprescription",
+                to="pacients.pacient",
+                verbose_name="Пациент",
+            ),
         ),
     ]

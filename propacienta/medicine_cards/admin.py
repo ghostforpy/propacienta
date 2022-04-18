@@ -11,9 +11,13 @@ class ResultIndependentResearchAdmin(admin.TabularInline):
 
 @admin.register(MedicineCard)
 class MedicineCardAdmin(admin.ModelAdmin):
-    search_fields = ("pacient__user__email", "pacient__user__last_name",
-                    "pacient__user__first_name", "pacient__user__patronymic",
-                    "pacient__phone",)
+    search_fields = (
+        "pacient__user__email",
+        "pacient__user__last_name",
+        "pacient__user__first_name",
+        "pacient__user__patronymic",
+        "pacient__phone",
+    )
 
     list_display = ("user_name",)
     inlines = [ResultIndependentResearchAdmin]

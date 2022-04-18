@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medicine_cards', '0006_alter_resultindependentresearch_options'),
+        ("medicine_cards", "0006_alter_resultindependentresearch_options"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='resultindependentresearch',
-            options={'ordering': ['-datetime_stamp', '-id'], 'verbose_name': 'Результат самостоятельного исследования', 'verbose_name_plural': 'Результаты самостоятельных исследований'},
+            name="resultindependentresearch",
+            options={
+                "ordering": ["-datetime_stamp", "-id"],
+                "verbose_name": "Результат самостоятельного исследования",
+                "verbose_name_plural": "Результаты самостоятельных исследований",
+            },
         ),
     ]

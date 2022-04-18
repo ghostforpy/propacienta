@@ -9,31 +9,81 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('pacients', '0003_alter_pacient_options'),
-        ('medicine_cards', '0003_auto_20220212_1109'),
+        ("pacients", "0003_alter_pacient_options"),
+        ("medicine_cards", "0003_auto_20220212_1109"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Operation',
+            name="Operation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=250, unique=True, verbose_name='Наименование')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        max_length=250, unique=True, verbose_name="Наименование"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='TransferredOperation',
+            name="TransferredOperation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('effect', models.CharField(max_length=250, verbose_name='Эффект')),
-                ('date', models.DateField(null=True, verbose_name='Дата проведения операции')),
-                ('medicine_card', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='transferred_operations', to='medicine_cards.medicinecard', verbose_name='Медицинская карта')),
-                ('operation', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='transferred_operations', to='operations.operation', verbose_name='Операция')),
-                ('pacient', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='transferred_operations', to='pacients.pacient', verbose_name='Пациент')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("effect", models.CharField(max_length=250, verbose_name="Эффект")),
+                (
+                    "date",
+                    models.DateField(
+                        null=True, verbose_name="Дата проведения операции"
+                    ),
+                ),
+                (
+                    "medicine_card",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="transferred_operations",
+                        to="medicine_cards.medicinecard",
+                        verbose_name="Медицинская карта",
+                    ),
+                ),
+                (
+                    "operation",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="transferred_operations",
+                        to="operations.operation",
+                        verbose_name="Операция",
+                    ),
+                ),
+                (
+                    "pacient",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="transferred_operations",
+                        to="pacients.pacient",
+                        verbose_name="Пациент",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Перенесенная операция',
-                'verbose_name_plural': 'Перенесенные операции',
+                "verbose_name": "Перенесенная операция",
+                "verbose_name_plural": "Перенесенные операции",
             },
         ),
     ]

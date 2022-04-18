@@ -7,29 +7,40 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pacients', '0003_alter_pacient_options'),
-        ('medicine_cards', '0002_independentresearch_resultindependentresearch'),
+        ("pacients", "0003_alter_pacient_options"),
+        ("medicine_cards", "0002_independentresearch_resultindependentresearch"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='medicinecard',
-            name='average_pressure',
-            field=models.CharField(max_length=20, null=True, verbose_name='Среднее давление'),
+            model_name="medicinecard",
+            name="average_pressure",
+            field=models.CharField(
+                max_length=20, null=True, verbose_name="Среднее давление"
+            ),
         ),
         migrations.AlterField(
-            model_name='medicinecard',
-            name='height',
-            field=models.DecimalField(decimal_places=2, max_digits=8, null=True, verbose_name='Рост'),
+            model_name="medicinecard",
+            name="height",
+            field=models.DecimalField(
+                decimal_places=2, max_digits=8, null=True, verbose_name="Рост"
+            ),
         ),
         migrations.AlterField(
-            model_name='medicinecard',
-            name='pacient',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='medicine_card', to='pacients.pacient', verbose_name='Пациент'),
+            model_name="medicinecard",
+            name="pacient",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="medicine_card",
+                to="pacients.pacient",
+                verbose_name="Пациент",
+            ),
         ),
         migrations.AlterField(
-            model_name='medicinecard',
-            name='weight',
-            field=models.DecimalField(decimal_places=2, max_digits=8, null=True, verbose_name='Вес'),
+            model_name="medicinecard",
+            name="weight",
+            field=models.DecimalField(
+                decimal_places=2, max_digits=8, null=True, verbose_name="Вес"
+            ),
         ),
     ]

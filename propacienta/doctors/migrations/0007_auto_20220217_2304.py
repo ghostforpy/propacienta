@@ -7,23 +7,36 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('doctors', '0006_auto_20220207_2326'),
+        ("doctors", "0006_auto_20220207_2326"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='doctor',
-            name='specializations',
-            field=models.ManyToManyField(related_name='doctors', to='doctors.DoctorSpecialization', verbose_name='Специализации'),
+            model_name="doctor",
+            name="specializations",
+            field=models.ManyToManyField(
+                related_name="doctors",
+                to="doctors.DoctorSpecialization",
+                verbose_name="Специализации",
+            ),
         ),
         migrations.AlterField(
-            model_name='doctor',
-            name='sub_specializations',
-            field=models.ManyToManyField(related_name='doctors', to='doctors.DoctorSubSpecialization', verbose_name='Узкие специализации'),
+            model_name="doctor",
+            name="sub_specializations",
+            field=models.ManyToManyField(
+                related_name="doctors",
+                to="doctors.DoctorSubSpecialization",
+                verbose_name="Узкие специализации",
+            ),
         ),
         migrations.AlterField(
-            model_name='doctorsubspecialization',
-            name='specialization',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sub_specializations', to='doctors.doctorspecialization', verbose_name='Специализация'),
+            model_name="doctorsubspecialization",
+            name="specialization",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sub_specializations",
+                to="doctors.doctorspecialization",
+                verbose_name="Специализация",
+            ),
         ),
     ]

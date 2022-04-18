@@ -7,32 +7,68 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medicine_cards', '0001_initial'),
+        ("medicine_cards", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='IndependentResearch',
+            name="IndependentResearch",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=250, unique=True, verbose_name='Наименование')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        max_length=250, unique=True, verbose_name="Наименование"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Самостоятельное исследование',
-                'verbose_name_plural': 'Самостоятельные исследования',
+                "verbose_name": "Самостоятельное исследование",
+                "verbose_name_plural": "Самостоятельные исследования",
             },
         ),
         migrations.CreateModel(
-            name='ResultIndependentResearch',
+            name="ResultIndependentResearch",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('result', models.TextField(verbose_name='Результат')),
-                ('independent_research', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='independent_research_results', to='medicine_cards.independentresearch', verbose_name='Самостоятельное исследование')),
-                ('medicine_card', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='independent_research_results', to='medicine_cards.medicinecard')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("result", models.TextField(verbose_name="Результат")),
+                (
+                    "independent_research",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="independent_research_results",
+                        to="medicine_cards.independentresearch",
+                        verbose_name="Самостоятельное исследование",
+                    ),
+                ),
+                (
+                    "medicine_card",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="independent_research_results",
+                        to="medicine_cards.medicinecard",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Результат самостоятельного исследования',
-                'verbose_name_plural': 'Результаты самостоятельных исследований',
+                "verbose_name": "Результат самостоятельного исследования",
+                "verbose_name_plural": "Результаты самостоятельных исследований",
             },
         ),
     ]

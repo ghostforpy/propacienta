@@ -19,84 +19,115 @@ from .models import Pacient
 
 class EditMixin:
     extra = 0
-    readonly_fields = ('get_edit_link',)
+    readonly_fields = ("get_edit_link",)
 
     def get_edit_link(self, obj=None):
-        if obj.pk:  # if object has already been saved and has a primary key, show link to it
+        if (
+            obj.pk
+        ):  # if object has already been saved and has a primary key, show link to it
             url = reverse(
-                'admin:%s_%s_change' % (obj._meta.app_label, obj._meta.model_name),
-                args=[force_text(obj.pk)]
+                "admin:%s_%s_change" % (obj._meta.app_label, obj._meta.model_name),
+                args=[force_text(obj.pk)],
             )
             return format_html(
                 '<a href="{url}">{text}</a>',
                 url=url,
                 # text=_("%s") % obj.__str__()
-                text="Перейти на страницу"
+                text="Перейти на страницу",
             )
 
         return _("(save and continue editing to create a link)")
+
     get_edit_link.short_description = _("Просмотреть и изменить")
     get_edit_link.allow_tags = True
 
 
 class TransferredOperationAdmin(EditMixin, admin.StackedInline):
     model = TransferredOperation
-    fields = ['get_edit_link', "operation", "medicine_card", "effect", "date"]
+    fields = ["get_edit_link", "operation", "medicine_card", "effect", "date"]
 
 
 class ChronicDiseaseAdmin(EditMixin, admin.StackedInline):
     model = ChronicDisease
-    fields = ['get_edit_link', "disease", "medicine_card", "treatment"]
+    fields = ["get_edit_link", "disease", "medicine_card", "treatment"]
 
 
 class TransferredDiseaseAdmin(EditMixin, admin.StackedInline):
     model = TransferredDisease
-    fields = ['get_edit_link', "disease", "medicine_card",
-                "diagnosis", "diagnosis_date", "diagnosis_year",
-                "treatment_date", "treatment_end_date"]
+    fields = [
+        "get_edit_link",
+        "disease",
+        "medicine_card",
+        "diagnosis",
+        "diagnosis_date",
+        "diagnosis_year",
+        "treatment_date",
+        "treatment_end_date",
+    ]
 
 
 class ProcedurePrescriptionAdmin(EditMixin, admin.StackedInline):
     model = ProcedurePrescription
-    fields = ['get_edit_link', "procedure", "medicine_card", "doctor", "doctor_appointment"]
+    fields = [
+        "get_edit_link",
+        "procedure",
+        "medicine_card",
+        "doctor",
+        "doctor_appointment",
+    ]
 
 
 class AnalisisPrescriptionAdmin(EditMixin, admin.StackedInline):
     model = AnalisisPrescription
-    fields = ['get_edit_link', "analisis", "medicine_card", "doctor", "doctor_appointment"]
+    fields = [
+        "get_edit_link",
+        "analisis",
+        "medicine_card",
+        "doctor",
+        "doctor_appointment",
+    ]
 
 
 class MedicinePrescriptionAdmin(EditMixin, admin.StackedInline):
     model = MedicinePrescription
-    fields = ['get_edit_link', "medicine", "medicine_card", "doctor", "doctor_appointment"]
+    fields = [
+        "get_edit_link",
+        "medicine",
+        "medicine_card",
+        "doctor",
+        "doctor_appointment",
+    ]
 
 
 class UserModelAdmin(admin.StackedInline):
     model = get_user_model()
-    fields = [
-        "first_name",
-        "last_name",
-        "patronymic",
-        "birthday",
-        "email"
-    ]
+    fields = ["first_name", "last_name", "patronymic", "birthday", "email"]
 
 
 class MedicineCardModelAdmin(admin.StackedInline):
     model = MedicineCard
-    #fields = [
+    # fields = [
     #    "first_name",
     #    "last_name",
     #    "patronymic",
     #    "birthday"
-    #]
+    # ]
 
 
 @admin.register(Pacient)
 class PacientAdmin(admin.ModelAdmin):
-    search_fields = ("user__email", "user__last_name",
-                    "user__first_name", "user__patronymic", "phone",)
-    list_display = ("email", "user_name", "phone",)
+    search_fields = (
+        "user__email",
+        "user__last_name",
+        "user__first_name",
+        "user__patronymic",
+        "phone",
+    )
+    list_display = (
+        "email",
+        "user_name",
+        "phone",
+    )
     list_select_related = True
     inlines = [
         UserModelAdmin,
@@ -106,8 +137,8 @@ class PacientAdmin(admin.ModelAdmin):
         TransferredDiseaseAdmin,
         ProcedurePrescriptionAdmin,
         AnalisisPrescriptionAdmin,
-        MedicinePrescriptionAdmin
-        ]
+        MedicinePrescriptionAdmin,
+    ]
 
     def user_name(self, obj):
         return obj.__str__()

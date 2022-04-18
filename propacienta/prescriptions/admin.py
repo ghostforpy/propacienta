@@ -1,10 +1,14 @@
 from django.contrib import admin
 from .models import MedicinePrescription, ProcedurePrescription, AnalisisPrescription
+
 # Register your models here.
 
 
 class BasePrescriptionAdmin(admin.ModelAdmin):
-    list_display = ("pacient", "doctor",)
+    list_display = (
+        "pacient",
+        "doctor",
+    )
     list_select_related = True
 
     def pacient(self, obj):

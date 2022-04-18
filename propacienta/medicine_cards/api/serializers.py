@@ -7,10 +7,12 @@ class MedicineCardSerializer(serializers.ModelSerializer):
         model = MedicineCard
         exclude = ["id", "pacient"]
 
+
 class IndependentResearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = IndependentResearch
         fields = "__all__"
+
 
 class ResultIndependentResearchSerializer(serializers.ModelSerializer):
     class Meta:

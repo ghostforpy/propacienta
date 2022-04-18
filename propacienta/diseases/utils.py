@@ -5,19 +5,22 @@ from doctors.utils import request_by_doctor
 
 def discharge_epicrisis_dir(instance, filename: str) -> str:
     return "private/discharge_epicrisis/pacient_%s/%s" % (
-        instance.discharge_epicris.pacient.id, filename
+        instance.discharge_epicris.pacient.id,
+        filename,
     )
 
 
 def discharge_epicrisis_images_dir(instance, filename: str) -> str:
     return "private/discharge_epicrisis/images/pacient_%s/%s" % (
-        instance.discharge_epicris.pacient.id, filename
+        instance.discharge_epicris.pacient.id,
+        filename,
     )
 
 
 def discharge_epicrisis_files_dir(instance, filename: str) -> str:
     return "private/discharge_epicrisis/files/pacient_%s/%s" % (
-        instance.discharge_epicris.pacient.id, filename
+        instance.discharge_epicris.pacient.id,
+        filename,
     )
 
 
@@ -25,8 +28,9 @@ class RequestByTreatingDoctorTransferredOrChronicDisease(BasePermission):
     """
     Object-level permission to only allow requests by active treating doctors.
     """
+
     def has_permission(self, request, view):
-        pacient_id = view.kwargs.get('pacient_id')
+        pacient_id = view.kwargs.get("pacient_id")
         doctor = request_by_doctor(request)
         if doctor is not None:
             try:
@@ -47,8 +51,9 @@ class IsOwnerOfTransferredOrChronicDiseaseObject(BasePermission):
     """
     Object-level permission to only allow owners of an object.
     """
+
     def has_permission(self, request, view):
-        return request.user.pacient.id == view.kwargs.get('pacient_id')
+        return request.user.pacient.id == view.kwargs.get("pacient_id")
 
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request,
@@ -63,6 +68,7 @@ class IsOwnerOfDischargeEpicrisImageOrFileObject(BasePermission):
     """
     Object-level permission to only allow owners of an object.
     """
+
     # def has_permission(self, request, view):
     #     return request.user.pacient.id == view.kwargs.get('pacient_id')
 
@@ -79,6 +85,7 @@ class RequestByTreatingDoctorDischargeEpicrisImageOrFile(BasePermission):
     """
     Object-level permission to only allow requests by active treating doctors.
     """
+
     # def has_permission(self, request, view):
     #     pacient_id = view.kwargs.get('pacient_id')
     #     doctor = request_by_doctor(request)
@@ -101,9 +108,12 @@ class IsOwnerOfDischargeEpicrisImageAndFileObject(BasePermission):
     """
     Object-level permission to only allow owners of an object.
     """
+
     def has_permission(self, request, view):
         try:
-            return request.user.pacient.id == int(request.headers.get("Pacientid", None))
+            return request.user.pacient.id == int(
+                request.headers.get("Pacientid", None)
+            )
         except:
             return False
 
@@ -120,6 +130,7 @@ class RequestByTreatingDoctorDischargeEpicrisImageAndFile(BasePermission):
     """
     Object-level permission to only allow requests by active treating doctors.
     """
+
     def has_permission(self, request, view):
         doctor = request_by_doctor(request)
         if doctor is not None:

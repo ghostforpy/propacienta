@@ -5,6 +5,7 @@ class DenyAll(BasePermission):
     """
     Object-level permission to only allow requests by active doctors.
     """
+
     def has_permission(self, request, view):
         return False
 

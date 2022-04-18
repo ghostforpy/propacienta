@@ -3,16 +3,19 @@ from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 
+
 class MedicineCard(models.Model):
     pacient = models.OneToOneField(
         "pacients.pacient",
         on_delete=models.CASCADE,
         related_name="medicine_card",
-        verbose_name=_("Пациент")
+        verbose_name=_("Пациент"),
     )
     height = models.DecimalField(_("Рост"), max_digits=8, decimal_places=2, null=True)
     weight = models.DecimalField(_("Вес"), max_digits=8, decimal_places=2, null=True)
-    average_pressure = models.CharField(max_length=20, null=True, verbose_name=_("Среднее давление"))
+    average_pressure = models.CharField(
+        max_length=20, null=True, verbose_name=_("Среднее давление")
+    )
 
     class Meta:
         verbose_name = "Медицинская карта"
@@ -24,11 +27,8 @@ class MedicineCard(models.Model):
 
 class IndependentResearch(models.Model):
     """Модель самостоятельных исследований (уровень сахара, давление и т.д.)."""
-    title = models.CharField(
-        _("Наименование"),
-        max_length=250,
-        unique=True
-        )
+
+    title = models.CharField(_("Наименование"), max_length=250, unique=True)
 
     class Meta:
         verbose_name = "Самостоятельное исследование"
@@ -43,12 +43,12 @@ class ResultIndependentResearch(models.Model):
         IndependentResearch,
         on_delete=models.CASCADE,
         verbose_name=(_("Самостоятельное исследование")),
-        related_name="independent_research_results"
+        related_name="independent_research_results",
     )
     medicine_card = models.ForeignKey(
         MedicineCard,
         on_delete=models.CASCADE,
-        related_name="independent_research_results"
+        related_name="independent_research_results",
     )
     result = models.TextField(_("Результат"))
     datetime_stamp = models.DateTimeField(_("Время проведения"), blank=True, null=True)

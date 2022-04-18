@@ -7,12 +7,8 @@ from hospitals.models import Hospital
 
 class UserModelAdmin(admin.StackedInline):
     model = get_user_model()
-    fields = [
-        "first_name",
-        "last_name",
-        "patronymic",
-        "birthday"
-    ]
+    fields = ["first_name", "last_name", "patronymic", "birthday"]
+
 
 # Register your models here.
 @admin.register(Doctor)
@@ -25,6 +21,7 @@ class DoctorAdmin(admin.ModelAdmin):
 
     def email(self, obj):
         return obj.user.email
+
 
 admin.site.register(DoctorSpecialization)
 admin.site.register(DoctorSubSpecialization)

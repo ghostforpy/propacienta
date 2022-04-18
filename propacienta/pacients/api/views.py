@@ -16,6 +16,7 @@ class RequestByDoctor(BasePermission):
     """
     Object-level permission to only allow requests by active doctors.
     """
+
     def has_permission(self, request, view):
         return request_by_doctor(request) is not None
 
@@ -30,31 +31,26 @@ class PageNumberPaginationBy10(PageNumberPagination):
     page_size = 10
 
 
-@method_decorator(name='list', decorator=swagger_auto_schema(
-   tags=["pacients"]
-))
-@method_decorator(name='retrieve', decorator=swagger_auto_schema(
-   tags=["pacients"]
-))
+@method_decorator(name="list", decorator=swagger_auto_schema(tags=["pacients"]))
+@method_decorator(name="retrieve", decorator=swagger_auto_schema(tags=["pacients"]))
 class PacientViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     pagination_class = PageNumberPaginationBy10
     queryset = Pacient.objects.all()
     serializer_class = PacientSerializer
     lookup_field = "id"
     permission_classes = [RequestByDoctor]
-    search_fields = ['user__first_name', 'user__last_name', "user__patronymic", "phone"]
+    search_fields = ["user__first_name", "user__last_name", "user__patronymic", "phone"]
     filter_backends = [filters.SearchFilter]
 
     def get_queryset(self):
-        if self.action == 'list':
+        if self.action == "list":
             queryparams = self.request.GET.dict()
             search = queryparams.get("search", None)
             if search is not None and search != "":
                 return self.queryset
             doctor = self.request.user.doctor
             return doctor.pacients.all()
-        elif self.action == 'retrieve':
+        elif self.action == "retrieve":
             return self.queryset
         else:
             return self.queryset.none()
-

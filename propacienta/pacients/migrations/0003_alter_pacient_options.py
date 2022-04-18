@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pacients', '0002_remove_pacient_user'),
+        ("pacients", "0002_remove_pacient_user"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='pacient',
-            options={'verbose_name': 'Пациент', 'verbose_name_plural': 'Пациенты'},
+            name="pacient",
+            options={"verbose_name": "Пациент", "verbose_name_plural": "Пациенты"},
         ),
     ]

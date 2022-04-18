@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('doctors', '0005_auto_20220207_2313'),
+        ("doctors", "0005_auto_20220207_2313"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='doctorspecialization',
-            name='title',
-            field=models.CharField(max_length=250, unique=True, verbose_name='Наименование'),
+            model_name="doctorspecialization",
+            name="title",
+            field=models.CharField(
+                max_length=250, unique=True, verbose_name="Наименование"
+            ),
         ),
         migrations.AlterField(
-            model_name='doctorsubspecialization',
-            name='title',
-            field=models.CharField(max_length=250, unique=True, verbose_name='Наименование'),
+            model_name="doctorsubspecialization",
+            name="title",
+            field=models.CharField(
+                max_length=250, unique=True, verbose_name="Наименование"
+            ),
         ),
     ]

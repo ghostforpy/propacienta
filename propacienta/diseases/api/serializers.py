@@ -12,7 +12,7 @@ from ..models import (
 
 class ValidatePacientIdMixin:
     def validate_pacient(self, value):
-        pacient_id = self.context['view'].kwargs["pacient_id"]
+        pacient_id = self.context["view"].kwargs["pacient_id"]
         if value.id != pacient_id:
             raise serializers.ValidationError("Wrong pacientId.")
         return value
@@ -58,16 +58,21 @@ class DischargeEpicrisImageSerializer(serializers.ModelSerializer):
 
 class DischargeEpicrisSerializer(ValidatePacientIdMixin, serializers.ModelSerializer):
     """Сериалайзер для выписного эпикриза хронического или перенесённого заболевания."""
-    discharge_epicrisis_files = DischargeEpicrisFilesSerializer(many=True, required=False)
-    discharge_epicrisis_images = DischargeEpicrisImageSerializer(many=True, required=False)
+
+    discharge_epicrisis_files = DischargeEpicrisFilesSerializer(
+        many=True, required=False
+    )
+    discharge_epicrisis_images = DischargeEpicrisImageSerializer(
+        many=True, required=False
+    )
     disease = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = DischargeEpicris
         fields = "__all__"
         extra_kwargs = {
-            'chronic_disease': {'required': False},
-            'transferred_disease': {'required': False}
+            "chronic_disease": {"required": False},
+            "transferred_disease": {"required": False},
         }
 
     def validate_disease(self, value):
@@ -83,9 +88,7 @@ class DischargeEpicrisSerializer(ValidatePacientIdMixin, serializers.ModelSerial
         disease = validated_data.pop("disease")
         pacient = validated_data["pacient"]
         chronic_disease, _ = ChronicDisease.objects.get_or_create(
-            disease=disease,
-            pacient=pacient,
-            medicine_card=pacient.medicine_card
+            disease=disease, pacient=pacient, medicine_card=pacient.medicine_card
         )
         discharge_epicris = DischargeEpicris.objects.create(
             chronic_disease=chronic_disease, **validated_data
@@ -97,14 +100,12 @@ class DischargeEpicrisSerializer(ValidatePacientIdMixin, serializers.ModelSerial
         for image_data in images_data:
             # сохранянем изображения
             DischargeEpicrisImage.objects.create(
-                discharge_epicris=discharge_epicris, 
-                image=image_data
+                discharge_epicris=discharge_epicris, image=image_data
             )
         for file_data in files_data:
             # сохранянем файлы
             DischargeEpicrisFiles.objects.create(
-                discharge_epicris=discharge_epicris, 
-                file=file_data
+                discharge_epicris=discharge_epicris, file=file_data
             )
         discharge_epicris.save()
         return discharge_epicris
@@ -124,7 +125,9 @@ class TransferredDiseaseSerializer(ValidatePacientIdMixin, serializers.ModelSeri
         """
         Check dates.
         """
-        if not (data['diagnosis_date'] < data['treatment_date'] < data['treatment_end_date']):
+        if not (
+            data["diagnosis_date"] < data["treatment_date"] < data["treatment_end_date"]
+        ):
             raise serializers.ValidationError("Wrong dates")
         return data
 
@@ -135,13 +138,16 @@ class TransferredDiseaseSerializer(ValidatePacientIdMixin, serializers.ModelSeri
         epicris_date = validated_data.pop("epicris_date", None)
         transferred_disease = TransferredDisease.objects.create(**validated_data)
         if not (
-            epicris is None and epicris_date is None and len(images_data) == 0 and len(files_data) == 0
+            epicris is None
+            and epicris_date is None
+            and len(images_data) == 0
+            and len(files_data) == 0
         ):
             discharge_epicris = DischargeEpicris.objects.create(
                 transferred_disease=transferred_disease,
                 pacient=validated_data["pacient"],
                 epicris=epicris,
-                d=epicris_date or validated_data["treatment_end_date"]
+                d=epicris_date or validated_data["treatment_end_date"],
             )
             # if instance.images.count() + len(images_data) > MAXIMUM_SERVICES_IMAGES_COUNT:
             #     raise ValidationError(
@@ -150,14 +156,12 @@ class TransferredDiseaseSerializer(ValidatePacientIdMixin, serializers.ModelSeri
             for image_data in images_data:
                 # сохранянем изображения
                 DischargeEpicrisImage.objects.create(
-                    discharge_epicris=discharge_epicris, 
-                    image=image_data
+                    discharge_epicris=discharge_epicris, image=image_data
                 )
             for file_data in files_data:
                 # сохранянем файлы
                 DischargeEpicrisFiles.objects.create(
-                    discharge_epicris=discharge_epicris, 
-                    file=file_data
+                    discharge_epicris=discharge_epicris, file=file_data
                 )
             discharge_epicris.save()
         return transferred_disease

@@ -19,5 +19,5 @@ class PacientSerializer(serializers.ModelSerializer):
             "last_name",
             "patronymic",
             "birthday",
-            "phone"
+            "phone",
         ]

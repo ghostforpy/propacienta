@@ -9,10 +9,9 @@ if settings.DEBUG:
 else:
     router = SimpleRouter()
 
-#router.register("users", UserViewSet, basename="users")
+# router.register("users", UserViewSet, basename="users")
 app_name = "auth"
 urlpatterns = [
     path("login/", login_view),
     path("logout/", logout_view),
-    
 ]

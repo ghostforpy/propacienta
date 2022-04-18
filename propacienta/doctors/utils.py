@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.permissions import BasePermission
 
-IS_DOCTOR_HEADER = 'IsDoctor'
-IS_DOCTOR_HEADER_STATUS = 'true'
+IS_DOCTOR_HEADER = "IsDoctor"
+IS_DOCTOR_HEADER_STATUS = "true"
+
 
 def request_by_doctor(request):
     if request.user != AnonymousUser:
@@ -18,10 +19,11 @@ class RequestByDoctor(BasePermission):
     """
     Object-level permission to only allow requests by active doctors.
     """
+
     def has_permission(self, request, view):
         return request_by_doctor(request) is not None
 
     def has_object_permission(self, request, view, obj):
-        #if request.user == obj.pacient.user:
+        # if request.user == obj.pacient.user:
         #    return True
         return request_by_doctor(request) is not None

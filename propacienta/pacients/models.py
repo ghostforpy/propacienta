@@ -5,12 +5,13 @@ from djoser.signals import user_registered
 
 class Pacient(models.Model):
     """Model for pacients."""
+
     phone = models.CharField(_("Телефон"), max_length=30, unique=True)
     treating_doctors = models.ManyToManyField(
         "doctors.doctor",
         related_name="pacients",
         verbose_name="Лечащие врачи",
-        blank=True
+        blank=True,
     )
 
     class Meta:
@@ -25,7 +26,7 @@ class Pacient(models.Model):
 
 
 def user_created(signal=None, sender=None, user=None, request=None, **kwargs):
-    phone_pacient = request.data['phone_pacient']
+    phone_pacient = request.data["phone_pacient"]
     pacient = Pacient.objects.create(phone=phone_pacient)
     user.pacient = pacient
     user.save()

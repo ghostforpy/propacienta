@@ -11,21 +11,21 @@ from .serializers import CUserSerializer
 
 User = get_user_model()
 
-#@method_decorator(name='list', decorator=swagger_auto_schema(
+# @method_decorator(name='list', decorator=swagger_auto_schema(
 #    tags=["users"]
-#))
-#@method_decorator(name='retrieve', decorator=swagger_auto_schema(
+# ))
+# @method_decorator(name='retrieve', decorator=swagger_auto_schema(
 #    tags=["users"]
-#))
-#@method_decorator(name='update', decorator=swagger_auto_schema(
+# ))
+# @method_decorator(name='update', decorator=swagger_auto_schema(
 #    tags=["users"]
-#))
-#@method_decorator(name='partial_update', decorator=swagger_auto_schema(
+# ))
+# @method_decorator(name='partial_update', decorator=swagger_auto_schema(
 #    tags=["users"]
-#))
-#@method_decorator(name='me', decorator=swagger_auto_schema(
+# ))
+# @method_decorator(name='me', decorator=swagger_auto_schema(
 #    tags=["users"]
-#))
+# ))
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = CUserSerializer
     queryset = User.objects.all()

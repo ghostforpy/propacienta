@@ -7,19 +7,19 @@ import propacienta.users.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0006_alter_user_email'),
+        ("users", "0006_alter_user_email"),
     ]
 
     operations = [
         migrations.AlterModelManagers(
-            name='user',
+            name="user",
             managers=[
-                ('objects', propacienta.users.models.CustomUserManager()),
+                ("objects", propacienta.users.models.CustomUserManager()),
             ],
         ),
         migrations.AlterField(
-            model_name='user',
-            name='username',
+            model_name="user",
+            name="username",
             field=models.CharField(blank=True, max_length=255),
         ),
     ]

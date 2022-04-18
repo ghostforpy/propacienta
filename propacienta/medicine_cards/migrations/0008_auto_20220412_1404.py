@@ -7,18 +7,27 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medicine_cards', '0007_alter_resultindependentresearch_options'),
+        ("medicine_cards", "0007_alter_resultindependentresearch_options"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='resultindependentresearch',
-            name='independent_research',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='independent_research_results', to='medicine_cards.independentresearch', verbose_name='Самостоятельное исследование'),
+            model_name="resultindependentresearch",
+            name="independent_research",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="independent_research_results",
+                to="medicine_cards.independentresearch",
+                verbose_name="Самостоятельное исследование",
+            ),
         ),
         migrations.AlterField(
-            model_name='resultindependentresearch',
-            name='medicine_card',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='independent_research_results', to='medicine_cards.medicinecard'),
+            model_name="resultindependentresearch",
+            name="medicine_card",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="independent_research_results",
+                to="medicine_cards.medicinecard",
+            ),
         ),
     ]

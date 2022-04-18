@@ -17,11 +17,18 @@ class UserAdmin(auth_admin.UserAdmin):
         (None, {"fields": ("username", "password")}),
         (
             _("Personal info"),
-            {"fields": (
-                "name", "email", "first_name",
-                "last_name", "patronymic", "birthday",
-                "pacient", "doctor"
-                )}
+            {
+                "fields": (
+                    "name",
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "patronymic",
+                    "birthday",
+                    "pacient",
+                    "doctor",
+                )
+            },
         ),
         (
             _("Permissions"),
@@ -38,5 +45,10 @@ class UserAdmin(auth_admin.UserAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     list_display = ["email", "username", "name", "is_superuser"]
-    search_fields = ("email", "last_name",
-                    "first_name", "patronymic", "pacient__phone",)
+    search_fields = (
+        "email",
+        "last_name",
+        "first_name",
+        "patronymic",
+        "pacient__phone",
+    )
