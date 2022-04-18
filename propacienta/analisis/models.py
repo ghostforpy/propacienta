@@ -56,7 +56,7 @@ class AnalysisResult(models.Model):
         blank=True,
         null=True
     )
-    result = models.TextField(_("Результаты анализа"), null=True)
+    result = models.TextField(_("Результаты анализа"), default="", blank=True)
     d = models.DateField(_("Дата сдачи анализа"))
     
     class Meta:
