@@ -143,6 +143,7 @@ export default {
       // console.log(this.searchPacientQuery);
       if (this.searchPacientQuery != "" && this.searchPacientQuery != null) {
         config.params.search = this.searchPacientQuery;
+        config.params.page = this.nextPage;
       }
       request_service(
         config,
