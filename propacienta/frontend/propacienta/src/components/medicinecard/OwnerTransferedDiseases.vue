@@ -3,75 +3,188 @@
     <v-layout align-center justify-center>
       <v-flex xs10 sm8 md6>
         <v-row>
-          <v-col cols="12">
-            <v-card class="mb-2">
+          <!-- начало формы диалога -->
+          <v-col cols="12"
+            ><v-autocomplete
+              v-model="selectMain"
+              :items="items"
+              label="Заболевания"
+              item-text="title"
+              :filter="filterAutocomplete"
+              item-value="id"
+              return-object
+              @change="handleChangeSelect"
+            >
+              <template #item="{ item }">
+                <span>{{ item.title }} (код {{ item.code }})</span>
+                <v-icon v-if="item.diseases_count > 0" color="pink"
+                  >mdi-circle-medium</v-icon
+                >
+              </template>
+              <template #selection="{ item }">
+                <span>{{ item.title }} (код {{ item.code }})</span>
+              </template></v-autocomplete
+            ></v-col
+          >
+          <v-dialog v-model="dialog" :max-width="maxWidth">
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">Добавить перенесённое заболевание</span>
+              </v-card-title>
               <v-card-text>
-                <v-autocomplete
-                  v-model="select"
-                  :items="items"
-                  label="Заболевания"
-                  item-text="title"
-                  :filter="filterAutocomplete"
-                  item-value="id"
-                  return-object
-                  @change="handleChangeSelect"
-                >
-                  <template #item="{ item }">
-                    <span>{{ item.title }} (код {{ item.code }})</span>
-                    <v-icon v-if="item.diseases_count > 0" color="pink"
-                      >mdi-circle-medium</v-icon
+                <v-container>
+                  <v-row>
+                    <v-col cols="12"
+                      ><v-autocomplete
+                        v-model="selectDialog"
+                        :items="items"
+                        label="Заболевания"
+                        item-text="title"
+                        :filter="filterAutocomplete"
+                        item-value="id"
+                        return-object
+                      >
+                        <template #item="{ item }">
+                          <span>{{ item.title }} (код {{ item.code }})</span>
+                          <v-icon v-if="item.diseases_count > 0" color="pink"
+                            >mdi-circle-medium</v-icon
+                          >
+                        </template>
+                        <template #selection="{ item }">
+                          <span>{{ item.title }} (код {{ item.code }})</span>
+                        </template></v-autocomplete
+                      ></v-col
                     >
-                  </template>
-                  <template #selection="{ item }">
-                    <span>{{ item.title }} (код {{ item.code }})</span>
-                  </template></v-autocomplete
-                >
-                <!-- <TextFieldUserOwner
-                  fieldname="diagnose"
-                  labelname="Диагноз"
-                  v-model="diagnoseAdd"
-                  ref="diagnose"
-                >
-                </TextFieldUserOwner> -->
-                <v-textarea
-                  v-model="diagnoseAdd"
-                  auto-grow
-                  clearable
-                  outlined
-                  :readonly="readonlyDiarnoseTextArea"
-                  @click:append="
-                    readonlyDiarnoseTextArea = !readonlyDiarnoseTextArea
-                  "
-                  :append-icon="
-                    readonlyDiarnoseTextArea ? 'mdi-pencil' : 'mdi-check'
-                  "
-                  clear-icon="mdi-close-circle"
-                  label="Диагноз"
-                  ref="diagnose"
-                  :rules="notEmptyRules"
-                ></v-textarea>
-                <DateFieldUserOwner
-                  fieldname="diagnoseDateAdd"
-                  labelname="Дата постановки диагноза"
-                  v-model="diagnoseDateAdd"
-                  :rules="notEmptyRules"
-                  ref="diagnoseDateAdd"
-                ></DateFieldUserOwner>
-                <DateFieldUserOwner
-                  fieldname="startTreatmentDateAdd"
-                  labelname="Дата начала лечения"
-                  v-model="startTreatmentDateAdd"
-                  :rules="notEmptyRules"
-                  ref="startTreatmentDateAdd"
-                ></DateFieldUserOwner>
-                <DateFieldUserOwner
-                  fieldname="endTreatmentDateAdd"
-                  labelname="Дата окончания лечения"
-                  v-model="endTreatmentDateAdd"
-                  :rules="notEmptyRules"
-                  ref="endTreatmentDateAdd"
-                ></DateFieldUserOwner>
+                    <!-- ddadasd -->
+                    <v-col cols="12" md="6">
+                      <v-textarea
+                        v-model="diagnoseAdd"
+                        auto-grow
+                        clearable
+                        outlined
+                        :readonly="readonlyDiarnoseTextArea"
+                        @click:append="
+                          readonlyDiarnoseTextArea = !readonlyDiarnoseTextArea
+                        "
+                        :append-icon="
+                          readonlyDiarnoseTextArea ? 'mdi-pencil' : 'mdi-check'
+                        "
+                        clear-icon="mdi-close-circle"
+                        label="Диагноз"
+                        ref="diagnose"
+                        :rules="notEmptyRules"
+                      ></v-textarea>
+                      <!-- </v-col>
+                    <v-col cols="12"> -->
+                      <DateFieldUserOwner
+                        fieldname="diagnoseDateAdd"
+                        labelname="Дата постановки диагноза"
+                        v-model="diagnoseDateAdd"
+                        :rules="notEmptyRules"
+                        ref="diagnoseDateAdd"
+                      ></DateFieldUserOwner>
+                      <!-- </v-col>
+                    <v-col cols="12"> -->
+                      <DateFieldUserOwner
+                        fieldname="startTreatmentDateAdd"
+                        labelname="Дата начала лечения"
+                        v-model="startTreatmentDateAdd"
+                        :rules="notEmptyRules"
+                        ref="startTreatmentDateAdd"
+                      ></DateFieldUserOwner>
+                      <!-- </v-col>
+                    <v-col cols="12"> -->
+                      <DateFieldUserOwner
+                        fieldname="endTreatmentDateAdd"
+                        labelname="Дата окончания лечения"
+                        v-model="endTreatmentDateAdd"
+                        :rules="notEmptyRules"
+                        ref="endTreatmentDateAdd"
+                      ></DateFieldUserOwner>
+                    </v-col>
+                    <!-- dasdad -->
+                    <v-col cols="12" md="6">
+                      <!-- </v-col>
+                    <v-col cols="12"> -->
+                      <v-textarea
+                        v-model="epicrisAdd"
+                        auto-grow
+                        clearable
+                        outlined
+                        :readonly="readonlyEpicrisTextArea"
+                        @change="changeTextArea"
+                        @click:append="
+                          readonlyEpicrisTextArea = !readonlyEpicrisTextArea
+                        "
+                        :append-icon="
+                          readonlyEpicrisTextArea ? 'mdi-pencil' : 'mdi-check'
+                        "
+                        clear-icon="mdi-close-circle"
+                        label="Эпикриз"
+                        ref="epicrisAdd"
+                      ></v-textarea>
+                      <DateFieldUserOwner
+                        fieldname="epicrisDateAdd"
+                        labelname="Дата выписного эпикриза"
+                        v-model="epicrisDateAdd"
+                      ></DateFieldUserOwner>
+                      <!-- </v-col>
+                    <v-col cols="12"> -->
+                      <v-file-input
+                        show-size
+                        counter
+                        multiple
+                        label="Файлы"
+                        ref="filesAdd"
+                        @change="changeFiles"
+                        accept=".pdf|.doc|.docx"
+                      ></v-file-input>
+                      <!-- </v-col>
+                    <v-col cols="12"> -->
+                      <v-file-input
+                        show-size
+                        counter
+                        multiple
+                        label="Изображения"
+                        ref="imagesAdd"
+                        @change="changeImages"
+                        prepend-icon="mdi-file-image"
+                        accept=".png|.jpg|.jpeg"
+                      ></v-file-input>
+                    </v-col>
+                    <!-- <small style="color: #ff5252" v-if="error"
+                      >*Хотя бы одно из полей должно быть заполнено.</small
+                    > -->
+                  </v-row>
+                </v-container>
               </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="dialog = false">
+                  Закрыть
+                </v-btn>
+                <v-btn color="blue darken-1" text @click="handleAdd">
+                  Сохранить
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- конец формы диалога -->
+          <!-- <div class="d-flex justify-content-center"> -->
+          <v-col cols="12" class="d-flex justify-center">
+            <v-btn
+              class="ma-1 mb-2 white-content"
+              color="cyan lighten-3"
+              rounded
+              @click="dialog = !dialog"
+            >
+              Добавить
+            </v-btn>
+            <!-- </div> -->
+          </v-col>
+          <v-col cols="12">
+            <!-- <v-card class="mb-2">
+              <v-card-text> </v-card-text>
               <v-card-actions class="d-flex justify-end">
                 <v-btn
                   text
@@ -82,7 +195,7 @@
                   Добавить
                 </v-btn>
               </v-card-actions>
-            </v-card>
+            </v-card> -->
             <v-card v-if="results.length > 0" class="box-shadow-card-none">
               <v-expansion-panels inset multiple>
                 <TransferedDiseasesCard
@@ -95,6 +208,7 @@
                   :stamp_diagnosis_date="item.diagnosis_date"
                   :stamp_treatment_date="item.treatment_date"
                   :stamp_treatment_end_date="item.treatment_end_date"
+                  :discharge_epicris="item.discharge_epicris"
                 />
               </v-expansion-panels>
               <div class="d-flex justify-center">
@@ -148,21 +262,28 @@ export default {
   },
   data: function () {
     return {
-      select: {},
+      selectMain: null,
+      oldSelected: null,
+      selectDialog: null,
+      maxWidth: this.$vuetify.breakpoint.smAndDown ? "600px" : "1000px",
       // cache: new Map(),
       // cacheNextPage: new Map(),
       nextPage: 1,
       items: [],
       results: [],
       loading: false,
+      dialog: false,
       diagnoseAdd: "",
       diagnoseDateAdd: null,
+      epicrisDateAdd: null,
+      epicrisAdd: null,
+      error: false,
       readonlyDiarnoseTextArea: true,
       startTreatmentDateAdd: null,
       endTreatmentDateAdd: null,
-      // resultTimeAdd: "",
-      // filesAdd: [],
-      // imagesAdd: [],
+      readonlyEpicrisTextArea: true,
+      filesAdd: [],
+      imagesAdd: [],
       selected: false,
       notEmptyRules: [(value) => !!value || "Это поле является обязательным."],
     };
@@ -228,16 +349,28 @@ export default {
       );
     },
     clearForm: function () {
-      this.resultAdd = "";
+      this.diagnoseAdd = "";
+      this.epicrisDateAdd = null;
+      this.startTreatmentDateAdd = null;
+      this.endTreatmentDateAdd = null;
+      this.epicrisAdd = "";
+      this.epicrisDateAdd = new Date();
       // this.resultDateAdd = new Date();
       this.resultTimeAdd = "";
+      this.filesAdd = [];
+      this.imagesAdd = [];
     },
-    // changeFiles: function (event) {
-    //   this.filesAdd = event;
-    // },
-    // changeImages: function (event) {
-    //   this.imagesAdd = event;
-    // },
+    changeFiles: function (event) {
+      this.error = false;
+      this.filesAdd = event;
+    },
+    changeImages: function (event) {
+      this.error = false;
+      this.imagesAdd = event;
+    },
+    changeTextArea: function () {
+      this.error = false;
+    },
     compareResults: function (itemA, itemB) {
       if (itemA.stamp_diagnosis_date > itemB.stamp_diagnosis_date) {
         return 1;
@@ -273,8 +406,14 @@ export default {
         return;
       }
       let form = new FormData();
-      form.append("disease", this.select.id);
+      form.append("disease", this.selectDialog.id);
       form.append("pacient", this.pacientId);
+      this.filesAdd.forEach((file) => {
+        form.append("files", file);
+      });
+      this.imagesAdd.forEach((img) => {
+        form.append("images", img);
+      });
       if (
         this.$store.getters.docMode &&
         this.$store.getters.pacientId != this.pacientId
@@ -303,6 +442,17 @@ export default {
           this.endTreatmentDateAdd.getMonth() + 1
         }-${this.endTreatmentDateAdd.getDate()}`
       );
+      if (this.epicrisDateAdd != null) {
+        form.append(
+          "epicris_date",
+          `${this.epicrisDateAdd.getFullYear()}-${
+            this.epicrisDateAdd.getMonth() + 1
+          }-${this.epicrisDateAdd.getDate()}`
+        );
+      }
+      if (this.epicrisAdd != null) {
+        form.append("epicris", this.epicrisAdd);
+      }
       // console.log(form);
       let config = {
         method: "post",
@@ -320,12 +470,16 @@ export default {
       request_service(
         config,
         function (resp) {
-          // var res = el.cache.get(el.select.id);
-          // res.push(resp.data);
-          // res.sort(el.compareResults);
-          // el.cache.set(el.select.id, res);
-          el.results.push(resp.data);
+          if (el.selectMain == null) {
+            el.results.push(resp.data);
+            el.results.sort(el.compareResults);
+          } else if (el.selectDialog.id == el.selectMain.id) {
+            el.results.push(resp.data);
+            el.results.sort(el.compareResults);
+          }
+
           el.clearForm();
+          el.dialog = false;
         },
         function (error) {
           console.log(error);
@@ -343,7 +497,6 @@ export default {
         this.$store.getters.pacientId != this.pacientId
       ) {
         config.headers = { IsDoctor: true };
-        // config.data.medicine_card = this.medicineCard;
       }
       request_service(
         config,
@@ -370,7 +523,7 @@ export default {
       setTimeout(() => (this.loading = false), 500);
     },
     getResults: function () {
-      if (this.nextPage == null) {
+      if (this.nextPage == null && this.oldSelected == this.selectMain) {
         return;
       }
       var el = this;
@@ -381,6 +534,10 @@ export default {
           page: this.nextPage,
         },
       };
+      if (this.selectMain != null) {
+        config.params.disease = this.selectMain.id;
+        config.params.page = this.nextPage;
+      }
       if (
         this.$store.getters.docMode &&
         this.$store.getters.pacientId != this.pacientId
@@ -417,12 +574,11 @@ export default {
       );
     },
     handleChangeSelect: function () {
-      this.selected = true;
-      // if (this.cache.has(this.select.id)) {
-      //   this.results = this.cache.get(this.select.id);
-      // } else {
-      //   this.getResults();
-      // }
+      this.nextPage = 1;
+      this.results = [];
+      this.selectDialog = this.selectMain;
+      this.getResults();
+      this.oldSelected = this.selectMain;
     },
   },
 };

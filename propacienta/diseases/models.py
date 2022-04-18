@@ -23,6 +23,41 @@ class Disease(models.Model):
         return "{} код {}".format(self.title, self.code)
 
 
+class TransferredDisease(models.Model):
+    """Модель перенесенного заболевания."""
+    disease = models.ForeignKey(
+        Disease,
+        on_delete=models.CASCADE,
+        verbose_name=_("Заболевание"),
+        related_name="transferred_diseases"
+    )
+    medicine_card = models.ForeignKey(
+        "medicine_cards.medicinecard",
+        on_delete=models.CASCADE,
+        verbose_name=_("Медицинская карта"),
+        related_name="transferred_diseases"
+    )
+    pacient = models.ForeignKey(
+        "pacients.pacient",
+        on_delete=models.CASCADE,
+        verbose_name=_("Пациент"),
+        related_name="transferred_diseases"
+    )
+    diagnosis = models.CharField(_("Диагноз"), max_length=250)
+    diagnosis_date = models.DateField(_("Дата постановки диагноза"), null=True)
+    diagnosis_year = models.PositiveIntegerField(_("Год постановки диагноза"), null=True)
+    treatment_date = models.DateField(_("Дата начала лечения"), null=True)
+    treatment_end_date = models.DateField(_("Дата окончания лечения"), null=True)
+
+    class Meta:
+        verbose_name = "Перенесенное заболевание"
+        verbose_name_plural = "Перенесенные заболевания"
+        ordering = ["-treatment_end_date", "-treatment_date", "-id"]
+
+    def __str__(self) -> str:
+        return "{} {}".format(self.pacient, self.disease)
+
+
 class ChronicDisease(models.Model):
     """Модель хронических заболеваний."""
     disease = models.ForeignKey(
@@ -43,7 +78,7 @@ class ChronicDisease(models.Model):
         verbose_name=_("Пациент"),
         related_name="chronic_diseases"
     )
-    treatment = models.TextField(_("Лечение"), null=True, blank=True)
+    treatment = models.TextField(_("Лечение"), default="", blank=True)
 
     class Meta:
         verbose_name = "Хроническое заболевание"
@@ -61,7 +96,17 @@ class DischargeEpicris(models.Model):
         ChronicDisease,
         on_delete=models.CASCADE,
         verbose_name=_("Хроничекое заболенивание"),
-        related_name="discharge_epicrisis"
+        related_name="discharge_epicrisis",
+        blank=True,
+        null=True
+    )
+    transferred_disease = models.OneToOneField(
+        TransferredDisease,
+        on_delete=models.CASCADE,
+        verbose_name=_("Перенесённое заболенивание"),
+        related_name="discharge_epicris",
+        blank=True,
+        null=True
     )
     pacient = models.ForeignKey(
         "pacients.pacient",
@@ -70,7 +115,7 @@ class DischargeEpicris(models.Model):
         related_name="discharge_epicrisis"
     )
     d = models.DateField(_("Дата"))
-    epicris = models.TextField(_("Эпикриз"), null=True, blank=True)
+    epicris = models.TextField(_("Эпикриз"), default="", blank=True)
 
     class Meta:
         verbose_name = "Выписной эпикриз"
@@ -153,36 +198,4 @@ class DischargeEpicrisFiles(models.Model):
         super().delete(*args, **kwargs)
 
 
-class TransferredDisease(models.Model):
-    """Модель перенесенного заболевания."""
-    disease = models.ForeignKey(
-        Disease,
-        on_delete=models.CASCADE,
-        verbose_name=_("Заболевание"),
-        related_name="transferred_diseases"
-    )
-    medicine_card = models.ForeignKey(
-        "medicine_cards.medicinecard",
-        on_delete=models.CASCADE,
-        verbose_name=_("Медицинская карта"),
-        related_name="transferred_diseases"
-    )
-    pacient = models.ForeignKey(
-        "pacients.pacient",
-        on_delete=models.CASCADE,
-        verbose_name=_("Пациент"),
-        related_name="transferred_diseases"
-    )
-    diagnosis = models.CharField(_("Диагноз"), max_length=250)
-    diagnosis_date = models.DateField(_("Дата постановки диагноза"), null=True)
-    diagnosis_year = models.PositiveIntegerField(_("Год постановки диагноза"), null=True)
-    treatment_date = models.DateField(_("Дата начала лечения"), null=True)
-    treatment_end_date = models.DateField(_("Дата окончания лечения"), null=True)
 
-    class Meta:
-        verbose_name = "Перенесенное заболевание"
-        verbose_name_plural = "Перенесенные заболевания"
-        ordering = ["-treatment_end_date", "-treatment_date", "-id"]
-
-    def __str__(self) -> str:
-        return "{} {}".format(self.pacient, self.disease)

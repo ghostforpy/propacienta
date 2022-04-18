@@ -144,7 +144,10 @@ class TransferredDiseaseCreateListView(CreateAPIView, ListAPIView):
 
     def get_queryset(self):
         pacient_id = self.kwargs["pacient_id"]
-        return super().get_queryset().filter(pacient__id=pacient_id)
+        qs = super().get_queryset().filter(pacient__id=pacient_id)
+        if "disease" in self.request.GET:
+            qs = qs.filter(disease__id=self.request.GET["disease"])
+        return qs
 
 
 @method_decorator(name='delete', decorator=swagger_auto_schema(
