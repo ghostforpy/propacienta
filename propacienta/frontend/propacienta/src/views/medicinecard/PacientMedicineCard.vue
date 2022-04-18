@@ -3,7 +3,7 @@
     <v-toolbar color="cyan" dark flat>
       <v-toolbar-title>Медицинская карта</v-toolbar-title>
     </v-toolbar>
-    <v-tabs background-color="cyan" dark show-arrows centered>
+    <v-tabs background-color="cyan" dark show-arrows centered v-model="page">
       <v-tabs-slider color="yellow"></v-tabs-slider>
       <v-tab href="#common-data" @click="handleClickTab">Общие данные</v-tab>
       <v-tab href="#research" @click="handleClickTab">Исследования</v-tab>
