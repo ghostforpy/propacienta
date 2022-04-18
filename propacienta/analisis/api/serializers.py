@@ -5,7 +5,7 @@ from ..models import Analysis, AnalysisResult, AnalysisResultsFile, AnalysisResu
 
 class ValidatePacientIdMixin:
     def validate_pacient(self, value):
-        pacient_id = self.context['view'].kwargs["pacient_id"]
+        pacient_id = self.context["view"].kwargs["pacient_id"]
         if value.id != pacient_id:
             raise serializers.ValidationError("Wrong pacientId.")
         return value
@@ -80,14 +80,12 @@ class AnalysisResultSerializer(ValidatePacientIdMixin, serializers.ModelSerializ
         for image_data in images_data:
             # сохранянем изображения
             AnalysisResultsImage.objects.create(
-                analysis_result=analysis_result, 
-                image=image_data
+                analysis_result=analysis_result, image=image_data
             )
         for file_data in files_data:
             # сохранянем файлы
             AnalysisResultsFile.objects.create(
-                analysis_result=analysis_result, 
-                file=file_data
+                analysis_result=analysis_result, file=file_data
             )
         analysis_result.save()
         return analysis_result

@@ -7,36 +7,56 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pacients', '0003_alter_pacient_options'),
-        ('medicine_cards', '0002_independentresearch_resultindependentresearch'),
-        ('prescriptions', '0001_initial'),
-        ('analisis', '0002_analysisresult_analysisresultsfile_analysisresultsimage'),
+        ("pacients", "0003_alter_pacient_options"),
+        ("medicine_cards", "0002_independentresearch_resultindependentresearch"),
+        ("prescriptions", "0001_initial"),
+        ("analisis", "0002_analysisresult_analysisresultsfile_analysisresultsimage"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='analysisresult',
-            name='analysis',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysi_results', to='analisis.analysis', verbose_name='Анализ'),
+            model_name="analysisresult",
+            name="analysis",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="analysi_results",
+                to="analisis.analysis",
+                verbose_name="Анализ",
+            ),
         ),
         migrations.AlterField(
-            model_name='analysisresult',
-            name='medicine_card',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysi_results', to='medicine_cards.medicinecard', verbose_name='Медицинская карта'),
+            model_name="analysisresult",
+            name="medicine_card",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="analysi_results",
+                to="medicine_cards.medicinecard",
+                verbose_name="Медицинская карта",
+            ),
         ),
         migrations.AlterField(
-            model_name='analysisresult',
-            name='pacient',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysi_results', to='pacients.pacient', verbose_name='Пациент'),
+            model_name="analysisresult",
+            name="pacient",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="analysi_results",
+                to="pacients.pacient",
+                verbose_name="Пациент",
+            ),
         ),
         migrations.AlterField(
-            model_name='analysisresult',
-            name='prescription',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysi_results', to='prescriptions.analisisprescription', verbose_name='Назначение'),
+            model_name="analysisresult",
+            name="prescription",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="analysi_results",
+                to="prescriptions.analisisprescription",
+                verbose_name="Назначение",
+            ),
         ),
         migrations.AlterField(
-            model_name='analysisresult',
-            name='result',
-            field=models.TextField(verbose_name='Результаты анализа'),
+            model_name="analysisresult",
+            name="result",
+            field=models.TextField(verbose_name="Результаты анализа"),
         ),
     ]

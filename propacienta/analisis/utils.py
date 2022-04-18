@@ -5,19 +5,22 @@ from doctors.utils import request_by_doctor
 
 def analisis_result_dir(instance, filename: str) -> str:
     return "private/analisis_results/pacient_%s/%s" % (
-        instance.analysis_result.pacient.id, filename
+        instance.analysis_result.pacient.id,
+        filename,
     )
 
 
 def analisis_results_images_dir(instance, filename: str) -> str:
     return "private/analisis_results/images/pacient_%s/%s" % (
-        instance.analysis_result.pacient.id, filename
+        instance.analysis_result.pacient.id,
+        filename,
     )
 
 
 def analisis_results_files_dir(instance, filename: str) -> str:
     return "private/analisis_results/files/pacient_%s/%s" % (
-        instance.analysis_result.pacient.id, filename
+        instance.analysis_result.pacient.id,
+        filename,
     )
 
 
@@ -25,6 +28,7 @@ class RequestByTreatingDoctor(BasePermission):
     """
     Object-level permission to only allow requests by active treating doctors.
     """
+
     # def has_permission(self, request, view):
     #     print(111111)
     #     return request_by_doctor(request) is not None
@@ -41,8 +45,9 @@ class IsOwnerOfAnalisObject(BasePermission):
     """
     Object-level permission to only allow owners of an object.
     """
+
     def has_permission(self, request, view):
-        return request.user.pacient.id == view.kwargs.get('pacient_id')
+        return request.user.pacient.id == view.kwargs.get("pacient_id")
 
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request,
@@ -57,14 +62,13 @@ class RequestByTreatingDoctorAnalisResult(BasePermission):
     """
     Object-level permission to only allow requests by active treating doctors.
     """
+
     def has_permission(self, request, view):
         doctor = request_by_doctor(request)
         if doctor is not None:
             try:
-                pacient_id = view.kwargs.get('pacient_id')
-                pacient = doctor.pacients.filter(
-                    id=int(pacient_id)
-                ).get()
+                pacient_id = view.kwargs.get("pacient_id")
+                pacient = doctor.pacients.filter(id=int(pacient_id)).get()
                 return pacient is not None
             except:
                 pass
@@ -81,8 +85,9 @@ class IsOwnerOfAnalisResultObject(BasePermission):
     """
     Object-level permission to only allow owners of an object.
     """
+
     def has_permission(self, request, view):
-        return request.user.pacient.id == view.kwargs.get('pacient_id')
+        return request.user.pacient.id == view.kwargs.get("pacient_id")
 
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request,
@@ -97,9 +102,12 @@ class IsOwnerOfAnalisResultFileAndImageObject(BasePermission):
     """
     Object-level permission to only allow owners of an object.
     """
+
     def has_permission(self, request, view):
         try:
-            return request.user.pacient.id == int(request.headers.get("Pacientid", None))
+            return request.user.pacient.id == int(
+                request.headers.get("Pacientid", None)
+            )
         except:
             return False
 
@@ -116,6 +124,7 @@ class RequestByTreatingDoctorAnalisResultFileAndImage(BasePermission):
     """
     Object-level permission to only allow requests by active treating doctors.
     """
+
     def has_permission(self, request, view):
         doctor = request_by_doctor(request)
         if doctor is not None:

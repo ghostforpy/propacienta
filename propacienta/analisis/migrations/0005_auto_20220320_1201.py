@@ -7,20 +7,33 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('prescriptions', '0003_auto_20220213_1758'),
-        ('diseases', '0003_alter_disease_code'),
-        ('analisis', '0004_analysis_diseases'),
+        ("prescriptions", "0003_auto_20220213_1758"),
+        ("diseases", "0003_alter_disease_code"),
+        ("analisis", "0004_analysis_diseases"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='analysis',
-            name='diseases',
-            field=models.ManyToManyField(blank=True, null=True, related_name='analyzis', to='diseases.Disease', verbose_name='Заболевания'),
+            model_name="analysis",
+            name="diseases",
+            field=models.ManyToManyField(
+                blank=True,
+                null=True,
+                related_name="analyzis",
+                to="diseases.Disease",
+                verbose_name="Заболевания",
+            ),
         ),
         migrations.AlterField(
-            model_name='analysisresult',
-            name='prescription',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysi_results', to='prescriptions.analisisprescription', verbose_name='Назначение'),
+            model_name="analysisresult",
+            name="prescription",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="analysi_results",
+                to="prescriptions.analisisprescription",
+                verbose_name="Назначение",
+            ),
         ),
     ]

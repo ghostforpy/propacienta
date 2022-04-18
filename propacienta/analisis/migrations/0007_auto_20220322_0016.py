@@ -7,18 +7,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('analisis', '0006_alter_analysis_diseases'),
+        ("analisis", "0006_alter_analysis_diseases"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='analysisresultsfile',
-            name='file',
-            field=models.FileField(blank=True, null=True, upload_to=analisis.utils.analisis_results_files_dir, verbose_name='Файл'),
+            model_name="analysisresultsfile",
+            name="file",
+            field=models.FileField(
+                blank=True,
+                null=True,
+                upload_to=analisis.utils.analisis_results_files_dir,
+                verbose_name="Файл",
+            ),
         ),
         migrations.AlterField(
-            model_name='analysisresultsimage',
-            name='image',
-            field=models.ImageField(blank=True, null=True, upload_to=analisis.utils.analisis_results_images_dir, verbose_name='Фото'),
+            model_name="analysisresultsimage",
+            name="image",
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to=analisis.utils.analisis_results_images_dir,
+                verbose_name="Фото",
+            ),
         ),
     ]

@@ -8,51 +8,133 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medicine_cards', '0001_initial'),
-        ('prescriptions', '0001_initial'),
-        ('pacients', '0003_alter_pacient_options'),
-        ('analisis', '0001_initial'),
+        ("medicine_cards", "0001_initial"),
+        ("prescriptions", "0001_initial"),
+        ("pacients", "0003_alter_pacient_options"),
+        ("analisis", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AnalysisResult',
+            name="AnalysisResult",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('result', models.TextField(verbose_name='Резуьлтаты анализа')),
-                ('d', models.DateField(verbose_name='Дата сдачи анализа')),
-                ('analysis', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysi_results', to='analisis.analysis')),
-                ('medicine_card', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysi_results', to='medicine_cards.medicinecard')),
-                ('pacient', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysi_results', to='pacients.pacient')),
-                ('prescription', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysi_results', to='prescriptions.analisisprescription')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("result", models.TextField(verbose_name="Резуьлтаты анализа")),
+                ("d", models.DateField(verbose_name="Дата сдачи анализа")),
+                (
+                    "analysis",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="analysi_results",
+                        to="analisis.analysis",
+                    ),
+                ),
+                (
+                    "medicine_card",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="analysi_results",
+                        to="medicine_cards.medicinecard",
+                    ),
+                ),
+                (
+                    "pacient",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="analysi_results",
+                        to="pacients.pacient",
+                    ),
+                ),
+                (
+                    "prescription",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="analysi_results",
+                        to="prescriptions.analisisprescription",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Результат анализа',
-                'verbose_name_plural': 'Результаты анализов',
+                "verbose_name": "Результат анализа",
+                "verbose_name_plural": "Результаты анализов",
             },
         ),
         migrations.CreateModel(
-            name='AnalysisResultsImage',
+            name="AnalysisResultsImage",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(blank=True, null=True, upload_to=analisis.utils.analisis_result_dir, verbose_name='Фото')),
-                ('analysis_result', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysis_images', to='analisis.analysisresult')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to=analisis.utils.analisis_result_dir,
+                        verbose_name="Фото",
+                    ),
+                ),
+                (
+                    "analysis_result",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="analysis_images",
+                        to="analisis.analysisresult",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Изображение результата анализа',
-                'verbose_name_plural': 'Изображения результатов анализов',
+                "verbose_name": "Изображение результата анализа",
+                "verbose_name_plural": "Изображения результатов анализов",
             },
         ),
         migrations.CreateModel(
-            name='AnalysisResultsFile',
+            name="AnalysisResultsFile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(blank=True, null=True, upload_to=analisis.utils.analisis_result_dir, verbose_name='Файл')),
-                ('analysis_result', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='analysis_files', to='analisis.analysisresult')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "file",
+                    models.FileField(
+                        blank=True,
+                        null=True,
+                        upload_to=analisis.utils.analisis_result_dir,
+                        verbose_name="Файл",
+                    ),
+                ),
+                (
+                    "analysis_result",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="analysis_files",
+                        to="analisis.analysisresult",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Файл результата анализа',
-                'verbose_name_plural': 'Файлы результатов анализов',
+                "verbose_name": "Файл результата анализа",
+                "verbose_name_plural": "Файлы результатов анализов",
             },
         ),
     ]
