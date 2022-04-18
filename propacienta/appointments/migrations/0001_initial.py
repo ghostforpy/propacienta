@@ -9,29 +9,92 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('pacients', '0003_alter_pacient_options'),
-        ('hospitals', '0002_alter_hospital_options'),
-        ('doctors', '0006_auto_20220207_2326'),
+        ("pacients", "0003_alter_pacient_options"),
+        ("hospitals", "0002_alter_hospital_options"),
+        ("doctors", "0006_auto_20220207_2326"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AppointmentOrder',
+            name="AppointmentOrder",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('dt', models.DateTimeField(blank=True, null=True, verbose_name='Время приема')),
-                ('confirmation', models.BooleanField(default=False, verbose_name='Подтверждение приема')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Создан')),
-                ('appointment_took_place', models.BooleanField(default=False, verbose_name='Приём состоялся')),
-                ('doctor', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='appointment_orders', to='doctors.doctor')),
-                ('doctor_specialization', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='appointment_orders', to='doctors.doctorspecialization')),
-                ('doctor_sub_specialization', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='appointment_orders', to='doctors.doctorsubspecialization')),
-                ('hospital', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='appointment_orders', to='hospitals.hospital')),
-                ('pacient', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='appointment_orders', to='pacients.pacient')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "dt",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="Время приема"
+                    ),
+                ),
+                (
+                    "confirmation",
+                    models.BooleanField(
+                        default=False, verbose_name="Подтверждение приема"
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Создан"),
+                ),
+                (
+                    "appointment_took_place",
+                    models.BooleanField(default=False, verbose_name="Приём состоялся"),
+                ),
+                (
+                    "doctor",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="appointment_orders",
+                        to="doctors.doctor",
+                    ),
+                ),
+                (
+                    "doctor_specialization",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="appointment_orders",
+                        to="doctors.doctorspecialization",
+                    ),
+                ),
+                (
+                    "doctor_sub_specialization",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="appointment_orders",
+                        to="doctors.doctorsubspecialization",
+                    ),
+                ),
+                (
+                    "hospital",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="appointment_orders",
+                        to="hospitals.hospital",
+                    ),
+                ),
+                (
+                    "pacient",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="appointment_orders",
+                        to="pacients.pacient",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Заказ на приём врача',
-                'verbose_name_plural': 'Заказы на приём врача',
+                "verbose_name": "Заказ на приём врача",
+                "verbose_name_plural": "Заказы на приём врача",
             },
         ),
     ]

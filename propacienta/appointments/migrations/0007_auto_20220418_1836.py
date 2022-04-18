@@ -6,53 +6,61 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('appointments', '0006_auto_20220217_2304'),
+        ("appointments", "0006_auto_20220217_2304"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='appointmentsurvey',
-            name='complaints',
-            field=models.TextField(blank=True, default='', verbose_name='Жалобы'),
+            model_name="appointmentsurvey",
+            name="complaints",
+            field=models.TextField(blank=True, default="", verbose_name="Жалобы"),
         ),
         migrations.AlterField(
-            model_name='appointmentsurvey',
-            name='complaints_date',
-            field=models.DateField(blank=True, verbose_name='Когда впервые появились жалобы'),
+            model_name="appointmentsurvey",
+            name="complaints_date",
+            field=models.DateField(
+                blank=True, verbose_name="Когда впервые появились жалобы"
+            ),
         ),
         migrations.AlterField(
-            model_name='appointmentsurvey',
-            name='treatment',
-            field=models.TextField(blank=True, default='', verbose_name='Лечение'),
+            model_name="appointmentsurvey",
+            name="treatment",
+            field=models.TextField(blank=True, default="", verbose_name="Лечение"),
         ),
         migrations.AlterField(
-            model_name='doctorappointment',
-            name='anamnesis',
-            field=models.TextField(blank=True, default='', verbose_name='Анамнез'),
+            model_name="doctorappointment",
+            name="anamnesis",
+            field=models.TextField(blank=True, default="", verbose_name="Анамнез"),
         ),
         migrations.AlterField(
-            model_name='doctorappointment',
-            name='complaints',
-            field=models.TextField(blank=True, default='', verbose_name='Жалобы'),
+            model_name="doctorappointment",
+            name="complaints",
+            field=models.TextField(blank=True, default="", verbose_name="Жалобы"),
         ),
         migrations.AlterField(
-            model_name='doctorappointment',
-            name='complaints_date',
-            field=models.DateField(blank=True, verbose_name='Когда впервые появились жалобы'),
+            model_name="doctorappointment",
+            name="complaints_date",
+            field=models.DateField(
+                blank=True, verbose_name="Когда впервые появились жалобы"
+            ),
         ),
         migrations.AlterField(
-            model_name='doctorappointment',
-            name='rating_for_doctor',
-            field=models.FloatField(blank=True, null=True, verbose_name='Оценка доктору'),
+            model_name="doctorappointment",
+            name="rating_for_doctor",
+            field=models.FloatField(
+                blank=True, null=True, verbose_name="Оценка доктору"
+            ),
         ),
         migrations.AlterField(
-            model_name='doctorappointment',
-            name='rating_for_pacient',
-            field=models.FloatField(blank=True, null=True, verbose_name='Оценка пациенту'),
+            model_name="doctorappointment",
+            name="rating_for_pacient",
+            field=models.FloatField(
+                blank=True, null=True, verbose_name="Оценка пациенту"
+            ),
         ),
         migrations.AlterField(
-            model_name='doctorappointment',
-            name='treatment',
-            field=models.TextField(blank=True, default='', verbose_name='Лечение'),
+            model_name="doctorappointment",
+            name="treatment",
+            field=models.TextField(blank=True, default="", verbose_name="Лечение"),
         ),
     ]

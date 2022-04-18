@@ -7,14 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hospitals', '0002_alter_hospital_options'),
-        ('appointments', '0002_appointmentsurvey_doctorappointment'),
+        ("hospitals", "0002_alter_hospital_options"),
+        ("appointments", "0002_appointmentsurvey_doctorappointment"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='doctorappointment',
-            name='hospital',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='doctor_appointments', to='hospitals.hospital'),
+            model_name="doctorappointment",
+            name="hospital",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="doctor_appointments",
+                to="hospitals.hospital",
+            ),
         ),
     ]

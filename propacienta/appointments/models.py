@@ -6,27 +6,22 @@ from django.utils.translation import gettext_lazy as _
 
 class AppointmentOrder(models.Model):
     """AppointmentOrder model."""
+
     pacient = models.ForeignKey(
         "pacients.pacient",
         on_delete=models.DO_NOTHING,
         verbose_name=_("Пациент"),
-        related_name="appointment_orders"
+        related_name="appointment_orders",
     )
     doctor = models.ForeignKey(
         "doctors.doctor",
         verbose_name=_("Врач"),
         on_delete=models.DO_NOTHING,
-        related_name="appointment_orders"
+        related_name="appointment_orders",
     )
     dt = models.DateTimeField(_("Время приема"), blank=True, null=True)
-    confirmation = models.BooleanField(
-        _("Подтверждение приема"),
-        default=False
-    )
-    created_at = models.DateTimeField(
-        _("Создан"),
-        auto_now_add=True
-    )
+    confirmation = models.BooleanField(_("Подтверждение приема"), default=False)
+    created_at = models.DateTimeField(_("Создан"), auto_now_add=True)
     appointment_took_place = models.BooleanField(_("Приём состоялся"), default=False)
     doctor_specialization = models.ForeignKey(
         "doctors.doctorspecialization",
@@ -34,7 +29,7 @@ class AppointmentOrder(models.Model):
         verbose_name=_("Специализация врача"),
         related_name="appointment_orders",
         null=True,
-        blank=True
+        blank=True,
     )
     doctor_sub_specialization = models.ForeignKey(
         "doctors.doctorsubspecialization",
@@ -42,13 +37,13 @@ class AppointmentOrder(models.Model):
         verbose_name=_("Узкая специализация врача"),
         related_name="appointment_orders",
         null=True,
-        blank=True
+        blank=True,
     )
     hospital = models.ForeignKey(
         "hospitals.hospital",
         on_delete=models.DO_NOTHING,
         verbose_name=_("Клиника"),
-        related_name="appointment_orders"
+        related_name="appointment_orders",
     )
 
     class Meta:
@@ -61,11 +56,12 @@ class AppointmentOrder(models.Model):
 
 class AppointmentSurvey(models.Model):
     """Модель опросника для пациента перед приемом у врача."""
+
     appointment_order = models.OneToOneField(
         AppointmentOrder,
         on_delete=models.DO_NOTHING,
         verbose_name=_("Заказ на приём врача"),
-        related_name="survey"
+        related_name="survey",
     )
     complaints = models.TextField(_("Жалобы"), blank=True, default="")
     complaints_date = models.DateField(_("Когда впервые появились жалобы"), blank=True)
@@ -81,17 +77,18 @@ class AppointmentSurvey(models.Model):
 
 class DoctorAppointment(models.Model):
     """Модель факта проведения приема у врача."""
+
     pacient = models.ForeignKey(
         "pacients.pacient",
         verbose_name=_("Пациент"),
         on_delete=models.DO_NOTHING,
-        related_name="doctor_appointments"
+        related_name="doctor_appointments",
     )
     doctor = models.ForeignKey(
         "doctors.doctor",
         on_delete=models.DO_NOTHING,
         verbose_name=_("Врач"),
-        related_name="doctor_appointments"
+        related_name="doctor_appointments",
     )
     dt = models.DateTimeField(_("Фактическое время приема"))
     appointment_order = models.OneToOneField(
@@ -100,14 +97,14 @@ class DoctorAppointment(models.Model):
         verbose_name=_("Заказ на приём врача"),
         related_name="doctor_appointment",
         blank=True,
-        null=True
+        null=True,
     )
     anamnesis = models.TextField(_("Анамнез"), blank=True, default="")
     medicine_card = models.ForeignKey(
         "medicine_cards.medicinecard",
         on_delete=models.DO_NOTHING,
         verbose_name=_("Медицинская карта"),
-        related_name="doctor_appointments"
+        related_name="doctor_appointments",
     )
     doctor_specialization = models.ForeignKey(
         "doctors.doctorspecialization",
@@ -115,7 +112,7 @@ class DoctorAppointment(models.Model):
         verbose_name=_("Специализация врача"),
         related_name="doctor_appointments",
         null=True,
-        blank=True
+        blank=True,
     )
     doctor_sub_specialization = models.ForeignKey(
         "doctors.doctorsubspecialization",
@@ -123,14 +120,14 @@ class DoctorAppointment(models.Model):
         verbose_name=_("Узкая специализация врача"),
         related_name="doctor_appointments",
         null=True,
-        blank=True
+        blank=True,
     )
     hospital = models.ForeignKey(
         "hospitals.hospital",
         on_delete=models.DO_NOTHING,
         verbose_name=_("Клиника"),
         related_name="doctor_appointments",
-        null=True
+        null=True,
     )
     complaints = models.TextField(_("Жалобы"), default="", blank=True)
     complaints_date = models.DateField(_("Когда впервые появились жалобы"), blank=True)
