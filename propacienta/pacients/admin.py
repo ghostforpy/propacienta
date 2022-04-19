@@ -99,19 +99,14 @@ class MedicinePrescriptionAdmin(EditMixin, admin.StackedInline):
     ]
 
 
-class UserModelAdmin(admin.StackedInline):
+class UserModelAdmin(EditMixin, admin.StackedInline):
     model = get_user_model()
-    fields = ["first_name", "last_name", "patronymic", "birthday", "email"]
+    fields = ["get_edit_link", "first_name", "last_name", "patronymic", "birthday", "email"]
 
 
-class MedicineCardModelAdmin(admin.StackedInline):
+class MedicineCardModelAdmin(EditMixin, admin.StackedInline):
     model = MedicineCard
-    # fields = [
-    #    "first_name",
-    #    "last_name",
-    #    "patronymic",
-    #    "birthday"
-    # ]
+    fields = ["get_edit_link", "height", "weight", "average_pressure"]
 
 
 @admin.register(Pacient)
