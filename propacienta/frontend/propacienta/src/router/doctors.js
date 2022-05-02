@@ -1,7 +1,7 @@
 import DoctorProfile from '@/views/doctors/DoctorProfile';
 import DoctorsList from '@/views/doctors/DoctorsList';
 import MyDoctorProfile from '@/views/doctors/MyDoctorProfile';
-import { ifAuthenticated, isDoctor } from './utils';
+import { ifAuthenticated, isDoctorModeAvailable } from './utils';
 
 
 export default [
@@ -10,7 +10,7 @@ export default [
         component: MyDoctorProfile,
         name: 'my-doctor-profile',
         // beforeEnter: ifAuthenticated,
-        beforeEnter: async (to, from, next) => { await ifAuthenticated(to, from, next), await isDoctor(to, from, next) },
+        beforeEnter: async (to, from, next) => { await ifAuthenticated(to, from, next), await isDoctorModeAvailable(to, from, next) },
     },
     {
         path: '/doctors',

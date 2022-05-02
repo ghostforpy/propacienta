@@ -1,4 +1,4 @@
-import MyPacients from '@/views/doctors/MyPacients';
+import MyPacients from '@/views/pacients/MyPacients';
 import { ifAuthenticated, isDoctor } from './utils';
 
 

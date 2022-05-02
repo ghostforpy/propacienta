@@ -45,3 +45,12 @@ export const isDoctor = async (to, from, next) => {
     next({ name: 'main' })
     return
 }
+
+export const isDoctorModeAvailable = async (to, from, next) => {
+    if (store.getters.docModeAvailable) {
+        next()
+        return
+    }
+    next({ name: 'main' })
+    return
+}

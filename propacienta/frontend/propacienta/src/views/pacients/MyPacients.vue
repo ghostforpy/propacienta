@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-toolbar color="cyan" dark flat>
-      <v-toolbar-title>Пациенты</v-toolbar-title>
+      <v-toolbar-title>Мои пациенты</v-toolbar-title>
     </v-toolbar>
     <v-container fluid fill-height>
       <v-layout align-center justify-center>

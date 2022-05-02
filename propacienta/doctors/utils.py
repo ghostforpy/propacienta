@@ -27,3 +27,24 @@ class RequestByDoctor(BasePermission):
         # if request.user == obj.pacient.user:
         #    return True
         return request_by_doctor(request) is not None
+
+
+def doctor_avatar_dir(instance, filename: str) -> str:
+    return "doctor_avatar/doctor_%s/%s" % (
+        instance.id,
+        filename,
+    )
+
+
+class RequestByDoctorOwnerAccount(BasePermission):
+    """
+    Object-level permission to only allow requests by active doctors.
+    """
+
+    # def has_permission(self, request, view):
+    #     return request_by_doctor(request) is not None
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.doctor == obj:
+            return True
+        return False

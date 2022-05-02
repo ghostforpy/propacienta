@@ -1,6 +1,10 @@
+from distutils.command.upload import upload
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from djoser.signals import user_registered
+
+from .utils import doctor_avatar_dir
 
 
 class DoctorSpecialization(models.Model):
@@ -55,10 +59,18 @@ class Doctor(models.Model):
         blank=True,
     )
     is_active = models.BooleanField(_("Активация"), default=False)
+    avatar = models.ImageField(
+        _("Аватар"),
+        upload_to=doctor_avatar_dir,
+        null=True,
+        blank=True
+    )
+    portfolio = models.TextField(_("Портфолио"), null=True, blank=True)
 
     class Meta:
         verbose_name = "Врач"
         verbose_name_plural = "Врачи"
+        ordering = ["-id"]
 
     def __str__(self) -> str:
         try:
