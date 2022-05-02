@@ -222,7 +222,7 @@ export default {
       var el = this;
       request_service(
         config,
-        function () {
+        function (resp) {
           if (doctor_data.specializations != undefined) {
             el.fieldSpecializationsEdit = false;
           }
@@ -239,6 +239,7 @@ export default {
             if (doctor_data.has("avatar")) {
               el.avatarChanged = false;
               el.avatar = null;
+              el.oldAvatarSrc = resp.data.avatar;
             }
           }
         },
@@ -319,6 +320,7 @@ export default {
           el.avatar = null;
           el.avatarSrc = require("@/assets/default_doctor_avatar.png");
           el.avatarChanged = false;
+          el.oldAvatarSrc = el.avatarSrc;
         },
         function (error) {
           console.log(error);
