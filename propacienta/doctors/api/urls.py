@@ -13,7 +13,7 @@ router.register("doctors", DoctorViewSet, basename="doctors")
 router.register(
     "doctors-specializations",
     DoctorSpecializationViewSet,
-    basename="doctors-specializations"
+    basename="doctors-specializations",
 )
 
 app_name = "doctors"

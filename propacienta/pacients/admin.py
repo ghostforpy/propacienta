@@ -101,7 +101,14 @@ class MedicinePrescriptionAdmin(EditMixin, admin.StackedInline):
 
 class UserModelAdmin(EditMixin, admin.StackedInline):
     model = get_user_model()
-    fields = ["get_edit_link", "first_name", "last_name", "patronymic", "birthday", "email"]
+    fields = [
+        "get_edit_link",
+        "first_name",
+        "last_name",
+        "patronymic",
+        "birthday",
+        "email",
+    ]
 
 
 class MedicineCardModelAdmin(EditMixin, admin.StackedInline):

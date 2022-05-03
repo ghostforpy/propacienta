@@ -7,22 +7,31 @@ import doctors.utils
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('doctors', '0014_alter_doctor_phone'),
+        ("doctors", "0014_alter_doctor_phone"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='doctor',
-            options={'ordering': ['-id'], 'verbose_name': 'Врач', 'verbose_name_plural': 'Врачи'},
+            name="doctor",
+            options={
+                "ordering": ["-id"],
+                "verbose_name": "Врач",
+                "verbose_name_plural": "Врачи",
+            },
         ),
         migrations.AddField(
-            model_name='doctor',
-            name='avatar',
-            field=models.ImageField(blank=True, null=True, upload_to=doctors.utils.doctor_avatar_dir, verbose_name='Аватар'),
+            model_name="doctor",
+            name="avatar",
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to=doctors.utils.doctor_avatar_dir,
+                verbose_name="Аватар",
+            ),
         ),
         migrations.AddField(
-            model_name='doctor',
-            name='portfolio',
-            field=models.TextField(blank=True, null=True, verbose_name='Портфолио'),
+            model_name="doctor",
+            name="portfolio",
+            field=models.TextField(blank=True, null=True, verbose_name="Портфолио"),
         ),
     ]

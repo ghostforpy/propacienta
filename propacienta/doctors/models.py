@@ -60,10 +60,7 @@ class Doctor(models.Model):
     )
     is_active = models.BooleanField(_("Активация"), default=False)
     avatar = models.ImageField(
-        _("Аватар"),
-        upload_to=doctor_avatar_dir,
-        null=True,
-        blank=True
+        _("Аватар"), upload_to=doctor_avatar_dir, null=True, blank=True
     )
     portfolio = models.TextField(_("Портфолио"), null=True, blank=True)
 

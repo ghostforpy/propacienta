@@ -42,7 +42,12 @@ class UserModelAdmin(EditMixin, admin.StackedInline):
 
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ("email", "user_name", "phone", "is_active",)
+    list_display = (
+        "email",
+        "user_name",
+        "phone",
+        "is_active",
+    )
     inlines = [UserModelAdmin]
     search_fields = (
         "user__email",
@@ -64,13 +69,15 @@ class DoctorAdmin(admin.ModelAdmin):
 @admin.register(DoctorSpecialization)
 class DoctorSpecializationAdmin(admin.ModelAdmin):
     list_display = ("title",)
-    search_fields = (
-        "title",
-    )
+    search_fields = ("title",)
+
 
 @admin.register(DoctorSubSpecialization)
 class DoctorSubSpecializationAdmin(admin.ModelAdmin):
-    list_display = ("title", "specialization",)
+    list_display = (
+        "title",
+        "specialization",
+    )
     search_fields = (
         "title",
         "specialization__title",

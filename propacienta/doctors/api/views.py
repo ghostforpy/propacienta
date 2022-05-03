@@ -23,17 +23,23 @@ class PageNumberPaginationBy10(PageNumberPagination):
     page_size = 10
 
 
-@method_decorator(name='delete_avatar', decorator=swagger_auto_schema(tags=["doctors"]))
-@method_decorator(name='update', decorator=swagger_auto_schema(tags=["doctors"]))
-@method_decorator(name='partial_update', decorator=swagger_auto_schema(tags=["doctors"]))
-@method_decorator(name="treating_doctor", decorator=swagger_auto_schema(tags=["doctors"]))
+@method_decorator(name="delete_avatar", decorator=swagger_auto_schema(tags=["doctors"]))
+@method_decorator(name="update", decorator=swagger_auto_schema(tags=["doctors"]))
+@method_decorator(
+    name="partial_update", decorator=swagger_auto_schema(tags=["doctors"])
+)
+@method_decorator(
+    name="treating_doctor", decorator=swagger_auto_schema(tags=["doctors"])
+)
 @method_decorator(name="list", decorator=swagger_auto_schema(tags=["doctors"]))
 @method_decorator(name="retrieve", decorator=swagger_auto_schema(tags=["doctors"]))
-class DoctorViewSet(RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet):
+class DoctorViewSet(
+    RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet
+):
     pagination_class = PageNumberPaginationBy10
     queryset = Doctor.objects.filter(is_active=True).prefetch_related(
         "specializations", "sub_specializations", "hospitals", "user"
-        )
+    )
     # serializer_class = DoctorSerializer
     lookup_field = "id"
     # permission_classes = [AllowAny]
@@ -43,7 +49,7 @@ class DoctorViewSet(RetrieveModelMixin, UpdateModelMixin, ListModelMixin, Generi
         "user__patronymic",
         # "phone",
         "specializations__title",
-        "sub_specializations__title"
+        "sub_specializations__title",
     ]
     filter_backends = [filters.SearchFilter]
 
@@ -73,7 +79,7 @@ class DoctorViewSet(RetrieveModelMixin, UpdateModelMixin, ListModelMixin, Generi
             return DoctorSerializer
 
     def get_permissions(self):
-        if self.action == 'treating_doctor':
+        if self.action == "treating_doctor":
             permission_classes = [IsAuthenticated]
         elif self.action in ["update", "partial_update", "delete_avatar"]:
             permission_classes = [RequestByDoctorOwnerAccount]
@@ -99,7 +105,11 @@ class DoctorViewSet(RetrieveModelMixin, UpdateModelMixin, ListModelMixin, Generi
                 )
             return self.queryset
         elif self.action in [
-            "retrieve", "treating_doctor", "update", "partial_update", "delete_avatar"
+            "retrieve",
+            "treating_doctor",
+            "update",
+            "partial_update",
+            "delete_avatar",
         ]:
             qs = self.queryset
             # if self.request.user.is_authenticated:
@@ -108,8 +118,12 @@ class DoctorViewSet(RetrieveModelMixin, UpdateModelMixin, ListModelMixin, Generi
         else:
             return self.queryset.none()
 
-    @action(methods=['post'], detail=True,
-            url_path='treating_doctor', url_name='treating_doctor')
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="treating_doctor",
+        url_name="treating_doctor",
+    )
     def treating_doctor(self, request, *args, **kwargs):
         instance = self.get_object()
         pacient = request.user.pacient
@@ -122,8 +136,12 @@ class DoctorViewSet(RetrieveModelMixin, UpdateModelMixin, ListModelMixin, Generi
         pacient.save()
         return Response(status=status)
 
-    @action(methods=['delete'], detail=True,
-            url_path='delete_avatar', url_name='delete_avatar')
+    @action(
+        methods=["delete"],
+        detail=True,
+        url_path="delete_avatar",
+        url_name="delete_avatar",
+    )
     def delete_avatar(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.avatar.delete()

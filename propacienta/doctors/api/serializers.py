@@ -30,7 +30,8 @@ class DoctorUpdateSerializer(serializers.ModelSerializer):
         model = Doctor
         exclude = ["hospitals"]
         extra_kwargs = {
-           "is_active": {"read_only": True}, "phone": {"write_only": True, "required": False}
+            "is_active": {"read_only": True},
+            "phone": {"write_only": True, "required": False},
         }
 
 
@@ -58,8 +59,6 @@ class DoctorSerializer(serializers.ModelSerializer):
             return False
         elif self.context["view"].action == "retrieve":
             if self.context["request"].user.is_authenticated:
-                return (
-                    self.context["request"].user.pacient in obj.pacients.all()
-                )
+                return self.context["request"].user.pacient in obj.pacients.all()
             return False
         return False
