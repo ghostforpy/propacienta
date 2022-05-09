@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.conf import settings
 
 
 class OperationsConfig(AppConfig):
@@ -8,3 +9,6 @@ class OperationsConfig(AppConfig):
 
     def ready(self):
         import operations.signals
+        if not settings.DEBUG:
+            import operations.auditlog
+

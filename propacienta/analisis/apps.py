@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.conf import settings
 
 
 class AnalisisConfig(AppConfig):
@@ -8,3 +9,5 @@ class AnalisisConfig(AppConfig):
 
     def ready(self):
         import analisis.signals
+        if not settings.DEBUG:
+            import analisis.auditlog

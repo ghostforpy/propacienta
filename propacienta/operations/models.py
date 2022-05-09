@@ -56,6 +56,9 @@ class TransferredOperation(models.Model):
         return "{} {}".format(self.pacient, self.operation)
 
 
+
+
+
 class TransferredOperationImage(models.Model):
     """Модель изображения выписного эпикриза перенесенной операции."""
 
@@ -86,6 +89,9 @@ class TransferredOperationImage(models.Model):
         super().delete(*args, **kwargs)
 
 
+
+
+
 class TransferredOperationFile(models.Model):
     """Модель файла выпиского эпикриза перенесенной операции."""
 
@@ -112,3 +118,6 @@ class TransferredOperationFile(models.Model):
     def delete(self, *args, **kwargs):
         # self.file.delete()
         super().delete(*args, **kwargs)
+
+
+
