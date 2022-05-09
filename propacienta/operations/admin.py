@@ -66,7 +66,10 @@ class TransferredOperationImageAdminTabular(admin.TabularInline):
 class TransferredOperationAdmin(admin.ModelAdmin):
     list_display = ("pacient", "operation", "date")
     list_select_related = True
-    inlines = [TransferredOperationFileAdminTabular, TransferredOperationImageAdminTabular]
+    inlines = [
+        TransferredOperationFileAdminTabular,
+        TransferredOperationImageAdminTabular,
+    ]
     list_filter = ("operation",)
     search_fields = (
         "pacient__user__email",

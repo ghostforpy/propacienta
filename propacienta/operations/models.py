@@ -112,5 +112,3 @@ class TransferredOperationFile(models.Model):
     def delete(self, *args, **kwargs):
         # self.file.delete()
         super().delete(*args, **kwargs)
-
-
