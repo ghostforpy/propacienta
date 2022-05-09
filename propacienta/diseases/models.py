@@ -164,7 +164,7 @@ class DischargeEpicrisImage(models.Model):
         return reverse("api:discharge-epicris-images-delete", kwargs={"pk": self.pk})
 
     def delete(self, *args, **kwargs):
-        self.image.delete()
+        # self.image.delete()
         super().delete(*args, **kwargs)
 
 
@@ -192,5 +192,5 @@ class DischargeEpicrisFiles(models.Model):
         return reverse("api:discharge-epicris-files-delete", kwargs={"pk": self.pk})
 
     def delete(self, *args, **kwargs):
-        self.file.delete()
+        # self.file.delete()
         super().delete(*args, **kwargs)

@@ -86,7 +86,7 @@ class AnalysisResultsImage(models.Model):
         return reverse("api:analysis-results-images-delete", kwargs={"pk": self.pk})
 
     def delete(self, *args, **kwargs):
-        self.image.delete()
+        # self.image.delete()
         super().delete(*args, **kwargs)
 
 
@@ -109,5 +109,5 @@ class AnalysisResultsFile(models.Model):
         return reverse("api:analysis-results-files-delete", kwargs={"pk": self.pk})
 
     def delete(self, *args, **kwargs):
-        self.file.delete()
+        # self.file.delete()
         super().delete(*args, **kwargs)

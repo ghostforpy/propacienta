@@ -82,7 +82,7 @@ class TransferredOperationImage(models.Model):
         )
 
     def delete(self, *args, **kwargs):
-        self.image.delete()
+        # self.image.delete()
         super().delete(*args, **kwargs)
 
 
@@ -110,5 +110,7 @@ class TransferredOperationFile(models.Model):
         return reverse("api:transferred-operation-files-delete", kwargs={"pk": self.pk})
 
     def delete(self, *args, **kwargs):
-        self.file.delete()
+        # self.file.delete()
         super().delete(*args, **kwargs)
+
+
