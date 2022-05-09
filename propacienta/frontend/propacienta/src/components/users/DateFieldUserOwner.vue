@@ -44,7 +44,11 @@ export default {
   },
   watch: {
     value: function (val) {
-      this.date = val.toISOString().substr(0, 10);
+      if (this.val != "" && this.val != null) {
+        this.date = val.toISOString().substr(0, 10);
+      } else {
+        this.date = "";
+      }
     },
   },
   data: function () {
