@@ -102,7 +102,7 @@ export default {
     handleClickTab: function (event) {
       var hash = event.target.hash;
       if (this.$route.hash != hash) {
-        this.$router.replace({ name: this.$route.hash, hash: hash });
+        this.$router.replace({ name: this.$route.name, hash: hash });
       }
     },
     // updateHandl: function () {
