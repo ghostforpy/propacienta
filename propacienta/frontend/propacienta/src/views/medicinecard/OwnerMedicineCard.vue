@@ -14,6 +14,9 @@
       <v-tab href="#chronic-diseases" @click="handleClickTab"
         >Хронические заболевания</v-tab
       >
+      <v-tab href="#transfered-operations" @click="handleClickTab"
+        >Перенесенные операции</v-tab
+      >
       <v-tab-item id="common-data">
         <OwnerMedicineCardCommonData :pacientId="pacientId">
         </OwnerMedicineCardCommonData>
@@ -32,6 +35,10 @@
       <v-tab-item id="chronic-diseases">
         <OwnerChronicDiseases :pacientId="pacientId"> </OwnerChronicDiseases>
       </v-tab-item>
+      <v-tab-item id="transfered-operations">
+        <OwnerTransferedOperations :pacientId="pacientId">
+        </OwnerTransferedOperations>
+      </v-tab-item>
     </v-tabs>
   </div>
 </template>
@@ -42,6 +49,7 @@ import OwnerMedicineCardCommonData from "@/components/medicinecard/CommonData";
 import OwnerMedicineIndependentResearch from "@/components/medicinecard/IndependentResearch";
 import OwnerAnalisys from "@/components/medicinecard/OwnerAnalisys";
 import OwnerTransferedDiseases from "@/components/medicinecard/OwnerTransferedDiseases";
+import OwnerTransferedOperations from "@/components/medicinecard/OwnerTransferedOperations";
 import OwnerChronicDiseases from "@/components/medicinecard/OwnerChronicDiseases";
 import { INIT_PACIENT_STATE } from "@/store/actions/pacient";
 // import DateFieldUserOwner from "@/components/users/DateFieldUserOwner";
@@ -57,6 +65,7 @@ export default {
     OwnerAnalisys,
     OwnerTransferedDiseases,
     OwnerChronicDiseases,
+    OwnerTransferedOperations,
   },
   data: function () {
     return {

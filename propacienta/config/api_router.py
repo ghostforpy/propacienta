@@ -35,6 +35,7 @@ urlpatterns = [
     path("", include("medicine_cards.api.urls")),
     path("", include("analisis.api.urls")),
     path("", include("diseases.api.urls")),
+    path("", include("operations.api.urls")),
     path("", include("pacients.api.urls")),
     path("", include("doctors.api.urls")),
     re_path(

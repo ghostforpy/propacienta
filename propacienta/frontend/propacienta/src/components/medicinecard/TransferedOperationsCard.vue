@@ -1,0 +1,189 @@
+<template>
+  <v-expansion-panel>
+    <v-expansion-panel-header>{{ computedOperation }}</v-expansion-panel-header>
+    <v-expansion-panel-content class="break-word"
+      >Эфеект от операции: {{ cEffect }}<br />Дата проведения операции:
+      {{ computed_stamp_operation_date }}<br />
+      <div v-if="place != null">Место проведения операции: {{ cPlace }}</div>
+
+      <v-list v-if="imgs.length > 0 || fils.length > 0" subheader two-line>
+        <v-subheader inset v-if="imgs.length > 0">Изображения</v-subheader>
+        <v-list-item
+          v-for="(image, idx) in imgs"
+          :key="image.delete_url"
+          :href="image.image"
+          :download="image.image.split('/').pop()"
+          @click="downloadFileImageHandler"
+        >
+          <v-list-item-avatar>
+            <v-icon class="grey lighten-1" dark> mdi-file-image </v-icon>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="image.image.split('/').pop()"
+            ></v-list-item-title>
+          </v-list-item-content>
+
+          <v-list-item-action>
+            <v-btn
+              icon
+              @click="deleteFileImg(idx, image.delete_url, $event, 'imgs')"
+            >
+              <v-icon color="red lighten-2">mdi-trash-can-outline</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+        <v-divider inset v-if="imgs.length > 0 && fils.length > 0"></v-divider>
+        <v-subheader inset v-if="fils.length > 0">Файлы</v-subheader>
+        <v-list-item
+          v-for="(file, idc) in fils"
+          :key="file.delete_url"
+          :href="file.file"
+          :download="file.file.split('/').pop()"
+          @click="downloadFileImageHandler"
+        >
+          <v-list-item-avatar>
+            <v-icon class="grey lighten-1" dark> mdi-file </v-icon>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title
+              v-text="file.file.split('/').pop()"
+            ></v-list-item-title>
+          </v-list-item-content>
+
+          <v-list-item-action>
+            <v-btn
+              icon
+              @click="deleteFileImg(idc, file.delete_url, $event, 'files')"
+            >
+              <v-icon color="red lighten-2">mdi-trash-can-outline</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+      <v-card-actions class="d-flex justify-end pm-0">
+        <v-btn text color="red lighten-2" @click="$emit('delete', id)">
+          Удалить
+        </v-btn>
+      </v-card-actions>
+    </v-expansion-panel-content>
+  </v-expansion-panel>
+</template>
+<script>
+import request_service from "@/api/HTTP";
+export default {
+  name: "TransferedOperationsCard",
+  props: {
+    id: Number,
+    operation: String,
+    effect: String,
+    place: String,
+    stamp_operation_date: String,
+    images: Array,
+    files: Array,
+  },
+  data: function () {
+    return {
+      imgs: this.images,
+      fils: this.files,
+    };
+  },
+  computed: {
+    cPlace: function () {
+      return this.place;
+    },
+    // computedEpicrisStamp: function () {
+    //   let d = new Date(this.discharge_epicris.d);
+    //   return d.toLocaleDateString();
+    // },
+    cEffect: function () {
+      return this.effect;
+    },
+    computedOperation: function () {
+      return this.operation;
+    },
+    computed_stamp_operation_date: function () {
+      let d = new Date(this.stamp_operation_date);
+      return d.toLocaleDateString();
+    },
+    // computed_stamp_treatment_date: function () {
+    //   let d = new Date(this.stamp_treatment_date);
+    //   return d.toLocaleDateString();
+    // },
+    // computed_stamp_treatment_end_date: function () {
+    //   let d = new Date(this.stamp_treatment_end_date);
+    //   return d.toLocaleDateString();
+    // },
+  },
+  methods: {
+    downloadFileImageHandler: function (event) {
+      if (this.$store.getters.docMode) {
+        event.stopPropagation();
+        event.preventDefault();
+        var a = event.target.parentNode.parentNode;
+        var href = a.href;
+        var download = a.download;
+        let config = {
+          method: "get",
+          url: href,
+          headers: { IsDoctor: true },
+          responseType: "blob",
+        };
+        request_service(
+          config,
+          function (resp) {
+            const url = window.URL.createObjectURL(new Blob([resp.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", download);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          },
+          function (error) {
+            console.log(error);
+          }
+        );
+      }
+    },
+    deleteFileImg: function (id, url, event, type) {
+      event.stopPropagation();
+      event.preventDefault();
+      var el = this;
+      // console.log(url);
+      let config = {
+        method: "delete",
+        url: url,
+      };
+      if (this.$store.getters.docMode) {
+        config.headers = { IsDoctor: true };
+      }
+      request_service(
+        config,
+        function () {
+          // console.log("sucess");
+          if (type == "files") {
+            el.fils = el.fils.filter((item, idx) => {
+              return idx != id;
+            });
+          } else {
+            el.imgs = el.imgs.filter((item, idx) => {
+              return idx != id;
+            });
+          }
+        },
+        function (error) {
+          console.log(error);
+        }
+      );
+    },
+  },
+};
+</script>
+<style>
+.break-word {
+  word-break: break-word;
+}
+</style>
