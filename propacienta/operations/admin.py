@@ -1,8 +1,4 @@
 from django.contrib import admin
-from django.urls import reverse
-from django.utils.encoding import force_text
-from django.utils.html import format_html
-from django.utils.translation import gettext_lazy as _
 
 from .models import (
     Operation,
@@ -10,6 +6,12 @@ from .models import (
     TransferredOperationFile,
     TransferredOperationImage,
 )
+
+# from django.urls import reverse
+# from django.utils.encoding import force_text
+# from django.utils.html import format_html
+# from django.utils.translation import gettext_lazy as _
+
 
 # class EditMixin:
 #     extra = 0

@@ -14,6 +14,7 @@ class Operation(models.Model):
     class Meta:
         verbose_name = "Операция"
         verbose_name_plural = "Операции"
+        ordering = ["-id"]
 
     def __str__(self) -> str:
         return self.title
@@ -49,6 +50,7 @@ class TransferredOperation(models.Model):
     class Meta:
         verbose_name = "Перенесенная операция"
         verbose_name_plural = "Перенесенные операции"
+        ordering = ["-id"]
 
     def __str__(self) -> str:
         return "{} {}".format(self.pacient, self.operation)
