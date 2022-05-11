@@ -6,16 +6,24 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('operations', '0003_auto_20220503_1637'),
+        ("operations", "0003_auto_20220503_1637"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='operation',
-            options={'ordering': ['-id'], 'verbose_name': 'Операция', 'verbose_name_plural': 'Операции'},
+            name="operation",
+            options={
+                "ordering": ["-id"],
+                "verbose_name": "Операция",
+                "verbose_name_plural": "Операции",
+            },
         ),
         migrations.AlterModelOptions(
-            name='transferredoperation',
-            options={'ordering': ['-id'], 'verbose_name': 'Перенесенная операция', 'verbose_name_plural': 'Перенесенные операции'},
+            name="transferredoperation",
+            options={
+                "ordering": ["-id"],
+                "verbose_name": "Перенесенная операция",
+                "verbose_name_plural": "Перенесенные операции",
+            },
         ),
     ]

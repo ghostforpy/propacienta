@@ -9,6 +9,6 @@ class OperationsConfig(AppConfig):
 
     def ready(self):
         import operations.signals
+
         if not settings.DEBUG:
             import operations.auditlog
-

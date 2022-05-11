@@ -9,5 +9,6 @@ class DiseasesConfig(AppConfig):
 
     def ready(self):
         import diseases.signals
+
         if not settings.DEBUG:
             import diseases.auditlog

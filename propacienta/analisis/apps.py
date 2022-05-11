@@ -9,5 +9,6 @@ class AnalisisConfig(AppConfig):
 
     def ready(self):
         import analisis.signals
+
         if not settings.DEBUG:
             import analisis.auditlog
