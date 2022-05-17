@@ -6,6 +6,9 @@ local:
 local_django:
 	docker-compose -f local.yml up django $(SERVICE) --remove-orphans
 
+local_build:
+	docker-compose -f local.yml up --build --remove-orphans
+
 local_nginx:
 	docker-compose -f local.yml up reverse_proxy
 
@@ -34,7 +37,10 @@ backup_db:
 	./backup_db_production.sh
 
 manage_local:
-	docker-compose -f local.yml run --rm django ./manage.py $(NAME)
+	docker-compose -f local.yml run --rm django ./manage.py $(COMMAND)
+
+local_shell:
+	docker-compose -f local.yml run --rm django ./manage.py shell
 
 create_superuser_local:
 	docker-compose -f local.yml run --rm django ./manage.py createsuperuser
