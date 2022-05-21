@@ -190,7 +190,7 @@ export default {
     };
     if (
       this.$store.getters.docMode &&
-      this.$store.getters.pacientId != this.pacientId
+      this.$store.getters.pacient_id != this.pacientId
     ) {
       config.headers = { IsDoctor: true };
       // config.data.medicine_card = this.medicineCard;
@@ -247,7 +247,7 @@ export default {
       form.append("pacient", this.pacientId);
       if (
         this.$store.getters.docMode &&
-        this.$store.getters.pacientId != this.pacientId
+        this.$store.getters.pacient_id != this.pacientId
       ) {
         form.append("medicine_card", this.medicineCard);
       } else {
@@ -272,7 +272,7 @@ export default {
       };
       if (
         this.$store.getters.docMode &&
-        this.$store.getters.pacientId != this.pacientId
+        this.$store.getters.pacient_id != this.pacientId
       ) {
         config.headers = { IsDoctor: true };
         // config.data.medicine_card = this.medicineCard;
@@ -301,7 +301,7 @@ export default {
       };
       if (
         this.$store.getters.docMode &&
-        this.$store.getters.pacientId != this.pacientId
+        this.$store.getters.pacient_id != this.pacientId
       ) {
         config.headers = { IsDoctor: true };
       }
@@ -341,7 +341,7 @@ export default {
       };
       if (
         this.$store.getters.docMode &&
-        this.$store.getters.pacientId != this.pacientId
+        this.$store.getters.pacient_id != this.pacientId
       ) {
         config.headers = { IsDoctor: true };
       }
