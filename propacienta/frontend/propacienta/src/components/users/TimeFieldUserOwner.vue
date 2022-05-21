@@ -28,7 +28,7 @@
       color="cyan"
     >
       <v-spacer></v-spacer>
-      <v-btn text color="cyan lighten-2" @click="modal = false"> Cancel </v-btn>
+      <v-btn text color="cyan lighten-2" @click="modal = false"> Отмена </v-btn>
       <v-btn text color="cyan lighten-2" @click="onOk"> OK </v-btn>
     </v-time-picker>
   </v-dialog>

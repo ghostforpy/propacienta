@@ -26,9 +26,10 @@
       color="cyan lighten-2"
       scrollable
       :max="maxDate"
+      locale="ru-RU"
     >
       <v-spacer></v-spacer>
-      <v-btn text color="cyan" @click="modal = false"> Cancel </v-btn>
+      <v-btn text color="cyan" @click="modal = false"> Отмена </v-btn>
       <v-btn text color="cyan" @click="onOk"> OK </v-btn>
     </v-date-picker>
   </v-dialog>
