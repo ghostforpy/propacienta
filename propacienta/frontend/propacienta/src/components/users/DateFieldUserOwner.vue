@@ -45,7 +45,7 @@ export default {
   },
   watch: {
     value: function (val) {
-      if (this.val != "" && this.val != null) {
+      if (val != "" && val != null) {
         this.date = val.toISOString().substr(0, 10);
       } else {
         this.date = "";
