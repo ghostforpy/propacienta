@@ -3,14 +3,31 @@
     <v-layout align-center justify-center>
       <v-flex xs10 sm8 md8>
         <v-row>
-          <v-col cols="12" md="3"
+          <AppointmentOrder
+            v-model="dialog"
+            :doctorId="$store.getters.doctor_id"
+            :pacientId="pacientId"
+            :docMode="true"
+          >
+          </AppointmentOrder>
+          <v-col cols="12" md="4"
             ><v-skeleton-loader
               class="mx-auto"
               max-width="200"
               type="image"
-            ></v-skeleton-loader
-          ></v-col>
-          <v-col cols="12" md="5">
+            ></v-skeleton-loader>
+            <v-btn
+              small
+              class="mt-2 white-content"
+              style="width: 100%"
+              color="cyan lighten-2"
+              rounded
+              @click="reserveHanlder"
+            >
+              Записать на приём
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="6">
             <v-text-field
               fieldname="firstName"
               label="Фамилия"
@@ -99,6 +116,7 @@
 <script>
 import TextFieldUserOwner from "@/components/users/TextFieldUserOwner";
 import request_service from "@/api/HTTP";
+import AppointmentOrder from "@/components/appointments/AppointmentOrder";
 export default {
   name: "CommonDataMedicineCardDoctor",
   props: {
@@ -112,6 +130,7 @@ export default {
   },
   components: {
     TextFieldUserOwner,
+    AppointmentOrder,
   },
   data: function () {
     return {
@@ -121,6 +140,7 @@ export default {
       oldWeight: "",
       applyBtn: false,
       loading: false,
+      dialog: false,
       // firstNameVal: "",
       // lastNameVal: "",
       // patronymicVal: "",
@@ -200,6 +220,9 @@ export default {
         this.applyBtn = true;
       }
     },
+    reserveHanlder: function () {
+      this.dialog = true;
+    },
     onSubmit: async function () {
       this.loading = true;
       let data = {
@@ -232,3 +255,8 @@ export default {
   },
 };
 </script>
+<style>
+.white-content.v-btn {
+  color: white;
+}
+</style>

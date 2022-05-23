@@ -7,6 +7,12 @@
       <v-layout align-center justify-center>
         <v-flex xs10 sm8 md6>
           <v-row class="d-flex">
+            <AppointmentOrder
+              v-model="dialog"
+              :doctorId="doctorId"
+              :pacientId="$store.getters.pacient_id"
+            >
+            </AppointmentOrder>
             <v-col cols="12">
               <v-text-field
                 v-model="searchDoctorQuery"
@@ -23,7 +29,8 @@
             ></v-col>
             <template v-if="results.length > 0">
               <v-col
-                cols="6"
+                cols="12"
+                sm="6"
                 lg="4"
                 v-for="item in results"
                 :key="item.id"
@@ -37,6 +44,8 @@
                   }"
                 >
                   <DoctorListCard
+                    v-on:reserve="reserveHanlder"
+                    :id="item.id"
                     :firstName="item.first_name"
                     :lastName="item.last_name"
                     :avatar="item.avatar"
@@ -83,10 +92,12 @@
 <script>
 import request_service from "@/api/HTTP";
 import DoctorListCard from "@/components/doctors/DoctorListCard";
+import AppointmentOrder from "@/components/appointments/AppointmentOrder";
 export default {
   name: "DoctorsList",
   components: {
     DoctorListCard,
+    AppointmentOrder,
   },
   data: function () {
     return {
@@ -96,6 +107,8 @@ export default {
       nextPage: 1,
       emptyMyPacients: false,
       results: [],
+      dialog: false,
+      doctorId: 0,
     };
   },
   created: function () {
@@ -108,6 +121,11 @@ export default {
       if (this.searchDoctorQuery == "") {
         this.clearHandler();
       }
+    },
+    reserveHanlder: function (id) {
+      // console.log(id);
+      this.doctorId = id;
+      this.dialog = true;
     },
     clearHandler: function () {
       this.loading = true;

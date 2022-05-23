@@ -3,6 +3,12 @@
     <v-layout align-center justify-center>
       <v-flex xs10 sm8 md8>
         <v-row class="cursor-auto">
+          <AppointmentOrder
+            v-model="dialog"
+            :doctorId="doctorId"
+            :pacientId="$store.getters.pacient_id"
+          >
+          </AppointmentOrder>
           <v-col cols="6" offset="3" offset-md="0" md="4" lg="3" class=""
             ><v-img contain class="rounded img" :src="avatarSrc">
               <v-tooltip
@@ -23,8 +29,18 @@
                 </template>
                 <span>{{ treatingDoctorTooltip }}</span>
               </v-tooltip>
-            </v-img></v-col
-          >
+            </v-img>
+            <v-btn
+              small
+              class="mt-2 white-content"
+              style="width: 100%"
+              color="cyan lighten-2"
+              rounded
+              @click="reserveHanlder"
+            >
+              Записаться на приём
+            </v-btn>
+          </v-col>
           <v-col cols="12" md="7">
             <v-text-field
               fieldname="firstName"
@@ -87,13 +103,17 @@
 
 <script>
 import request_service from "@/api/HTTP";
+import AppointmentOrder from "@/components/appointments/AppointmentOrder";
 export default {
   name: "DoctorProfile",
-  components: {},
+  components: {
+    AppointmentOrder,
+  },
   data: function () {
     return {
       // doctorId: "",
       firstName: "",
+      dialog: false,
       avatarSrc: require("@/assets/default_doctor_avatar.png"),
       lastName: "",
       patronymic: "",
@@ -122,6 +142,9 @@ export default {
     },
   },
   methods: {
+    reserveHanlder: function () {
+      this.dialog = true;
+    },
     toogleIsTreatingDoctorStar: function () {
       // добавить метод добавления в лечащие врачи
       let config = {
@@ -191,5 +214,8 @@ export default {
 }
 .spec i {
   display: none !important;
+}
+.white-content.v-btn {
+  color: white;
 }
 </style>

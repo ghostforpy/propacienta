@@ -1,7 +1,12 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from hospitals.models import DEFAULT_HOSPITAL
+
+
 # Create your models here.
+def default_hospital():
+    return DEFAULT_HOSPITAL
 
 
 class AppointmentOrder(models.Model):
@@ -44,6 +49,7 @@ class AppointmentOrder(models.Model):
         on_delete=models.DO_NOTHING,
         verbose_name=_("Клиника"),
         related_name="appointment_orders",
+        default=default_hospital
     )
 
     class Meta:

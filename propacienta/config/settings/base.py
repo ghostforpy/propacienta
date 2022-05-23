@@ -80,6 +80,7 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
     "djoser",
     "auditlog",
+    "django_filters"
 ]
 
 LOCAL_APPS = [

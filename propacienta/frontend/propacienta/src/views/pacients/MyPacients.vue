@@ -7,6 +7,13 @@
       <v-layout align-center justify-center>
         <v-flex xs10 sm8 md6>
           <v-row>
+            <AppointmentOrder
+              v-model="dialog"
+              :doctorId="$store.getters.doctor_id"
+              :pacientId="pacientId"
+              :docMode="true"
+            >
+            </AppointmentOrder>
             <v-col cols="12">
               <v-text-field
                 v-model="searchPacientQuery"
@@ -34,6 +41,8 @@
                   }"
                 >
                   <PacientListCard
+                    :id="item.id"
+                    v-on:reserve="reserveHanlder"
                     :firstName="item.first_name"
                     :lastName="item.last_name"
                     :patronymic="item.patronymic"
@@ -78,10 +87,12 @@
 <script>
 import request_service from "@/api/HTTP";
 import PacientListCard from "@/components/pacients/PacientListCard";
+import AppointmentOrder from "@/components/appointments/AppointmentOrder";
 export default {
   name: "MyPacients",
   components: {
     PacientListCard,
+    AppointmentOrder,
   },
   data: function () {
     return {
@@ -91,6 +102,8 @@ export default {
       nextPage: 1,
       emptyMyPacients: false,
       results: [],
+      dialog: false,
+      pacientId: 0,
     };
   },
   created: function () {
@@ -99,6 +112,11 @@ export default {
     setTimeout(() => (this.loading = false), 500);
   },
   methods: {
+    reserveHanlder: function (id) {
+      // console.log(id);
+      this.pacientId = id;
+      this.dialog = true;
+    },
     clearHandler: function () {
       this.loading = true;
       this.searchPacientQuery = "";
