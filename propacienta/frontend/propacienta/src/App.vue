@@ -57,15 +57,17 @@
         </template>
 
         <v-list class="account-menu">
-          <v-list-item
-            dense
-            v-for="(item, i) in accountMenuList"
-            :key="i"
-            @click="menu = false"
-          >
-            <router-link :to="item.route"> {{ item.title }}</router-link>
-          </v-list-item>
-          <v-divider v-if="docModeAvailable"></v-divider>
+          <template v-if="!docMode">
+            <v-list-item
+              dense
+              v-for="(item, i) in accountMenuList"
+              :key="i"
+              @click="menu = false"
+            >
+              <router-link :to="item.route"> {{ item.title }}</router-link>
+            </v-list-item>
+          </template>
+          <v-divider v-if="docModeAvailable && !docMode"></v-divider>
           <v-list-item v-if="docModeAvailable">
             <v-list-item-action
               ><v-switch
@@ -88,7 +90,9 @@
             >
           </v-list-item>
           <v-list-item v-if="docMode" dense @click="menu = false">
-            <router-link :to="{ name: 'main' }"> Мой календарь</router-link>
+            <router-link :to="{ name: 'my-doctor-calendar' }">
+              Мой календарь</router-link
+            >
           </v-list-item>
           <v-divider></v-divider>
           <v-list-item @click="menu = false">
