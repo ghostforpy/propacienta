@@ -23,7 +23,9 @@
                 :clearable="searchPacientQuery != ''"
                 append-icon="mdi-account-search-outline"
                 @click:append="searchHandler"
+                @keyup.enter="searchHandler"
                 @click:clear="clearHandler"
+                @keyup.delete="deleteHandler"
               ></v-text-field
             ></v-col>
             <template v-if="results.length > 0">
@@ -116,6 +118,11 @@ export default {
       // console.log(id);
       this.pacientId = id;
       this.dialog = true;
+    },
+    deleteHandler: function () {
+      if (this.searchPacientQuery == "") {
+        this.clearHandler();
+      }
     },
     clearHandler: function () {
       this.loading = true;
