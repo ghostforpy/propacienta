@@ -226,7 +226,7 @@ export default {
           if (doctor_data.specializations != undefined) {
             el.fieldSpecializationsEdit = false;
           }
-          if (doctor_data.sub_pecializations != undefined) {
+          if (doctor_data.sub_specializations != undefined) {
             el.fieldSubSpecializationsEdit = false;
           }
           if (doctor_data.portfolio != undefined) {
