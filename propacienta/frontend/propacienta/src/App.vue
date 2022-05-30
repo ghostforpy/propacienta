@@ -172,6 +172,7 @@ export default {
     accountMenuList: [
       { title: "Моя медицинская карта", route: "/my-medicine-card" },
       { title: "Мой профиль", route: "/users/me" },
+      { title: "Мои приёмы", route: "/my-pacient-calendar" },
     ],
     drawerMenuList: [
       {
