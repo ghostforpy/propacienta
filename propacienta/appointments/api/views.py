@@ -1,6 +1,7 @@
 from django.db.models import Count, Q
 # from drf_yasg import openapi
 from django.utils.decorators import method_decorator
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 # from rest_framework import status
 # from rest_framework.generics import (
@@ -10,19 +11,20 @@ from drf_yasg.utils import swagger_auto_schema
 #     RetrieveAPIView,
 #     get_object_or_404,
 # )
-# from rest_framework.mixins import (
-#     CreateModelMixin,
-#     DestroyModelMixin,
-#     ListModelMixin,
-#     RetrieveModelMixin,
-# )
+from rest_framework.mixins import (
+    CreateModelMixin,
+    DestroyModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+)
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 # from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from doctors.utils import request_by_doctor
 
+from .filtersets import DateTimeRangeFilterSet
 # from ..models import AppointmentOrder, AppointmentSurvey
 # from ..utils import (
 #     IsOwnerOfAnalisObject,
@@ -43,22 +45,20 @@ class PageNumberPaginationBy10(PageNumberPagination):
     page_size = 10
 
 
+# @method_decorator(name="update", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
+# @method_decorator(name="partial_update", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
 @method_decorator(name="list", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
 @method_decorator(name="retrieve", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
 @method_decorator(name="create", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
-@method_decorator(name="update", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
-@method_decorator(name="partial_update", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
 @method_decorator(name="destroy", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
-class AppointmentOrderPacientViewSet(ModelViewSet):
+class AppointmentOrderPacientViewSet(CreateModelMixin,
+                                     RetrieveModelMixin,
+                                     DestroyModelMixin,
+                                     ListModelMixin,
+                                     GenericViewSet):
     serializer_class = AppointmentOrderPacientSerializer
-    # queryset = AppointmentOrder.objects.all().select_related(
-    #     "hospital",
-    #     "doctor",
-    #     "doctor_specialization",
-    #     "doctor_sub_specialization"
-    # )
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPaginationBy10
+    # pagination_class = PageNumberPaginationBy10
 
     def get_queryset(self):
         return self.request.user.pacient.appointment_orders.all().select_related(
@@ -70,17 +70,23 @@ class AppointmentOrderPacientViewSet(ModelViewSet):
         )
 
 
+# @method_decorator(name="update", decorator=swagger_auto_schema(tags=["doctor-appointments"]))
+# @method_decorator(name="partial_update", decorator=swagger_auto_schema(tags=["doctor-appointments"]))
 @method_decorator(name="list", decorator=swagger_auto_schema(tags=["doctor-appointments"]))
 @method_decorator(name="retrieve", decorator=swagger_auto_schema(tags=["doctor-appointments"]))
 @method_decorator(name="create", decorator=swagger_auto_schema(tags=["doctor-appointments"]))
-@method_decorator(name="update", decorator=swagger_auto_schema(tags=["doctor-appointments"]))
-@method_decorator(name="partial_update", decorator=swagger_auto_schema(tags=["doctor-appointments"]))
 @method_decorator(name="destroy", decorator=swagger_auto_schema(tags=["doctor-appointments"]))
-class AppointmentOrderDoctorViewSet(ModelViewSet):
+class AppointmentOrderDoctorViewSet(CreateModelMixin,
+                                    RetrieveModelMixin,
+                                    DestroyModelMixin,
+                                    ListModelMixin,
+                                    GenericViewSet):
     serializer_class = AppointmentOrderDoctorSerializer
     # queryset = AppointmentOrder.objects.all()
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPaginationBy10
+    filterset_class = DateTimeRangeFilterSet
+    filter_backends = [DjangoFilterBackend]
+    # pagination_class = PageNumberPaginationBy10
 
     def get_queryset(self):
         return self.request.user.doctor.appointment_orders.all().select_related(
@@ -90,6 +96,12 @@ class AppointmentOrderDoctorViewSet(ModelViewSet):
             "doctor_specialization",
             "doctor_sub_specialization"
         )
+
+    # def paginate_queryset(self, queryset):
+    #     if self.request.query_params.get("calendar") == "true":
+    #         return None
+    #     else:
+    #         return super().paginate_queryset(queryset)
 
 
 # @method_decorator(

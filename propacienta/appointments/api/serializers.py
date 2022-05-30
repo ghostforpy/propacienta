@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -29,6 +31,9 @@ class AppointmentOrderSerializer(serializers.ModelSerializer):
                 fields=['pacient', 'dt']
             )
         ]
+
+    # def create(self, validated_data):
+    #     return super().create(validated_data)
 
     def validate(self, data):
         doctor = data["doctor"]
@@ -72,6 +77,7 @@ class AppointmentOrderSerializer(serializers.ModelSerializer):
             # нет рабочего периода
             raise serializers.ValidationError("WorkDay DoesNotExist.")
         if w.reserve_timeslot(dt.time()):
+            data["end"] = dt + timedelta(minutes=w.appointment_duration)
             return data
         else:
             # выбранное время занято или не соответствует сетке приемов
@@ -79,6 +85,8 @@ class AppointmentOrderSerializer(serializers.ModelSerializer):
 
 
 class AppointmentOrderPacientSerializer(AppointmentOrderSerializer):
+    name = serializers.CharField(source="get_doctor_name", read_only=True)
+
     def validate_pacient(self, value):
         pacient_id = self.context["request"].user.pacient.id
         if value.id != pacient_id:
@@ -87,10 +95,13 @@ class AppointmentOrderPacientSerializer(AppointmentOrderSerializer):
 
 
 class AppointmentOrderDoctorSerializer(AppointmentOrderSerializer):
+    name = serializers.CharField(source="get_pacient_name", read_only=True)
+    # start = serializers.DateTimeField(source="dt", read_only=True)
+
     def validate_doctor(self, value):
         doctor_id = self.context["request"].user.doctor.id
         if value.id != doctor_id:
-            raise serializers.ValidationError("Wrong pacientId.")
+            raise serializers.ValidationError("Wrong doctorId.")
         return value
 
 

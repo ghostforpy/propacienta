@@ -1,7 +1,10 @@
+import pytz
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from hospitals.models import DEFAULT_HOSPITAL
+from work_schedules.models import WorkDay
 
 
 # Create your models here.
@@ -25,6 +28,7 @@ class AppointmentOrder(models.Model):
         related_name="appointment_orders",
     )
     dt = models.DateTimeField(_("Время приема"), blank=True, null=True)
+    end = models.DateTimeField(_("Окончание приема"), blank=True, null=True)
     confirmation = models.BooleanField(_("Подтверждение приема"), default=False)
     created_at = models.DateTimeField(_("Создан"), auto_now_add=True)
     appointment_took_place = models.BooleanField(_("Приём состоялся"), default=False)
@@ -58,6 +62,31 @@ class AppointmentOrder(models.Model):
 
     def __str__(self) -> str:
         return "{} к {}".format(self.pacient, self.doctor)
+
+    def get_pacient_name(self):
+        return "{} {}.{}.".format(
+            self.pacient.user.last_name,
+            self.pacient.user.first_name[0].upper(),
+            self.pacient.user.patronymic[0].upper(),
+        )
+
+    def get_doctor_name(self):
+        return "{} {}.{}.".format(
+            self.doctor.user.last_name,
+            self.doctor.user.first_name[0].upper(),
+            self.doctor.user.patronymic[0].upper(),
+        )
+
+    def delete(self):
+        dt = self.dt.astimezone(tz=pytz.timezone(settings.TIME_ZONE))
+        w = WorkDay.objects.filter(
+                doctor=self.doctor,
+                date=dt.date(),
+                since__lte=dt.time(),
+                to__gt=dt.time(),
+            ).get()
+        w.cancel_reserve_timeslot(dt.time())
+        return super().delete()
 
 
 class AppointmentSurvey(models.Model):
