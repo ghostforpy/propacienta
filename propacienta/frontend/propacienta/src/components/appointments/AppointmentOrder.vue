@@ -50,6 +50,21 @@
       <v-alert dense text type="error" v-if="errorAlert">
         {{ errorAlertText }}
       </v-alert>
+      <v-alert
+        dense
+        text
+        type="error"
+        v-if="appointmentTimeAdd != null && !$store.getters.isAuthenticated"
+      >
+        Для записи на приём необходимо
+        <router-link
+          class="pacient-card-calendar"
+          :to="{
+            name: 'login',
+          }"
+          >авторизоваться</router-link
+        >.
+      </v-alert>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="cyan darken-1" text @click="$emit('input', false)">
@@ -59,7 +74,9 @@
           color="cyan darken-1"
           text
           @click="handleAdd"
-          :disabled="appointmentTimeAdd == null"
+          :disabled="
+            appointmentTimeAdd == null || !$store.getters.isAuthenticated
+          "
         >
           Записать<template v-if="!docMode">ся</template>
         </v-btn>
@@ -219,7 +236,7 @@ export default {
       var el = this;
       request_service(
         config,
-        function () {
+        function (resp) {
           el.errorAlert = false;
           // console.log(resp);
           el.freeTimeSlots = el.freeTimeSlots.filter((item) => {
@@ -227,6 +244,7 @@ export default {
           });
           el.snackbar = true;
           el.appointmentTimeAdd = null;
+          el.$emit("order", true, resp.data);
         },
         function (error) {
           el.errorAlert = true;
