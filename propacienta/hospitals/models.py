@@ -35,3 +35,6 @@ class Hospital(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+
+DEFAULT_HOSPITAL = Hospital.objects.first()
