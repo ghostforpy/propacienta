@@ -27,6 +27,14 @@ class AppointmentOrder(models.Model):
         on_delete=models.DO_NOTHING,
         related_name="appointment_orders",
     )
+    workday = models.ForeignKey(
+        WorkDay,
+        verbose_name=_("Рабочий период"),
+        on_delete=models.DO_NOTHING,
+        related_name="appointment_orders",
+        null=True,
+        blank=True,
+    )
     dt = models.DateTimeField(_("Время приема"), blank=True, null=True)
     end = models.DateTimeField(_("Окончание приема"), blank=True, null=True)
     confirmation = models.BooleanField(_("Подтверждение приема"), default=False)

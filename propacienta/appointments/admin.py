@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import AppointmentOrder, AppointmentSurvey, DoctorAppointment
 from django.utils.translation import gettext_lazy as _
+
+from .models import AppointmentOrder, AppointmentSurvey, DoctorAppointment
 
 
 # Register your models here.
@@ -21,6 +22,7 @@ class AppointmentOrderAdmin(admin.ModelAdmin):
         "hospital",
     )
     list_select_related = True
+    readonly_fields = ("workday",)
 
 
 @admin.register(AppointmentSurvey)

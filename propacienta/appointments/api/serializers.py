@@ -78,6 +78,7 @@ class AppointmentOrderSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("WorkDay DoesNotExist.")
         if w.reserve_timeslot(dt.time()):
             data["end"] = dt + timedelta(minutes=w.appointment_duration)
+            data["workday"] = w
             return data
         else:
             # выбранное время занято или не соответствует сетке приемов
