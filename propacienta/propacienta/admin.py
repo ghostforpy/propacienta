@@ -1,4 +1,3 @@
-from operator import le
 from django.contrib import admin
 
 
@@ -25,6 +24,7 @@ class MyAdminSite(admin.AdminSite):
             "Клиники",
             "Медикаменты",
             "Процедуры",
+            "Графики работы",
             "Пользователи",
         ]
         for i in range(len(app_name_list)):
