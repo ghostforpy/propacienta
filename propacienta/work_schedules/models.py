@@ -149,14 +149,16 @@ class WorkDay(models.Model):
     def reserve_timeslot(self, timeslot) -> bool:
         if not self.check_free_timeslot(timeslot):
             return False
+        res = self.change_timeslot(timeslot)
         self.save()
-        return self.change_timeslot(timeslot)
+        return res
 
     def cancel_reserve_timeslot(self, timeslot) -> bool:
         if self.check_free_timeslot(timeslot):
             return False
+        res = self.change_timeslot(timeslot, "0")
         self.save()
-        return self.change_timeslot(timeslot, "0")
+        return res
 
     def add_break(self, start, end):
         since = timedelta(
