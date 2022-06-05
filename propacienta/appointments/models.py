@@ -3,13 +3,13 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from hospitals.models import DEFAULT_HOSPITAL
+from hospitals.models import get_default_hospital
 from work_schedules.models import WorkDay
 
 
 # Create your models here.
 def default_hospital():
-    return DEFAULT_HOSPITAL
+    return get_default_hospital
 
 
 class AppointmentOrder(models.Model):
@@ -61,7 +61,7 @@ class AppointmentOrder(models.Model):
         on_delete=models.DO_NOTHING,
         verbose_name=_("Клиника"),
         related_name="appointment_orders",
-        default=default_hospital
+        default=get_default_hospital
     )
 
     class Meta:

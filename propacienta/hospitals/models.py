@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -37,4 +38,5 @@ class Hospital(models.Model):
         return self.title
 
 
-DEFAULT_HOSPITAL = Hospital.objects.first()
+async def get_default_hospital():
+    return await sync_to_async(Hospital.objects.first)

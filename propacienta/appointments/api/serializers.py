@@ -4,7 +4,7 @@ from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from hospitals.models import DEFAULT_HOSPITAL
+from hospitals.models import get_default_hospital
 from work_schedules.models import NotWorkingPeriod, WorkDay
 
 from ..models import AppointmentOrder, AppointmentSurvey
@@ -13,7 +13,7 @@ from ..models import AppointmentOrder, AppointmentSurvey
 class AppointmentOrderSerializer(serializers.ModelSerializer):
     hospital = serializers.PrimaryKeyRelatedField(
         read_only=True,
-        default=DEFAULT_HOSPITAL
+        default=get_default_hospital
     )
 
     class Meta:
@@ -57,7 +57,7 @@ class AppointmentOrderSerializer(serializers.ModelSerializer):
             # выбираем рабочий период
             w = WorkDay.objects.filter(
                 doctor=doctor,
-                hospital=DEFAULT_HOSPITAL,  # default hospital
+                hospital=get_default_hospital,  # default hospital
                 date=dt.date(),
                 since__lte=dt.time(),  # проверить
                 to__gt=dt.time(),  # проверить
@@ -65,7 +65,7 @@ class AppointmentOrderSerializer(serializers.ModelSerializer):
             # проверяем нет ли нерабочих периодов на эту дату
             if NotWorkingPeriod.objects.filter(
                 doctor=doctor,
-                hospital=DEFAULT_HOSPITAL,  # default hospital
+                hospital=get_default_hospital,  # default hospital
                 since__gte=dt.date(),
                 is_open=True
             ).filter(Q(to__lt=dt.date()) | Q(to__isnull=True)).exists():

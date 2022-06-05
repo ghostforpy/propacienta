@@ -80,7 +80,8 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
     "djoser",
     "auditlog",
-    "django_filters"
+    "django_filters",
+    "channels",
 ]
 
 LOCAL_APPS = [
@@ -426,5 +427,17 @@ DJOSER = {
         "token_destroy": [
             "propacienta.users.utils.DenyAll"
         ],  # ['rest_framework.permissions.IsAuthenticated'],
+    },
+}
+
+
+
+# CHANNELS
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
     },
 }
