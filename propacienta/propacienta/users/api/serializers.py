@@ -47,7 +47,7 @@ class CUserSerializer(serializers.ModelSerializer):
         # }
 
     def get_doc_mode_available(self, obj):
-        if obj.doctor != None:
+        if obj.doctor is not None:
             if obj.doctor.is_active:
                 return True
         return False
@@ -56,12 +56,12 @@ class CUserSerializer(serializers.ModelSerializer):
         return obj.pacient.phone
 
     def get_doctor_phone(self, obj):
-        if obj.doctor != None:
+        if obj.doctor is not None:
             if obj.doctor.is_active:
                 return obj.doctor.phone
 
     def get_doctor_id(self, obj):
-        if obj.doctor != None:
+        if obj.doctor is not None:
             if obj.doctor.is_active:
                 return obj.doctor.id
 
