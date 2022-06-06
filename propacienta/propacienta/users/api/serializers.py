@@ -1,8 +1,10 @@
 from traceback import print_tb
+
 from django.contrib.auth import get_user_model
+from djoser.serializers import UserCreatePasswordRetypeSerializer
 from rest_framework import serializers
 from rest_framework.mixins import UpdateModelMixin
-from djoser.serializers import UserCreatePasswordRetypeSerializer
+
 from doctors.models import Doctor
 from pacients.models import Pacient
 
@@ -68,7 +70,7 @@ class CUserSerializer(serializers.ModelSerializer):
     # дописать валидацию телефонов
 
     def save(self, *args, **kwargs):
-        print(self.validated_data)
+        # print(self.validated_data)
         if "phone_pacient" in self.validated_data:
             self.instance.pacient.phone = self.validated_data["phone_pacient"]
             self.instance.pacient.save()
