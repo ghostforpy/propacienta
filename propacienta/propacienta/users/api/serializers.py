@@ -1,5 +1,3 @@
-from traceback import print_tb
-
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreatePasswordRetypeSerializer
 from rest_framework import serializers
