@@ -1,0 +1,14 @@
+export const SET_ACTIVE_CHAT = "SET_ACTIVE_CHAT";
+export const OPEN_CHAT = "OPEN_CHAT";
+export const GET_CHATS = "GET_CHATS";
+export const SET_CHATS = "SET_CHATS";
+export const ADD_CHAT = "ADD_CHAT";
+export const GET_MESSAGES = "GET_MESSAGES";
+export const SET_MESSAGES = "SET_MESSAGES";
+export const SET_MESSAGES_PAGE = "SET_MESSAGES_PAGE";
+export const ADD_MESSAGES = "ADD_MESSAGES";
+export const ADD_MESSAGE = "ADD_MESSAGE";
+export const SET_SELF_ID = "SET_SELF_ID";
+export const TOOGLE_CHATS_VISIBLE = "TOOGLE_CHATS_VISIBLE";
+export const SET_NEW_MESSAGES = "SET_NEW_MESSAGES";
+export const UNSET_NEW_MESSAGES = "UNSET_NEW_MESSAGES";

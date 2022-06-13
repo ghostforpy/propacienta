@@ -1,9 +1,10 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import user from "./modules/user";
+import Vue from 'vue';
+import Vuex from 'vuex';
 import auth from "./modules/auth";
-import registraion from "./modules/registration"
-import pacient from "./modules/pacient"
+import chats from "./modules/chats";
+import pacient from "./modules/pacient";
+import registraion from "./modules/registration";
+import user from "./modules/user";
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
     user,
     auth,
     registraion,
-    pacient
+    pacient,
+    chats
   },
 })

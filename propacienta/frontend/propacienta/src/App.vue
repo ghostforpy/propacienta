@@ -131,7 +131,8 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-
+    <!-- <ChatComponent v-if="chat" /> -->
+    <ChatComp v-if="this.isAuthenticated" />
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -159,11 +160,17 @@
 <script>
 import { AUTH_PING } from "@/store/actions/auth";
 import { TOOGLE_DOC_MODE } from "@/store/actions/user";
-
+// import ChatComponent from "./components/chats/ChatComponent";
+import ChatComp from "./components/chats/ChatComp";
 export default {
   name: "App",
+  components: {
+    // ChatComponent,
+    ChatComp,
+  },
   data: () => ({
     docMode: false,
+    chat: false,
     // docModeAvailable: false,
     menu: false,
     drawer: false,
