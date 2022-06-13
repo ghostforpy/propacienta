@@ -26,6 +26,7 @@ class MyAdminSite(admin.AdminSite):
             "Процедуры",
             "Графики работы",
             "Пользователи",
+            "Диалоги и чаты"
         ]
         for i in range(len(app_name_list)):
             ordering[app_name_list[i]] = i

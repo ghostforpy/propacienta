@@ -1,8 +1,7 @@
 from django.apps import apps
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.db.models import CharField, DateField, OneToOneField, DO_NOTHING, EmailField
-
+from django.db.models import DO_NOTHING, CharField, DateField, EmailField, OneToOneField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -93,3 +92,10 @@ class User(AbstractUser):
 
         """
         return reverse("api:users-detail", kwargs={"id": self.id})
+
+    def get_fio(self):
+        return '{} {}.{}.'.format(
+            self.last_name,
+            self.first_name[0].upper(),
+            self.patronymic[0].upper()
+        )
