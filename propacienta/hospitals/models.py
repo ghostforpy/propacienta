@@ -40,3 +40,8 @@ class Hospital(models.Model):
 
 async def get_default_hospital():
     return await sync_to_async(Hospital.objects.first)
+
+
+def get_default_hospital_id():
+    first_hospital = Hospital.objects.first()
+    return first_hospital
