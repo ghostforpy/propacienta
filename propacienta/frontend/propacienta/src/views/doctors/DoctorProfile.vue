@@ -40,6 +40,29 @@
             >
               Записаться на приём
             </v-btn>
+            <v-tooltip
+              bottom
+              class="align-self-start"
+              v-if="$store.getters.isAuthenticated"
+              :disabled="isTreatingDoctor"
+            >
+              <template v-slot:activator="{ on }">
+                <div v-on="on">
+                  <v-btn
+                    small
+                    class="mt-2 white-content"
+                    style="width: 100%"
+                    color="cyan lighten-2"
+                    rounded
+                    @click="messageHandler"
+                    :disabled="!isTreatingDoctor"
+                  >
+                    Написать сообщение
+                  </v-btn>
+                </div>
+              </template>
+              <span>Написать сообщение можно только своему лечащему врачу</span>
+            </v-tooltip>
           </v-col>
           <v-col cols="12" md="7">
             <v-text-field
@@ -144,6 +167,9 @@ export default {
   methods: {
     reserveHanlder: function () {
       this.dialog = true;
+    },
+    messageHandler: function () {
+      console.log("handle msg");
     },
     toogleIsTreatingDoctorStar: function () {
       // добавить метод добавления в лечащие врачи
