@@ -7,6 +7,7 @@ import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(VTooltip)
+Vue.prototype.$eventBus = new Vue();
 
 new Vue({
   router,

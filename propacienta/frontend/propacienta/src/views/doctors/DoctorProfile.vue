@@ -169,7 +169,7 @@ export default {
       this.dialog = true;
     },
     messageHandler: function () {
-      console.log("handle msg");
+      this.$eventBus.$emit("openDoctorChat", this.doctorId);
     },
     toogleIsTreatingDoctorStar: function () {
       // добавить метод добавления в лечащие врачи
