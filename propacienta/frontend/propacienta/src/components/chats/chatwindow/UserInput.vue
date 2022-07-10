@@ -240,11 +240,18 @@ export default {
       } else {
         if (text && text.length > 0) {
           this._checkSubmitSuccess(
-            this.onSubmit({
-              author: "me",
-              type: "text",
-              data: { text },
-            })
+            this.onSubmit(
+              JSON.stringify({
+                type: "message",
+                to_user: this.$store.getters.activeChatOpponentId,
+                message: {
+                  sender: this.$store.getters.id, // user id
+                  dialog: this.$store.getters.activeChatId,
+                  message: text,
+                },
+                // data: { text },
+              })
+            )
           );
         }
       }

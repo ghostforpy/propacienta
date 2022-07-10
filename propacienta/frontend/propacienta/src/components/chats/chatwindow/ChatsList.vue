@@ -12,7 +12,9 @@
           @click="$emit('chat', chat.id)"
         >
           <td style="text-align: center">
-            <img :src="imageUrl(chat)" class="img-msg" />
+            <v-badge dot :color="chat.online ? 'green' : 'red'" overlap>
+              <img :src="imageUrl(chat)" class="img-msg" />
+            </v-badge>
           </td>
           <td
             class="chat-element"

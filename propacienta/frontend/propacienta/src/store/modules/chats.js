@@ -4,17 +4,34 @@ import {
     ADD_MESSAGE,
     ADD_MESSAGES,
     GET_CHATS,
-    GET_MESSAGES,
-    // OPEN_CHAT,
-    SET_ACTIVE_CHAT,
-    SET_CHATS,
-    SET_MESSAGES,
-    SET_MESSAGES_PAGE,
-    SET_NEW_MESSAGES,
-    SET_SELF_ID,
-    TOOGLE_CHATS_VISIBLE,
+    GET_MESSAGES, HANDLE_READ_MESSAGES,
+    // TOOGLE_OPEN_CHAT,
+    HANDLE_SERVICE_MESSAGE,
+    HANDLE_USER_STATUS_MESSAGE, SET_ACTIVE_CHAT,
+    SET_CHATS, SET_CHATS_VISIBLE, SET_MESSAGES,
+    SET_MESSAGES_PAGE, SET_NEW_MESSAGES, SET_READ_MSGS_NOTIFIER, SET_SELF_ID, TOOGLE_CHATS_VISIBLE,
     UNSET_NEW_MESSAGES
 } from "../actions/chats";
+
+function check_read_msgs(state, chatId, msgs) {
+    let messages_ids = []
+    // unread_messages.forEach(msg => {
+    //     msg.read_by_the_user = true
+    //     messages_ids.push(msg.id)
+    // })
+    //sender_id
+    var all_msgs = state.messages
+    all_msgs.set(chatId, msgs.map(msg => {
+        if (!msg.read_by_the_user && msg.sender == state.activeChatOpponentId) {
+            msg.read_by_the_user = true
+            messages_ids.push(msg.id)
+        }
+        return msg
+    }))
+    // state.messages = all_msgs
+    state.readMsgsNotifier(messages_ids, chatId, state.activeChatOpponentId)
+    return all_msgs
+}
 
 const state = {
     activeChatId: 0,
@@ -26,9 +43,11 @@ const state = {
     activeChatMessages: new Array(), // Array[message_objects]
     activeChatMembers: new Array(),
     activeChatTitle: "",
+    readMsgsNotifier: null,
+    // activeChatIsOpen: false,
     selfId: 0,
     activeChatOpponentId: 0,
-    chatsVisible: false,
+    chatsVisible: true,
     newMessages: false,
 };
 
@@ -42,6 +61,7 @@ const getters = {
     activeChatMessages: state => state.activeChatMessages,
     activeChatMembers: state => state.activeChatMembers,
     activeChatTitle: state => state.activeChatTitle,
+    activeChatIsOpen: state => state.activeChatIsOpen,
     selfId: state => state.selfId,
     activeChatOpponentId: state => state.activeChatOpponentId,
     chatsVisible: state => state.chatsVisible,
@@ -72,7 +92,7 @@ const actions = {
             );
         });
     },
-    [SET_ACTIVE_CHAT]: ({ commit, state, dispatch }, chatId) => {
+    [SET_ACTIVE_CHAT]: ({ commit, state, dispatch }, { chatId }) => {
         return new Promise((resolve) => {
             const chat = state.chats.find(chat => chat.id === chatId)
             if (!chat.opened) {
@@ -89,16 +109,20 @@ const actions = {
             //
         );
     },
-    // [OPEN_CHAT]: ({ commit, state, dispatch }, chatId) => {
-    //     return new Promise((resolve) => {
-    //         commit(SET_ACTIVE_CHAT, chatId);
-    //         resolve(true)
-    //         //console.log(...resp.headers);
-    //         //console.log(resp.data);
-    //     }
-    //         //
-    //     );
-    // },
+    [HANDLE_SERVICE_MESSAGE]: ({ commit }, { chatId, serviceType, messageId }) => {
+        return new Promise((resolve) => {
+            commit(HANDLE_SERVICE_MESSAGE, { chatId, serviceType, messageId });
+            resolve(true)
+        }
+        );
+    },
+    [HANDLE_READ_MESSAGES]: ({ commit }, { chatId, messagesIds }) => {
+        return new Promise((resolve) => {
+            commit(HANDLE_READ_MESSAGES, { chatId, messagesIds });
+            resolve(true)
+        }
+        );
+    },
     [ADD_CHAT]: ({ commit }, chat) => {
         return new Promise((resolve) => {
             commit(ADD_CHAT, chat);
@@ -159,9 +183,16 @@ const actions = {
             );
         });
     },
-    [ADD_MESSAGE]: ({ commit }, chatId, message) => {
+    [ADD_MESSAGE]: ({ commit }, { chatId, message }) => {
         return new Promise((resolve) => {
-            commit(ADD_MESSAGE, chatId, message);
+            commit(ADD_MESSAGE, { chatId, message });
+            resolve(true)
+        }
+        );
+    },
+    [HANDLE_USER_STATUS_MESSAGE]: ({ commit }, { chatId, status }) => {
+        return new Promise((resolve) => {
+            commit(HANDLE_USER_STATUS_MESSAGE, { chatId, status });
             resolve(true)
         }
         );
@@ -173,9 +204,23 @@ const actions = {
         }
         );
     },
+    [SET_READ_MSGS_NOTIFIER]: ({ commit }, readMsgsNotifier) => {
+        return new Promise((resolve) => {
+            commit(SET_READ_MSGS_NOTIFIER, readMsgsNotifier);
+            resolve(true)
+        }
+        );
+    },
     [TOOGLE_CHATS_VISIBLE]: ({ commit }) => {
         return new Promise((resolve) => {
             commit(TOOGLE_CHATS_VISIBLE);
+            resolve(true)
+        }
+        );
+    },
+    [SET_CHATS_VISIBLE]: ({ commit }) => {
+        return new Promise((resolve) => {
+            commit(SET_CHATS_VISIBLE);
             resolve(true)
         }
         );
@@ -202,15 +247,35 @@ const mutations = {
         state.activeChatMessagesNextPage = state.messagesPages.get(chatId) == undefined ? 1 : state.messagesPages.get(chatId)
         // const chat = state.chats.find(chat => chat.id === chatId)
         state.activeChatMembers = chat.members;
+        state.activeChatOpponentId = chat.members.find(member => member.id != state.selfId).id;
         state.activeChatTitle = chat.title;
-        if (!chat.opened) {
-            var chats = state.chats
-            chats.forEach(item => {
-                if (item.id == chatId) {
-                    item.opened = true
-                }
-            })
-            state.chats = chats
+        let counter = false
+        // if (!chat.opened) {
+        var chats = state.chats
+        chats.forEach(item => {
+            if (item.id == chatId) {
+                item.opened = true
+                item.messages__count = 0
+            }
+            if (item.messages__count > 0) {
+                counter = true
+                // для отображения иконки новых сообщений в списке чатов
+            }
+        })
+        state.chats = chats
+        if (counter) {
+            // для отображения иконки новых сообщений в списке чатов
+            state.newMessages = true
+        } else {
+            state.newMessages = false
+        }
+        // }
+        let msgs = state.messages.get(chatId)
+        let unread_messages = msgs.filter(msg => {
+            return !msg.read_by_the_user && msg.sender == state.activeChatOpponentId
+        })
+        if (unread_messages.length > 0) {
+            state.messages = check_read_msgs(state, chatId, msgs)
         }
     },
     [SET_CHATS]: (state, chats) => {
@@ -235,12 +300,87 @@ const mutations = {
     [ADD_MESSAGES]: (state, { chatId, messages }) => {
         let msgs = state.messages.get(chatId)
         msgs.unshift(...messages.reverse()); // проверить
+        // state.messages.set(chatId, msgs)
+        let unread_messages = msgs.filter(msg => {
+            return !msg.read_by_the_user && msg.sender == state.activeChatOpponentId
+        })
+        if (unread_messages.length > 0) {
+            msgs = check_read_msgs(state, chatId, msgs)
+        }
         state.messages.set(chatId, msgs)
+
     },
     [ADD_MESSAGE]: (state, { chatId, message }) => {
+        // продумать добавление при незагруженных чатах
+        let chat = state.chats.find(chat => chat.id == chatId)
+        if (chat != undefined) {
+            if (state.chatsVisible) {
+                state.newMessages = true
+            }
+            // console.log("chat handle")
+            if (chat.opened) {
+                // console.log("opened", 'chatId', chatId)
+                let msgs = state.messages.get(chatId)
+                // console.log(msgs)
+                msgs.push(message);
+                state.messages.set(chatId, msgs)
+            }
+            // console.log("chat no opened")
+            if (state.chatsVisible) {
+                state.newMessages = true
+                if (typeof (chat.messages__count) == 'number') {
+                    chat.messages__count += 1
+                } else {
+                    chat.messages__count = 1
+                }
+                let chats = state.chats
+                chats.forEach(item => {
+                    if (item.id == chat.id) {
+                        item = chat
+                    }
+                })
+
+                state.chats = chats
+            }
+        }
+    },
+    [HANDLE_USER_STATUS_MESSAGE]: (state, { chatId, status }) => {
+        let chats = state.chats
+        chats.forEach(item => {
+            if (item.id == chatId) {
+                item.online = status
+            }
+        })
+        state.chats = chats
+    },
+    [HANDLE_SERVICE_MESSAGE]: (state, { chatId, serviceType, messageId }) => {
         let msgs = state.messages.get(chatId)
-        msgs.unshift(message);
+        msgs.forEach(item => {
+            if (item.id == messageId) {
+                if (serviceType == 'sent') {
+                    item.sent_by_the_server = true
+                } else if (serviceType == "message_received") {
+                    item.received_by_the_user = true
+                    // } else if (serviceType == "messages_read") {
+                    //     item.read_by_the_user = true
+                } else if (serviceType == "message_received_and_read") {
+                    item.read_by_the_user = true
+                    item.received_by_the_user = true
+                }
+            }
+        })
         state.messages.set(chatId, msgs)
+    },
+    [HANDLE_READ_MESSAGES]: (state, { chatId, messagesIds }) => {
+        let msgs = state.messages.get(chatId)
+        if (msgs != undefined) {
+            msgs.forEach(item => {
+                if (messagesIds.indexOf(item.id) != -1) {
+                    item.read_by_the_user = true
+                }
+            })
+            state.messages.set(chatId, msgs)
+        }
     },
     [SET_MESSAGES_PAGE]: (state, { chatId, nextPage }) => {
         state.messagesPages.set(chatId, nextPage)
@@ -248,8 +388,14 @@ const mutations = {
     [SET_SELF_ID]: (state, selfId) => {
         state.selfId = selfId
     },
+    [SET_READ_MSGS_NOTIFIER]: (state, readMsgsNotifier) => {
+        state.readMsgsNotifier = readMsgsNotifier
+    },
     [TOOGLE_CHATS_VISIBLE]: (state) => {
         state.chatsVisible = !state.chatsVisible
+    },
+    [SET_CHATS_VISIBLE]: (state) => {
+        state.chatsVisible = true
     },
     [SET_NEW_MESSAGES]: (state) => {
         state.newMessages = true

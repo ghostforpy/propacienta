@@ -42,7 +42,14 @@
         :style="{ color: messageColors.color }"
       >
         {{ time }}
-      </span>
+        <v-icon
+          v-if="me"
+          v-tooltip="checkStatus"
+          color="grey lighten-5"
+          x-small
+          >{{ checkIcon }}</v-icon
+        ></span
+      >
       <!-- <p
         v-if="message.meta"
         class="sc-message--meta"
@@ -92,6 +99,24 @@ export default {
     },
   },
   computed: {
+    checkStatus() {
+      if (this.message.read_by_the_user) {
+        return "Прочитано";
+      } else if (this.message.received_by_the_user) {
+        return "Доставлено";
+      } else {
+        return "Отправлено";
+      }
+    },
+    checkIcon() {
+      if (this.message.read_by_the_user) {
+        return "mdi-check-circle-outline";
+      } else if (this.message.received_by_the_user) {
+        return "mdi-check-all";
+      } else {
+        return "mdi-check";
+      }
+    },
     time() {
       let ms = new Date(this.message.created_at);
       return `${ms.toLocaleDateString()}, ${ms

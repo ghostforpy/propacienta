@@ -7,11 +7,18 @@
       :style="{ backgroundColor: colors.launcher.bg }"
       @click.prevent="isOpen ? close() : openAndFocus()"
     >
-      <div
-        v-if="newMessagesCount > 0 && !isOpen"
+      <!-- <div
+        v-if="(newMessagesCount > 0 || newMessagesCount) && !isOpen"
         class="sc-new-messsages-count"
       >
-        {{ newMessagesCount }}
+        {{ typeof newMessagesCount == "number" ? newMessagesCount : "" }}
+      </div> -->
+      <div v-if="$store.getters.newMessages" class="sc-new-messsages-count">
+        {{
+          typeof $store.getters.newMessages == "number"
+            ? $store.getters.newMessages
+            : ""
+        }}
       </div>
       <img
         v-if="isOpen"
@@ -171,7 +178,7 @@ export default {
       default: () => [],
     },
     newMessagesCount: {
-      type: Number,
+      type: [Number, Boolean],
       default: () => 0,
     },
     placeholder: {
@@ -357,8 +364,8 @@ export default {
   justify-content: center;
   flex-direction: column;
   border-radius: 50%;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   background: #ff4646;
   color: white;
   text-align: center;

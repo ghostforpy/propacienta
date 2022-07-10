@@ -6,7 +6,7 @@
       :showChats="showChatsList"
       :colors="colors"
       @close="$emit('close')"
-      @chatsList="handleUserListToggle"
+      @chatsList="handleChatsListToggle"
     >
       <template>
         <slot name="header"> </slot>
@@ -78,7 +78,7 @@ import Header from "./HeaderChatWindow.vue";
 import MessageList from "./MessageList.vue";
 import UserInput from "./UserInput.vue";
 import ChatsList from "./ChatsList.vue";
-import { SET_ACTIVE_CHAT } from "@/store/actions/chats";
+import { SET_ACTIVE_CHAT, TOOGLE_CHATS_VISIBLE } from "@/store/actions/chats";
 export default {
   components: {
     Header,
@@ -143,12 +143,16 @@ export default {
       type: Boolean,
       required: true,
     },
+    // readMsgsNotifier: {
+    //   type: Function,
+    //   required: true,
+    // },
   },
-  data() {
-    return {
-      showChatsList: true,
-    };
-  },
+  // data() {
+  //   return {
+  //     // showChatsList: true,
+  //   };
+  // },
   computed: {
     members() {
       return this.$store.getters.activeChatMembers;
@@ -160,17 +164,28 @@ export default {
     computedTitle() {
       return !this.showChatsList ? this.title : "Мои сообщения";
     },
+    showChatsList() {
+      return this.$store.getters.chatsVisible;
+    },
   },
   methods: {
-    handleUserListToggle(showChatsList) {
-      this.showChatsList = showChatsList;
+    handleChatsListToggle() {
+      // this.showChatsList = showChatsList;
+      this.$store.dispatch(TOOGLE_CHATS_VISIBLE);
     },
     async handleChat(chatId) {
       // console.log(chatId);
       // await this.$store.dispatch(GET_MESSAGES, chatId);
-      this.$store.dispatch(SET_ACTIVE_CHAT, chatId).then(() => {
-        this.showChatsList = false;
+      // var el = this;
+      this.$store.dispatch(SET_ACTIVE_CHAT, {
+        chatId: chatId,
+        // readMsgsNotifier: this.readMsgsNotifier,
       });
+      // .then(() => {
+      // el.showChatsList = false;
+      // }
+      // );
+      this.$store.dispatch(TOOGLE_CHATS_VISIBLE);
       // this.$emit("activeChat", chatId);
     },
     getSuggestions() {
