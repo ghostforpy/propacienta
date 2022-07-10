@@ -1,13 +1,15 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+User = get_user_model()
 
 
 class Dialog(models.Model):
     """Users dialog model."""
     members = models.ManyToManyField(
-        get_user_model(),
+        User,
         "dialogs"
     )
 
@@ -29,7 +31,7 @@ class DialogMessage(models.Model):
         related_name="messages"
     )
     sender = models.ForeignKey(
-        get_user_model(),
+        User,
         on_delete=models.CASCADE,
         verbose_name="Автор сообщения",
         related_name="dialog_messages"

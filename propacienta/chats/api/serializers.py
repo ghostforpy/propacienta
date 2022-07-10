@@ -5,6 +5,9 @@ from rest_framework import serializers
 
 from ..models import Dialog, DialogMessage
 
+# from propacienta.users.models import User
+
+
 # from rest_framework.validators import UniqueTogetherValidator
 
 User = get_user_model()
