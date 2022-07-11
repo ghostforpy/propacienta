@@ -277,7 +277,8 @@ export default {
   methods: {
     openAndFocus() {
       this.open();
-      this.$root.$emit("focusUserInput");
+      // console.log("pre emit");
+      // this.$root.$emit("focusUserInput");
     },
     handleScrollToTop() {
       this.$store.dispatch(GET_MESSAGES, this.$store.getters.activeChatId);

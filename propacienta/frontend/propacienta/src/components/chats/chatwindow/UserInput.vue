@@ -34,6 +34,7 @@
         ref="userInput"
         role="button"
         tabIndex="0"
+        id="userInput"
         contentEditable="true"
         :placeholder="placeholder"
         class="sc-user-input--text"
@@ -180,11 +181,23 @@ export default {
     },
   },
   mounted() {
-    this.$root.$on("focusUserInput", () => {
-      if (this.$refs.userInput) {
-        this.focusUserInput();
-      }
-    });
+    // const el = this;
+    // this.$eventBus.$once("focusUserInput", () => {
+    //   console.log("handle focus", this.$el.querySelector("#userInput"));
+    //   // if (el.$refs.userInput) {
+    //   //   console.log("refs");
+    //   //   el.$refs.userInput.focus();
+    //   this.$el.querySelector("#userInput").focus();
+    //   // el.focusUserInput();
+    //   // }
+    //   // el.$nextTick(() => {
+    //   //   el.$refs.userInput.focus();
+    //   // });
+    // });
+
+    // this.$root.$on("focusUserInput", () => {
+    this.focusUserInput();
+    // });
   },
   methods: {
     cancelFile() {
@@ -211,7 +224,7 @@ export default {
     },
     focusUserInput() {
       this.$nextTick(() => {
-        this.$refs.userInput.focus();
+        this.$el.querySelector("#userInput").focus();
       });
     },
     _submitSuggestion(suggestion) {
