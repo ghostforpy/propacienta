@@ -67,7 +67,7 @@ class User(AbstractUser):
         "pacients.pacient", on_delete=DO_NOTHING, null=True, related_name="user"
     )
     doctor = OneToOneField(
-        "doctors.doctor", on_delete=DO_NOTHING, null=True, related_name="user"
+        "doctors.doctor", on_delete=DO_NOTHING, null=True, related_name="user", blank=True
     )
 
     USERNAME_FIELD = "email"
