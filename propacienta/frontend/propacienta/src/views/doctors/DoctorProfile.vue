@@ -118,6 +118,12 @@
             >
             </v-textarea>
           </v-col>
+          <v-snackbar color="red lighten-1" centered v-model="snackbar">
+            Что-то пошло не так.
+            <template v-slot:action="{ attrs }">
+              <v-btn text v-bind="attrs" @click="snackbar = false"> Ок </v-btn>
+            </template>
+          </v-snackbar>
         </v-row>
       </v-flex>
     </v-layout>
@@ -136,6 +142,7 @@ export default {
     return {
       // doctorId: "",
       firstName: "",
+      snackbar: false,
       dialog: false,
       avatarSrc: require("@/assets/default_doctor_avatar.png"),
       lastName: "",
@@ -192,6 +199,10 @@ export default {
     },
   },
   mounted: async function () {
+    var el = this;
+    this.$eventBus.$on("errorOpenDoctorChat", () => {
+      el.snackbar = true;
+    });
     if (this.doctorId == this.$store.getters.doctor_id) {
       this.$router.push({ name: "my-doctor-profile" });
       return;
@@ -200,7 +211,6 @@ export default {
       method: "get",
       url: `api/doctors/${this.doctorId}/`,
     };
-    var el = this;
     request_service(
       config,
       function (resp) {
