@@ -34,7 +34,7 @@ class RequestByTreatingDoctor(BasePermission):
     #     return request_by_doctor(request) is not None
 
     def has_object_permission(self, request, view, obj):
-        print(22222)
+        # print(22222)
         doctor = request_by_doctor(request)
         if doctor is None:
             return False
