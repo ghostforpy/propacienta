@@ -14,6 +14,7 @@
                 label="Адрес электронной почты"
                 type="text"
                 v-model="email"
+                v-on:keyup.enter="onSubmit"
               ></v-text-field>
               <v-text-field
                 id="password"
@@ -22,6 +23,7 @@
                 label="Пароль"
                 type="password"
                 v-model="password"
+                v-on:keyup.enter="onSubmit"
               ></v-text-field>
             </v-form>
             <v-flex class="caption text-xs-right"
