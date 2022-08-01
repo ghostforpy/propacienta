@@ -34,7 +34,13 @@ import {
   HANDLE_READ_MESSAGES,
   SET_READ_MSGS_NOTIFIER,
   SET_NEW_MESSAGES,
+  OPEN_CHAT,
   SET_CHATS_VISIBLE,
+  SET_CHAT_WINDOW_OPEN,
+  SET_CHAT_WINDOW_CLOSE,
+  SET_CHAT_SOCKET,
+  ADD_CHAT,
+  // SET_CHATS_UNVISIBLE,
 } from "@/store/actions/chats";
 export default {
   name: "ChatComp",
@@ -48,8 +54,8 @@ export default {
       //   { type: "text", author: `user1`, data: { text: `No.` } },
       // ], // the list of the messages to show, can be paginated and adjusted dynamically
       chatSocket: null,
-      newMessagesCount: this.$store.getters.newMessages,
-      isChatOpen: false, // to determine whether the chat window should be open or closed
+      // newMessagesCount: this.$store.getters.newMessages,
+      // isChatOpen: this.$store.getters.chatWindowIsOpen, // to determine whether the chat window should be open or closed
       showTypingIndicator: "", // when set to a value matching the participant.id it shows the typing indicator for the specific user
       colors: {
         header: {
@@ -96,9 +102,42 @@ export default {
       el.onMessageMainHandler(data);
     };
     this.$store.dispatch(SET_READ_MSGS_NOTIFIER, this.readMsgsNotifier);
+    this.$store.dispatch(SET_CHAT_SOCKET, this.chatSocket);
     // this.chatSocket.onclose = function (e) {
     //   console.error(e, "Chat socket closed unexpectedly");
     // };
+    this.$eventBus.$on("openDoctorChat", async (doctorId) => {
+      const res = await this.$store.dispatch(OPEN_CHAT, {
+        opponentType: "doctor",
+        opponentId: doctorId,
+      });
+      if (res) {
+        this.openChat();
+        // this.$store.dispatch(SET_CHATS_UNVISIBLE);
+      } else {
+        this.$eventBus.$emit("errorOpenDoctorChat");
+      }
+    });
+    this.$eventBus.$on("openPacientChat", async (pacientId) => {
+      const res = await this.$store.dispatch(OPEN_CHAT, {
+        opponentType: "pacient",
+        opponentId: pacientId,
+      });
+      if (res) {
+        this.openChat();
+        // this.$store.dispatch(SET_CHATS_UNVISIBLE);
+      } else {
+        this.$eventBus.$emit("errorOpenPacientChat");
+      }
+    });
+  },
+  computed: {
+    isChatOpen() {
+      return this.$store.getters.chatWindowIsOpen;
+    },
+    newMessagesCount() {
+      return this.$store.getters.newMessages;
+    },
   },
   methods: {
     readMsgsNotifier(messages_ids, dialog_id, sender_id) {
@@ -165,7 +204,8 @@ export default {
       if (data.service_type == "typing") {
         console.log("handle typing", data);
       } else if (data.service_type == "newchat") {
-        console.log("handle new chat", data);
+        // console.log("handle new chat", data);
+        this.$store.dispatch(ADD_CHAT, data.chat);
       } else if (data.service_type == "user_status") {
         // console.log("handle user status msg", data);
         this.$store.dispatch(HANDLE_USER_STATUS_MESSAGE, {
@@ -190,9 +230,9 @@ export default {
     },
     sendMessage(text) {
       if (text.length > 0) {
-        this.newMessagesCount = this.isChatOpen
-          ? this.newMessagesCount
-          : this.newMessagesCount + 1;
+        // this.newMessagesCount = this.isChatOpen
+        //   ? this.newMessagesCount
+        //   : this.newMessagesCount + 1;
         this.onMessageWasSent(
           JSON.stringify({
             sender: this.$store.getters.id, // user id
@@ -212,12 +252,14 @@ export default {
     },
     openChat() {
       // called when the user clicks on the fab button to open the chat
-      this.isChatOpen = true;
-      this.newMessagesCount = 0;
+      // this.isChatOpen = true;
+      this.$store.dispatch(SET_CHAT_WINDOW_OPEN);
+      // this.newMessagesCount = 0;
     },
     closeChat() {
       // called when the user clicks on the botton to close the chat
-      this.isChatOpen = false;
+      // this.isChatOpen = false;
+      this.$store.dispatch(SET_CHAT_WINDOW_CLOSE);
       this.$store.dispatch(SET_CHATS_VISIBLE);
     },
     // handleScrollToTop() {

@@ -122,7 +122,7 @@ class ChatConsumer(JsonWebsocketConsumer):
         self.service_message_notifier(content)
 
     def message_received_and_read_handler(self, content):
-        print("message_received_and_read_handler")
+        # print("message_received_and_read_handler")
         message_id = int(content["message"]["message_id"])
         DialogMessage.objects.filter(pk=message_id).update(
             received_by_the_user=True, read_by_the_user=True

@@ -4,10 +4,10 @@
       <v-col><img :src="user.imageUrl" class="img-msg" /></v-col>
       <v-col>{{ user.name }}</v-col> -->
 
-    <table style="padding-top: 5px">
+    <table style="padding-top: 5px" v-if="notEmptyChats.length > 0">
       <tbody>
         <tr
-          v-for="chat in chats"
+          v-for="chat in notEmptyChats"
           :key="chat.id"
           @click="$emit('chat', chat.id)"
         >
@@ -30,6 +30,9 @@
         </tr>
       </tbody>
     </table>
+    <div v-else class="empty-chat-list">
+      <span>У вас пока нет диалогов.</span>
+    </div>
     <!-- </v-row> -->
   </div>
 </template>
@@ -72,6 +75,11 @@ export default {
     },
   },
   computed: {
+    notEmptyChats() {
+      return this.chats.filter((chat) => {
+        return chat.dialog_is_not_empty;
+      });
+    },
     userListColor() {
       const defaultColors = {
         userList: {
@@ -104,5 +112,11 @@ export default {
 .chat-element {
   font-size: 17px;
   vertical-align: middle;
+}
+.empty-chat-list {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
 }
 </style>

@@ -102,15 +102,27 @@ export default {
   //   this.$nextTick(this._scrollDown());
   // },
   updated() {
-    if (this.firstload) {
-      this.firstload = false;
-      this.$nextTick(this._scrollDown());
-    }
+    // console.log("upd");
+    // if (this.firstload) {
+    //   console.log("first");
+    //   this.firstload = false;
+    //   this.$nextTick(this._scrollDown());
+    // }
+    if (this.alwaysScrollToBottom) this.$nextTick(this._scrollDown());
+  },
+  mounted() {
+    // console.log("mnt");
     if (this.shouldScrollToBottom()) this.$nextTick(this._scrollDown());
   },
   methods: {
     _scrollDown() {
       this.$refs.scrollList.scrollTop = this.$refs.scrollList.scrollHeight;
+      // при монтировании не скролится
+      // console.log(
+      //   "_scrollDown",
+      //   this.$refs.scrollList.scrollHeight,
+      //   this.$refs.scrollList.scrollTop
+      // );
     },
     handleScroll(e) {
       if (e.target.scrollTop === 0) {
@@ -119,7 +131,17 @@ export default {
     },
     shouldScrollToBottom() {
       const scrollTop = this.$refs.scrollList.scrollTop;
-      const scrollable = scrollTop > this.$refs.scrollList.scrollHeight - 600;
+      // const scrollable = scrollTop > this.$refs.scrollList.scrollHeight - 500;
+      const scrollable =
+        this.$refs.scrollList.scrollHeight - scrollTop - 300 > 0;
+
+      // console.log(
+      //   "shouldScrollToBottom",
+      //   this.$refs.scrollList.scrollTop,
+      //   this.$refs.scrollList.scrollHeight,
+      //   this.alwaysScrollToBottom || scrollable
+      // );
+
       return this.alwaysScrollToBottom || scrollable;
     },
     profile(author) {

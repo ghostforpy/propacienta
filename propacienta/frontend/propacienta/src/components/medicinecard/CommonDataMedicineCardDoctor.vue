@@ -26,6 +26,17 @@
             >
               Записать на приём
             </v-btn>
+
+            <v-btn
+              small
+              class="mt-2 white-content"
+              style="width: 100%"
+              color="cyan lighten-2"
+              rounded
+              @click="messageHandler"
+            >
+              Написать сообщение
+            </v-btn>
           </v-col>
           <v-col cols="12" md="6">
             <v-text-field
@@ -108,6 +119,12 @@
               ></v-progress-circular>
             </v-btn>
           </v-col>
+          <v-snackbar color="red lighten-1" centered v-model="snackbar">
+            Что-то пошло не так.
+            <template v-slot:action="{ attrs }">
+              <v-btn text v-bind="attrs" @click="snackbar = false"> Ок </v-btn>
+            </template>
+          </v-snackbar>
         </v-row>
       </v-flex>
     </v-layout>
@@ -141,6 +158,7 @@ export default {
       applyBtn: false,
       loading: false,
       dialog: false,
+      snackbar: false,
       // firstNameVal: "",
       // lastNameVal: "",
       // patronymicVal: "",
@@ -191,27 +209,34 @@ export default {
       return v;
     },
   },
-  // mounted: function () {
-  //   let config = {
-  //     method: "get",
-  //     url: `api/medicine-cards/${this.medicineCard}`,
-  //     headers: {
-  //       IsDoctor: true,
-  //     },
-  //   };
-  //   var el = this;
-  //   request_service(
-  //     config,
-  //     function (resp) {
-  //       el.height = resp.data.height;
-  //       el.weight = resp.data.weight;
-  //     },
-  //     function (error) {
-  //       console.log(error.response);
-  //     }
-  //   );
-  // },
+  mounted: function () {
+    var el = this;
+    this.$eventBus.$on("errorOpenPacientChat", () => {
+      el.snackbar = true;
+    });
+    //   let config = {
+    //     method: "get",
+    //     url: `api/medicine-cards/${this.medicineCard}`,
+    //     headers: {
+    //       IsDoctor: true,
+    //     },
+    //   };
+    //   var el = this;
+    //   request_service(
+    //     config,
+    //     function (resp) {
+    //       el.height = resp.data.height;
+    //       el.weight = resp.data.weight;
+    //     },
+    //     function (error) {
+    //       console.log(error.response);
+    //     }
+    //   );
+  },
   methods: {
+    messageHandler: function () {
+      this.$eventBus.$emit("openPacientChat", this.pacientId);
+    },
     updateHandl: function () {
       if (this.height != this.oldHeight) {
         this.applyBtn = true;

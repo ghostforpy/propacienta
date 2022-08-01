@@ -11,7 +11,8 @@ from drf_yasg.utils import swagger_auto_schema
 #     RetrieveAPIView,
 #     get_object_or_404,
 # )
-from rest_framework.mixins import (  # CreateModelMixin,; RetrieveModelMixin,
+from rest_framework.mixins import (  # ,; RetrieveModelMixin,
+    CreateModelMixin,
     DestroyModelMixin,
     ListModelMixin,
 )
@@ -39,14 +40,24 @@ class PageNumberPaginationBy30(PageNumberPagination):
 
 
 # @method_decorator(name="retrieve", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
-# @method_decorator(name="create", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
 # @method_decorator(name="destroy", decorator=swagger_auto_schema(tags=["pacient-appointments"]))
+@method_decorator(name="create", decorator=swagger_auto_schema(tags=["chats"]))
 @method_decorator(name="list", decorator=swagger_auto_schema(tags=["chats"]))
 class DialogViewSet(ListModelMixin,
+                    CreateModelMixin,
                     GenericViewSet):
     serializer_class = DialogSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated] # сделать проверку при создании чата
+    # начать диалог с пациентом может только врач (в хедере статус врача), который является лечащим врачом пациента
+    # начать диалог с врачом может только пациент, для которого этот врач является лечащим
+    
     # pagination_class = PageNumberPaginationBy10
+
+    # def get_serializer_class(self):
+    #     if self.action == "list":
+    #         return DialogSerializer
+    #     if self.action == "create":
+    #         return CreateDialogSerializer
 
     def get_queryset(self):
         return self.request.user.dialogs.all().prefetch_related(
@@ -72,6 +83,9 @@ class DialogViewSet(ListModelMixin,
                 filter=Q(messages__read_by_the_user=False) & ~Q(messages__sender=self.request.user)
                 # фильтр для непрочитанных сообщений, где пользователь не является отправителем
             )
+        ).annotate(
+            # добавляет аннотацию с числом сообщений в диалоге
+            dialog_is_not_empty=Count("messages")
         ).order_by(F("last").desc(nulls_last=True), "-messages__created_at__max")
         # сортировка по непрочитанным сообщениям, потом по последним сообщениям
 

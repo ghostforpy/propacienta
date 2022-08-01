@@ -4,11 +4,9 @@ import {
     ADD_MESSAGE,
     ADD_MESSAGES,
     GET_CHATS,
-    GET_MESSAGES, HANDLE_READ_MESSAGES,
-    // TOOGLE_OPEN_CHAT,
-    HANDLE_SERVICE_MESSAGE,
-    HANDLE_USER_STATUS_MESSAGE, SET_ACTIVE_CHAT,
-    SET_CHATS, SET_CHATS_VISIBLE, SET_MESSAGES,
+    GET_MESSAGES, HANDLE_READ_MESSAGES, HANDLE_SERVICE_MESSAGE,
+    HANDLE_USER_STATUS_MESSAGE, OPEN_CHAT, SET_ACTIVE_CHAT,
+    SET_CHATS, SET_CHATS_UNVISIBLE, SET_CHATS_VISIBLE, SET_CHAT_SOCKET, SET_CHAT_WINDOW_CLOSE, SET_CHAT_WINDOW_OPEN, SET_MESSAGES,
     SET_MESSAGES_PAGE, SET_NEW_MESSAGES, SET_READ_MSGS_NOTIFIER, SET_SELF_ID, TOOGLE_CHATS_VISIBLE,
     UNSET_NEW_MESSAGES
 } from "../actions/chats";
@@ -34,8 +32,10 @@ function check_read_msgs(state, chatId, msgs) {
 }
 
 const state = {
+    chatSocket: null,
     activeChatId: 0,
     listChatsVisible: true,
+    chatWindowIsOpen: false,
     chats: new Array(), // Array[chat_objects]
     messages: new Map(), // Map[chat_id]:Array[message_objects]
     messagesPages: new Map(),// Map[chat_id]:Array[next_page]
@@ -52,8 +52,10 @@ const state = {
 };
 
 const getters = {
+    chatSocket: state => state.chatSocket,
     activeChatId: state => state.activeChatId,
     listChatsVisible: state => state.listChatsVisible,
+    chatWindowIsOpen: state => state.chatWindowIsOpen,
     chats: state => state.chats,
     messages: state => state.messages,
     messagesPages: state => state.messagesPages,
@@ -107,6 +109,52 @@ const actions = {
             //console.log(resp.data);
         }
             //
+        );
+    },
+    // [OPEN_CHAT]: ({ commit, state, dispatch }, { opponentId }) => {
+    [OPEN_CHAT]: ({ commit, state, dispatch }, { opponentType, opponentId }) => {
+        return new Promise((resolve) => {
+            const chat = state.chats.find(chat => {
+                let opponent = chat.members.find(member => member.id != state.selfId)
+                return opponentType == "doctor" ? opponent.doctor_id === opponentId : opponent.pacient_id === opponentId
+            })
+            if (chat != undefined) {
+                dispatch(SET_ACTIVE_CHAT, { chatId: chat.id })
+                dispatch(SET_CHATS_UNVISIBLE);
+                resolve(true)
+            } else {
+                // создать диалог
+                let form = new FormData();
+                form.append("opponent_id", opponentId);
+                form.append("opponent_type", opponentType);
+                let config = {
+                    method: "post",
+                    url: "api/dialogs/",
+                    data: form,
+                };
+                if (opponentType == "pacient") {
+                    config.headers = {
+                        IsDoctor: true,
+                    }
+                }
+                request_service(
+                    config,
+                    function (resp) {
+                        const newChat = resp.data
+                        commit(ADD_CHAT, newChat)
+                        dispatch(SET_ACTIVE_CHAT, { chatId: newChat.id })
+                        dispatch(SET_CHATS_UNVISIBLE);
+                        resolve(true)
+                    },
+                    function (error) {
+                        console.log(error);
+                        resolve(false)
+                    }
+                );
+
+            }
+
+        }
         );
     },
     [HANDLE_SERVICE_MESSAGE]: ({ commit }, { chatId, serviceType, messageId }) => {
@@ -225,6 +273,13 @@ const actions = {
         }
         );
     },
+    [SET_CHATS_UNVISIBLE]: ({ commit }) => {
+        return new Promise((resolve) => {
+            commit(SET_CHATS_UNVISIBLE);
+            resolve(true)
+        }
+        );
+    },
     [SET_NEW_MESSAGES]: ({ commit }) => {
         return new Promise((resolve) => {
             commit(SET_NEW_MESSAGES);
@@ -235,6 +290,27 @@ const actions = {
     [UNSET_NEW_MESSAGES]: ({ commit }) => {
         return new Promise((resolve) => {
             commit(UNSET_NEW_MESSAGES);
+            resolve(true)
+        }
+        );
+    },
+    [SET_CHAT_WINDOW_OPEN]: ({ commit }) => {
+        return new Promise((resolve) => {
+            commit(SET_CHAT_WINDOW_OPEN);
+            resolve(true)
+        }
+        );
+    },
+    [SET_CHAT_WINDOW_CLOSE]: ({ commit }) => {
+        return new Promise((resolve) => {
+            commit(SET_CHAT_WINDOW_CLOSE);
+            resolve(true)
+        }
+        );
+    },
+    [SET_CHAT_SOCKET]: ({ commit }, chatSocket) => {
+        return new Promise((resolve) => {
+            commit(SET_CHAT_SOCKET, chatSocket);
             resolve(true)
         }
         );
@@ -325,6 +401,15 @@ const mutations = {
                 msgs.push(message);
                 state.messages.set(chatId, msgs)
             }
+            if (!chat.dialog_is_not_empty) {
+                let chats = state.chats
+                chats.forEach(item => {
+                    if (item.id == chat.id) {
+                        item.dialog_is_not_empty = true
+                    }
+                })
+                state.chats = chats
+            }
             // console.log("chat no opened")
             if (state.chatsVisible) {
                 state.newMessages = true
@@ -339,7 +424,6 @@ const mutations = {
                         item = chat
                     }
                 })
-
                 state.chats = chats
             }
         }
@@ -397,11 +481,23 @@ const mutations = {
     [SET_CHATS_VISIBLE]: (state) => {
         state.chatsVisible = true
     },
+    [SET_CHATS_UNVISIBLE]: (state) => {
+        state.chatsVisible = false
+    },
     [SET_NEW_MESSAGES]: (state) => {
         state.newMessages = true
     },
     [UNSET_NEW_MESSAGES]: (state) => {
         state.newMessages = false
+    },
+    [SET_CHAT_WINDOW_OPEN]: (state) => {
+        state.chatWindowIsOpen = true
+    },
+    [SET_CHAT_WINDOW_CLOSE]: (state) => {
+        state.chatWindowIsOpen = false
+    },
+    [SET_CHAT_SOCKET]: (state, chatSocket) => {
+        state.chatSocket = chatSocket
     },
 
 };

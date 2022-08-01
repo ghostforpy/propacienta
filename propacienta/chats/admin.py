@@ -8,6 +8,9 @@ from .models import Dialog, DialogMessage
 
 class DialogAdminForm(forms.ModelForm):
     def clean_members(self):
+        if self.instance.id:
+            # диалог уже существует
+            raise forms.ValidationError(_('Изменять запрещено'))
         members = self.cleaned_data['members']
         if len(members) != 2:
             raise forms.ValidationError(_('В диалоге должно быть 2 участника'))
