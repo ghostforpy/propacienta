@@ -7,7 +7,7 @@ import {
     GET_MESSAGES, HANDLE_READ_MESSAGES, HANDLE_SERVICE_MESSAGE,
     HANDLE_USER_STATUS_MESSAGE, OPEN_CHAT, SET_ACTIVE_CHAT,
     SET_CHATS, SET_CHATS_UNVISIBLE, SET_CHATS_VISIBLE, SET_CHAT_SOCKET, SET_CHAT_WINDOW_CLOSE, SET_CHAT_WINDOW_OPEN, SET_MESSAGES,
-    SET_MESSAGES_PAGE, SET_NEW_MESSAGES, SET_READ_MSGS_NOTIFIER, SET_SELF_ID, TOOGLE_CHATS_VISIBLE,
+    SET_MESSAGES_PAGE, SET_NEW_MESSAGES, SET_READ_MSGS_NOTIFIER, TOOGLE_CHATS_VISIBLE,
     UNSET_NEW_MESSAGES
 } from "../actions/chats";
 
@@ -45,13 +45,16 @@ const state = {
     activeChatTitle: "",
     readMsgsNotifier: null,
     // activeChatIsOpen: false,
-    selfId: 0,
+    // selfId: 0,
     activeChatOpponentId: 0,
     chatsVisible: true,
     newMessages: false,
 };
 
 const getters = {
+    selfId(state, getters, rootState, rootGetters) {
+        return rootGetters.id
+    },
     chatSocket: state => state.chatSocket,
     activeChatId: state => state.activeChatId,
     listChatsVisible: state => state.listChatsVisible,
@@ -64,13 +67,13 @@ const getters = {
     activeChatMembers: state => state.activeChatMembers,
     activeChatTitle: state => state.activeChatTitle,
     activeChatIsOpen: state => state.activeChatIsOpen,
-    selfId: state => state.selfId,
+    // selfId: state => state.selfId,
     activeChatOpponentId: state => state.activeChatOpponentId,
     chatsVisible: state => state.chatsVisible,
     newMessages: state => state.newMessages,
 };
 const actions = {
-    [GET_CHATS]: ({ commit }) => {
+    [GET_CHATS]: ({ commit, getters }) => {
         return new Promise((resolve) => {
             let config = {
                 method: "get",
@@ -80,7 +83,7 @@ const actions = {
                 config,
                 function (resp) {
                     // console.log(resp)
-                    commit(SET_CHATS, resp.data);
+                    commit(SET_CHATS, { chats: resp.data, selfId: getters.selfId });
                     resolve(true)
                 },
                 // function (error) {
@@ -94,15 +97,15 @@ const actions = {
             );
         });
     },
-    [SET_ACTIVE_CHAT]: ({ commit, state, dispatch }, { chatId }) => {
+    [SET_ACTIVE_CHAT]: ({ commit, state, dispatch, getters }, { chatId }) => {
         return new Promise((resolve) => {
             const chat = state.chats.find(chat => chat.id === chatId)
             if (!chat.opened) {
                 dispatch('GET_MESSAGES', chatId).then(() => {
-                    commit(SET_ACTIVE_CHAT, { chatId: chatId, chat: chat });
+                    commit(SET_ACTIVE_CHAT, { chatId: chatId, chat: chat, selfId: getters.selfId });
                 })
             } else {
-                commit(SET_ACTIVE_CHAT, { chatId: chatId, chat: chat });
+                commit(SET_ACTIVE_CHAT, { chatId: chatId, chat: chat, selfId: getters.selfId });
             }
             resolve(true)
             //console.log(...resp.headers);
@@ -112,10 +115,11 @@ const actions = {
         );
     },
     // [OPEN_CHAT]: ({ commit, state, dispatch }, { opponentId }) => {
-    [OPEN_CHAT]: ({ commit, state, dispatch }, { opponentType, opponentId }) => {
+    [OPEN_CHAT]: ({ commit, state, dispatch, getters }, { opponentType, opponentId }) => {
         return new Promise((resolve) => {
             const chat = state.chats.find(chat => {
-                let opponent = chat.members.find(member => member.id != state.selfId)
+                // let opponent = chat.members.find(member => member.id != state.selfId)
+                let opponent = chat.members.find(member => member.id != getters.selfId)
                 return opponentType == "doctor" ? opponent.doctor_id === opponentId : opponent.pacient_id === opponentId
             })
             if (chat != undefined) {
@@ -171,9 +175,9 @@ const actions = {
         }
         );
     },
-    [ADD_CHAT]: ({ commit }, chat) => {
+    [ADD_CHAT]: ({ commit, getters }, chat) => {
         return new Promise((resolve) => {
-            commit(ADD_CHAT, chat);
+            commit(ADD_CHAT, { chat: chat, selfId: getters.selfId });
             resolve(true)
             //console.log(...resp.headers);
             //console.log(resp.data);
@@ -245,13 +249,13 @@ const actions = {
         }
         );
     },
-    [SET_SELF_ID]: ({ commit }, selfId) => {
-        return new Promise((resolve) => {
-            commit(SET_SELF_ID, selfId);
-            resolve(true)
-        }
-        );
-    },
+    // [SET_SELF_ID]: ({ commit, rootGetters }) => {
+    //     return new Promise((resolve) => {
+    //         commit(SET_SELF_ID, rootGetters.id);
+    //         resolve(true)
+    //     }
+    //     );
+    // },
     [SET_READ_MSGS_NOTIFIER]: ({ commit }, readMsgsNotifier) => {
         return new Promise((resolve) => {
             commit(SET_READ_MSGS_NOTIFIER, readMsgsNotifier);
@@ -317,13 +321,14 @@ const actions = {
     },
 };
 const mutations = {
-    [SET_ACTIVE_CHAT]: (state, { chatId, chat }) => {
+    [SET_ACTIVE_CHAT]: (state, { chatId, chat, selfId }) => {
         state.activeChatId = chatId;
         state.activeChatMessages = state.messages.get(chatId);
         state.activeChatMessagesNextPage = state.messagesPages.get(chatId) == undefined ? 1 : state.messagesPages.get(chatId)
         // const chat = state.chats.find(chat => chat.id === chatId)
         state.activeChatMembers = chat.members;
-        state.activeChatOpponentId = chat.members.find(member => member.id != state.selfId).id;
+        state.activeChatOpponentId = chat.members.find(member => member.id != selfId).id;
+        // state.activeChatOpponentId = chat.members.find(member => member.id != state.selfId).id;
         state.activeChatTitle = chat.title;
         let counter = false
         // if (!chat.opened) {
@@ -354,16 +359,18 @@ const mutations = {
             state.messages = check_read_msgs(state, chatId, msgs)
         }
     },
-    [SET_CHATS]: (state, chats) => {
+    [SET_CHATS]: (state, { chats, selfId }) => {
         chats.forEach(item => {
-            item.title = item.members.find(member => member.id != state.selfId).fio
+            // item.title = item.members.find(member => member.id != state.selfId).fio
+            item.title = item.members.find(member => member.id != selfId).fio
             item.opened = false
             return item
         });
         state.chats = chats;
     },
-    [ADD_CHAT]: (state, chat) => {
-        chat.title = chat.members.find(member => member.id != state.selfId).fio
+    [ADD_CHAT]: (state, { chat, selfId }) => {
+        // chat.title = chat.members.find(member => member.id != state.selfId).fio
+        chat.title = chat.members.find(member => member.id != selfId).fio
         chat.opened = false;
         state.chats.unshift(chat);
     },
@@ -469,9 +476,9 @@ const mutations = {
     [SET_MESSAGES_PAGE]: (state, { chatId, nextPage }) => {
         state.messagesPages.set(chatId, nextPage)
     },
-    [SET_SELF_ID]: (state, selfId) => {
-        state.selfId = selfId
-    },
+    // [SET_SELF_ID]: (state, selfId) => {
+    //     state.selfId = selfId
+    // },
     [SET_READ_MSGS_NOTIFIER]: (state, readMsgsNotifier) => {
         state.readMsgsNotifier = readMsgsNotifier
     },
