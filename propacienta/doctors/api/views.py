@@ -24,6 +24,7 @@ class PageNumberPaginationBy10(PageNumberPagination):
 
 
 @method_decorator(name="delete_avatar", decorator=swagger_auto_schema(tags=["doctors"]))
+@method_decorator(name="get_doctors_count", decorator=swagger_auto_schema(tags=["doctors"]))
 @method_decorator(name="update", decorator=swagger_auto_schema(tags=["doctors"]))
 @method_decorator(
     name="partial_update", decorator=swagger_auto_schema(tags=["doctors"])
@@ -148,6 +149,13 @@ class DoctorViewSet(
         status = response_status.HTTP_204_NO_CONTENT
         instance.save()
         return Response(status=status)
+
+    @action(methods=['get'], detail=False,
+            url_path='doctors-count', url_name='doctors-count',
+            permission_classes=[AllowAny])
+    def get_doctors_count(self, request, *args, **kwargs):
+        count = Doctor.objects.count()
+        return Response(data={"doctors_count": count})
 
 
 @method_decorator(name="list", decorator=swagger_auto_schema(tags=["doctors"]))
