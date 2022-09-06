@@ -96,7 +96,7 @@ import ChatWindow from "./ChatWindow.vue";
 
 import CloseIcon from "./assets/close-icon.png";
 import OpenIcon from "./assets/logo-no-bg.svg";
-import { GET_CHATS, SET_SELF_ID, GET_MESSAGES } from "@/store/actions/chats";
+import { GET_CHATS, GET_MESSAGES } from "@/store/actions/chats";
 export default {
   components: {
     ChatWindow,
@@ -286,7 +286,7 @@ export default {
     },
   },
   mounted: function () {
-    this.$store.dispatch(SET_SELF_ID, this.$store.getters.id);
+    // this.$store.dispatch(SET_SELF_ID, this.$store.getters.id); // проверить
     this.$store.dispatch(GET_CHATS);
   },
 };

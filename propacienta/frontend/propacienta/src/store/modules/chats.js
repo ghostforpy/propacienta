@@ -83,8 +83,11 @@ const actions = {
                 config,
                 function (resp) {
                     // console.log(resp)
-                    commit(SET_CHATS, { chats: resp.data, selfId: getters.selfId });
-                    resolve(true)
+                    setTimeout(() => {
+                        commit(SET_CHATS, { chats: resp.data, selfId: getters.selfId });
+                        resolve(true)
+                    }, 500);
+
                 },
                 // function (error) {
                 function () {
@@ -360,6 +363,7 @@ const mutations = {
         }
     },
     [SET_CHATS]: (state, { chats, selfId }) => {
+        console.log(chats, selfId)
         chats.forEach(item => {
             // item.title = item.members.find(member => member.id != state.selfId).fio
             item.title = item.members.find(member => member.id != selfId).fio
