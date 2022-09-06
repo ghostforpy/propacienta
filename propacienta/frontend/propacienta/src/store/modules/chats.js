@@ -363,7 +363,6 @@ const mutations = {
         }
     },
     [SET_CHATS]: (state, { chats, selfId }) => {
-        console.log(chats, selfId)
         chats.forEach(item => {
             // item.title = item.members.find(member => member.id != state.selfId).fio
             item.title = item.members.find(member => member.id != selfId).fio
