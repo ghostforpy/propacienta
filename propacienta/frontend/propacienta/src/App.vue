@@ -13,7 +13,17 @@
             >Propacienta</router-link
           >
         </v-toolbar-title>
-        <v-toolbar-title v-if="isAuthenticated" class="d-none d-md-block"
+        <v-toolbar-title
+          v-for="(link, id) in computedHeaderMenuList"
+          class="d-none d-md-block"
+          :key="id"
+          ><router-link :to="link.route"
+            ><v-btn icon>
+              <v-icon>{{ link.icon }}</v-icon></v-btn
+            >{{ link.title }}</router-link
+          >
+        </v-toolbar-title>
+        <!-- <v-toolbar-title v-if="isAuthenticated" class="d-none d-md-block"
           ><router-link to="/appointment"
             ><v-btn icon> <v-icon>mdi-calendar-month</v-icon></v-btn
             >Приёмы</router-link
@@ -30,7 +40,7 @@
             <v-btn icon> <v-icon>mdi-doctor</v-icon></v-btn
             >Врачи</router-link
           >
-        </v-toolbar-title>
+        </v-toolbar-title> -->
       </v-row>
 
       <v-spacer></v-spacer>
@@ -190,6 +200,8 @@ export default {
         needAuth: true,
         isAvailable: true,
       },
+    ],
+    headerMenuList: [
       {
         title: "Приёмы",
         route: "/appointment",
@@ -244,6 +256,14 @@ export default {
     clickSwitcherDocMode: async function () {
       await this.$store.dispatch(TOOGLE_DOC_MODE, this.docMode);
     },
+    filterMenuList: function (menu) {
+      return menu.filter((item) => {
+        return (
+          item.isAvailable &&
+          (this.isAuthenticated || (!this.isAuthenticated && !item.needAuth))
+        );
+      });
+    },
   },
   computed: {
     docModeAvailable: function () {
@@ -263,13 +283,12 @@ export default {
       return this.$store.getters.isAuthenticated;
     },
     computedDrawerMenuList: function () {
-      return this.drawerMenuList.filter((item) => {
-        console.log(item);
-        return (
-          item.isAvailable &&
-          (this.isAuthenticated || (!this.isAuthenticated && !item.needAuth))
-        );
-      });
+      return this.filterMenuList(
+        this.drawerMenuList.concat(...this.headerMenuList)
+      );
+    },
+    computedHeaderMenuList: function () {
+      return this.filterMenuList(this.headerMenuList);
     },
   },
 };
