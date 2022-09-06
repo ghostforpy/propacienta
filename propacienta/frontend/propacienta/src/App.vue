@@ -13,7 +13,7 @@
             >Propacienta</router-link
           >
         </v-toolbar-title>
-        <v-toolbar-title class="d-none d-md-block"
+        <v-toolbar-title v-if="isAuthenticated" class="d-none d-md-block"
           ><router-link to="/appointment"
             ><v-btn icon> <v-icon>mdi-calendar-month</v-icon></v-btn
             >Приёмы</router-link
@@ -131,8 +131,9 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <!-- <ChatComponent v-if="chat" /> -->
-    <ChatComp v-if="this.isAuthenticated" />
+    <template v-if="isAuthenticated">
+      <ChatComp v-show="chatLength" />
+    </template>
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -187,24 +188,28 @@ export default {
         route: "/my-medicine-card",
         icon: "mdi-card-account-details-outline",
         needAuth: true,
+        isAvailable: true,
       },
       {
         title: "Приёмы",
         route: "/appointment",
         icon: "mdi-calendar-month",
-        needAuth: false,
+        needAuth: true,
+        isAvailable: true,
       },
       {
         title: "Клиники",
         route: "/hospitals",
         icon: "mdi-hospital-building",
         needAuth: false,
+        isAvailable: false,
       },
       {
         title: "Врачи",
         route: "/doctors",
         icon: "mdi-doctor",
         needAuth: false,
+        isAvailable: true,
       },
     ],
     footerMenuList: [
@@ -244,6 +249,13 @@ export default {
     docModeAvailable: function () {
       return this.$store.getters.docModeAvailable;
     },
+    chatLength: function () {
+      // const chats = this.$store.getters.chats.filter((chat) => {
+      //   return chat.dialog_is_not_empty;
+      // });
+      // console.log(chats);
+      return this.$store.getters.chats.length > 0;
+    },
     accountIcon: function () {
       return !this.docMode ? "mdi-account" : "mdi-doctor";
     },
@@ -251,10 +263,13 @@ export default {
       return this.$store.getters.isAuthenticated;
     },
     computedDrawerMenuList: function () {
-      return this.drawerMenuList.filter(
-        (item) =>
-          this.isAuthenticated || (!this.isAuthenticated && !item.needAuth)
-      );
+      return this.drawerMenuList.filter((item) => {
+        console.log(item);
+        return (
+          item.isAvailable &&
+          (this.isAuthenticated || (!this.isAuthenticated && !item.needAuth))
+        );
+      });
     },
   },
 };
