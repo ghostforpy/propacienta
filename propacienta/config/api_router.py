@@ -41,6 +41,7 @@ urlpatterns = [
     path("", include("work_schedules.api.urls")),
     path("", include("appointments.api.urls")),
     path("", include("chats.api.urls")),
+    path("", include("webdials.api.urls"))
 ]
 if settings.DEBUG:
     urlpatterns += [

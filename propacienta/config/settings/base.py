@@ -99,7 +99,8 @@ LOCAL_APPS = [
     "requests_logs",
     "medicines",
     "procedures",
-    "work_schedules"
+    "work_schedules",
+    "webdials"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -440,4 +441,14 @@ CHANNEL_LAYERS = {
             "hosts": [('redis', 6379)],
         },
     },
+    'webdials': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
 }
+
+# COTURN
+COTURN_SECRET = "mysuperSecret"
+COTURN_EXPIRATION = 86400

@@ -63,6 +63,7 @@
               </template>
               <span>Написать сообщение можно только своему лечащему врачу</span>
             </v-tooltip>
+            <WebDial />
           </v-col>
           <v-col cols="12" md="7">
             <v-text-field
@@ -133,10 +134,12 @@
 <script>
 import request_service from "@/api/HTTP";
 import AppointmentOrder from "@/components/appointments/AppointmentOrder";
+import WebDial from "@/components/webdials/WebDial";
 export default {
   name: "DoctorProfile",
   components: {
     AppointmentOrder,
+    WebDial,
   },
   data: function () {
     return {
