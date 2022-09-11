@@ -1,9 +1,10 @@
 //let url = document.location.protocol + '//' + document.location.host
 import axios from "axios";
-export const BASE_URL = '0.0.0.0';
+// export const BASE_URL = '0.0.0.0';
+export const BASE_URL = 'localhost';
 const HTTP = axios.create({
     //baseURL: 'http://0.0.0.0:8000/api/',
-    baseURL: 'http://0.0.0.0/',
+    baseURL: 'http://localhost/',
     //baseURL: url + '/api/',
     headers: {
         // 'IsDoctor': true
