@@ -90,7 +90,7 @@ export default {
     // const TIMEOUT = 1000;
     // const chatSocket = new WebSocket("ws://" + BASE_URL + "/ws/chats/");
     this.chatSocket = new ReconnectingWebSocket(
-      "ws://" + BASE_URL + "/ws/chats/"
+      "wss://" + BASE_URL + "/ws/chats/"
     );
     this.chatSocket.timeoutInterval = 5400;
     // this.chatSocket.onopen = function (e) {

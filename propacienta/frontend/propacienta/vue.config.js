@@ -4,6 +4,7 @@ module.exports = defineConfig({
     'vuetify'
   ],
   devServer: {
+    https: true,
     allowedHosts: [
       'all'
     ],

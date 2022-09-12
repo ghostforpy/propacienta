@@ -175,6 +175,10 @@ export default {
     },
   },
   methods: {
+    returnHrefAvatar: function (url) {
+      const u = new URL(url);
+      return u.pathname;
+    },
     reserveHanlder: function () {
       this.dialog = true;
     },
@@ -223,7 +227,9 @@ export default {
         el.patronymic = resp.data.patronymic;
         el.phone = resp.data.phone;
         el.avatarSrc =
-          resp.data.avatar != null ? resp.data.avatar : el.avatarSrc;
+          resp.data.avatar != null
+            ? el.returnHrefAvatar(resp.data.avatar)
+            : el.avatarSrc;
         el.portfolio = resp.data.portfolio;
         el.specializations = resp.data.specializations;
         el.subSpecializations = resp.data.sub_specializations;
