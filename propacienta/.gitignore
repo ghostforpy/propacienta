@@ -277,3 +277,4 @@ propacienta/media/
 .env
 .envs/*
 !.envs/.local/
+compose/local/nginx/*.key
