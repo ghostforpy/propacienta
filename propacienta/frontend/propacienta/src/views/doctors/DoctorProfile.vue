@@ -63,7 +63,29 @@
               </template>
               <span>Написать сообщение можно только своему лечащему врачу</span>
             </v-tooltip>
-            <WebDial />
+            <!-- <v-tooltip
+              bottom
+              class="align-self-start"
+              v-if="$store.getters.isAuthenticated"
+              :disabled="isTreatingDoctor"
+            >
+              <template v-slot:activator="{ on }">
+                <div v-on="on">
+                  <v-btn
+                    small
+                    class="mt-2 white-content"
+                    style="width: 100%"
+                    color="cyan lighten-2"
+                    rounded
+                    @click="dialHandler"
+                    :disabled="!isTreatingDoctor"
+                  >
+                    Позвонить
+                  </v-btn>
+                </div>
+              </template>
+              <span>Позвонить можно только своему лечащему врачу</span>
+            </v-tooltip> -->
           </v-col>
           <v-col cols="12" md="7">
             <v-text-field
@@ -134,12 +156,10 @@
 <script>
 import request_service from "@/api/HTTP";
 import AppointmentOrder from "@/components/appointments/AppointmentOrder";
-import WebDial from "@/components/webdials/WebDial";
 export default {
   name: "DoctorProfile",
   components: {
     AppointmentOrder,
-    WebDial,
   },
   data: function () {
     return {
@@ -185,6 +205,12 @@ export default {
     messageHandler: function () {
       this.$eventBus.$emit("openDoctorChat", this.doctorId);
     },
+    // dialHandler: function () {
+    //   this.$eventBus.$emit("initDial", {
+    //     opponentId: this.doctorId,
+    //     opponentType: "doctor",
+    //   });
+    // },
     toogleIsTreatingDoctorStar: function () {
       // добавить метод добавления в лечащие врачи
       let config = {
