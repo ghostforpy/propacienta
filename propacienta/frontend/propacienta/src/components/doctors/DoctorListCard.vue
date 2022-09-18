@@ -42,11 +42,15 @@ export default {
   computed: {
     avatarSrc: function () {
       return this.avatar != null
-        ? this.avatar
+        ? this.returnHrefAvatar(this.avatar)
         : require("@/assets/default_doctor_avatar.png");
     },
   },
   methods: {
+    returnHrefAvatar: function (url) {
+      const u = new URL(url);
+      return u.pathname;
+    },
     reserve(event) {
       event.stopPropagation();
       event.preventDefault();
