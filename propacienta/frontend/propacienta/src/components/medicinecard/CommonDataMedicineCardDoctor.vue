@@ -37,6 +37,19 @@
             >
               Написать сообщение
             </v-btn>
+
+            <v-btn
+              small
+              class="mt-2 white-content"
+              style="width: 100%"
+              color="cyan lighten-2"
+              rounded
+              @click="dialHandler"
+              :disabled="!$store.getters.dialsOnline"
+              :loading="dialBtn"
+            >
+              Позвонить
+            </v-btn>
           </v-col>
           <v-col cols="12" md="6">
             <v-text-field
@@ -159,10 +172,7 @@ export default {
       loading: false,
       dialog: false,
       snackbar: false,
-      // firstNameVal: "",
-      // lastNameVal: "",
-      // patronymicVal: "",
-      // birthdayVal: "",
+      dialBtn: false,
       numberRules: [
         (value) => !!value || "Это поле является обязательным.",
         (value) => {
@@ -214,26 +224,18 @@ export default {
     this.$eventBus.$on("errorOpenPacientChat", () => {
       el.snackbar = true;
     });
-    //   let config = {
-    //     method: "get",
-    //     url: `api/medicine-cards/${this.medicineCard}`,
-    //     headers: {
-    //       IsDoctor: true,
-    //     },
-    //   };
-    //   var el = this;
-    //   request_service(
-    //     config,
-    //     function (resp) {
-    //       el.height = resp.data.height;
-    //       el.weight = resp.data.weight;
-    //     },
-    //     function (error) {
-    //       console.log(error.response);
-    //     }
-    //   );
+    this.$eventBus.$on("initDialEnd", () => {
+      el.dialBtn = false;
+    });
   },
   methods: {
+    dialHandler: function () {
+      this.dialBtn = true;
+      this.$eventBus.$emit("initDial", {
+        opponentId: this.pacientId,
+        opponentType: "pacient",
+      });
+    },
     messageHandler: function () {
       this.$eventBus.$emit("openPacientChat", this.pacientId);
     },
