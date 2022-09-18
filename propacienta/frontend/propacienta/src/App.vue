@@ -105,6 +105,18 @@
             >
           </v-list-item>
           <v-divider></v-divider>
+          <v-list-item>
+            <v-list-item-action
+              ><v-switch
+                :color="dialsOnline ? 'green' : 'red'"
+                v-model="dialsAllow"
+                inset
+                label="Звонки"
+                @click="clickSwitcherDialsAllow"
+              ></v-switch
+            ></v-list-item-action>
+          </v-list-item>
+          <v-divider></v-divider>
           <v-list-item @click="menu = false">
             <router-link to="/logout">Выход</router-link>
           </v-list-item>
@@ -144,6 +156,9 @@
     <template v-if="isAuthenticated">
       <ChatComp v-show="chatLength" />
     </template>
+    <template v-if="isAuthenticated">
+      <WebDial v-if="dialsAllow" />
+    </template>
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -170,18 +185,21 @@
 </template>
 <script>
 import { AUTH_PING } from "@/store/actions/auth";
-import { TOOGLE_DOC_MODE } from "@/store/actions/user";
+import { TOOGLE_DOC_MODE, DIALS_TOOGLE } from "@/store/actions/user";
 // import ChatComponent from "./components/chats/ChatComponent";
 import ChatComp from "./components/chats/ChatComp";
+import WebDial from "@/components/webdials/WebDial";
 export default {
   name: "App",
   components: {
     // ChatComponent,
     ChatComp,
+    WebDial,
   },
   data: () => ({
     docMode: false,
     chat: false,
+    dialsAllow: false,
     // docModeAvailable: false,
     menu: false,
     drawer: false,
@@ -251,8 +269,12 @@ export default {
   beforeCreate: async function () {
     await this.$store.dispatch(AUTH_PING);
     this.docMode = this.$store.getters.docMode;
+    this.dialsAllow = this.$store.getters.dials;
   },
   methods: {
+    clickSwitcherDialsAllow: async function () {
+      await this.$store.dispatch(DIALS_TOOGLE, this.dialsAllow);
+    },
     clickSwitcherDocMode: async function () {
       await this.$store.dispatch(TOOGLE_DOC_MODE, this.docMode);
     },
@@ -266,6 +288,9 @@ export default {
     },
   },
   computed: {
+    dialsOnline: function () {
+      return this.$store.getters.dialsOnline;
+    },
     docModeAvailable: function () {
       return this.$store.getters.docModeAvailable;
     },

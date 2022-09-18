@@ -1,6 +1,6 @@
 import request_service from "@/api/HTTP";
 import {
-    CHANGE_USER_ERORR, CHANGE_USER_STATE, CLEAR_USER_STATE, INIT_USER_STATE, TOOGLE_DOC_MODE, USER_REQUEST
+    CHANGE_USER_ERORR, CHANGE_USER_STATE, CLEAR_USER_STATE, DIALS_ONLINE_TOOGLE, DIALS_TOOGLE, INIT_USER_STATE, TOOGLE_DOC_MODE, USER_REQUEST
 } from "../actions/user";
 const state = {
     docMode: localStorage.getItem("docMode") == "true",
@@ -16,7 +16,9 @@ const state = {
     pacient_id: 0,
     medicine_card_id: 0,
     doctor_id: 0,
-    error: false
+    error: false,
+    dials: localStorage.getItem("dials") == "true",
+    dialsOnline: false,
 };
 
 const getters = {
@@ -33,6 +35,8 @@ const getters = {
     pacient_id: state => state.pacient_id,
     medicine_card_id: state => state.medicine_card_id,
     doctor_id: state => state.doctor_id,
+    dials: state => state.dials,
+    dialsOnline: state => state.dialsOnline,
 };
 const actions = {
     [USER_REQUEST]: ({ commit }, user_data) => {
@@ -81,11 +85,32 @@ const actions = {
             //
         );
     },
+    [DIALS_TOOGLE]: ({ commit }, dials) => {
+        return new Promise((resolve) => {
+            commit(DIALS_TOOGLE, dials);
+            resolve(true)
+        }
+        );
+    },
+    [DIALS_ONLINE_TOOGLE]: ({ commit }, dialsStatus) => {
+        return new Promise((resolve) => {
+            commit(DIALS_ONLINE_TOOGLE, dialsStatus);
+            resolve(true)
+        }
+        );
+    },
 };
 const mutations = {
     [TOOGLE_DOC_MODE]: (state, docMode) => {
         state.docMode = docMode;
         localStorage.setItem("docMode", docMode);
+    },
+    [DIALS_TOOGLE]: (state, dials) => {
+        state.dials = dials;
+        localStorage.setItem("dials", dials);
+    },
+    [DIALS_ONLINE_TOOGLE]: (state, dialsOnline) => {
+        state.dialsOnline = dialsOnline;
     },
     [INIT_USER_STATE]: (state, user_data) => {
         state.docModeAvailable = user_data.doc_mode_available;
