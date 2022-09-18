@@ -54,6 +54,6 @@ def get_coturn_credentials(user_id: str):
     )
     coturn_encoded_token = base64.b64encode(token.digest()).decode("utf-8")  # turn password
     return {
-        "user": coturn_user,
+        "username": coturn_user,
         "password": coturn_encoded_token
     }
