@@ -1,15 +1,5 @@
 <template>
   <div>
-    <!-- <v-btn
-      small
-      class="mt-2 white-content"
-      style="width: 100%"
-      color="cyan lighten-2"
-      rounded
-      @click="callHandler"
-    >
-      Позвонить
-    </v-btn> -->
     <v-snackbar
       v-model="snackbarIncomeCall"
       centered
@@ -27,14 +17,33 @@
         </v-btn>
       </div>
     </v-snackbar>
+    <v-snackbar
+      v-model="snackbarRejectInitCall"
+      centered
+      vertical
+      timeout="3000"
+      content-class="snackbar-content-class"
+    >
+      {{ snackbarRejectInitCallText }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="blue"
+          text
+          v-bind="attrs"
+          @click="snackbarRejectInitCall = false"
+        >
+          Ok
+        </v-btn>
+      </template>
+    </v-snackbar>
 
     <v-card
       v-bind:style="cardPosition"
       @mousedown="cardMouseDownHandle"
       @mouseup="cardMouseUpHandle"
       @mouseleave="cardMouseUpHandle"
-      :loading="dialInProgress"
-      :height="localVideo ? 380 : 220"
+      height="390"
       width="150"
       color="grey"
       class="dial-card-posiotion"
@@ -49,21 +58,22 @@
         contain
         :src="avatarSrc"
       ></v-img>
-      <!-- <video
-        v-if="dialWithRemoteVideo"
-        ref="refRemoteVideo"
-        width="150"
-        height="150"
-        autoplay
-      ></video> -->
       <video
-        v-if="localVideo"
+        v-if="dialWithLocaleVideo"
         ref="refLocalVideo"
         width="150"
         height="150"
         autoplay
         muted
       ></video>
+      <v-img
+        v-else
+        class="grey-background"
+        height="150"
+        contain
+        :src="avatarSrc"
+        ref="refLocalAvtr"
+      ></v-img>
       <br />
       <v-card-text class="text-center">
         <v-btn fab small color="red lighten-1" @click="discardCallHandler"
@@ -75,25 +85,20 @@
 </template>
 <script>
 import { BASE_URL } from "@/api/HTTP";
+import { DIALS_ONLINE_TOOGLE } from "@/store/actions/user";
 
 export default {
   name: "WebDial",
-  props: {
-    // opponentId: Number,
-    // opponentType: String,
-    //   lastName: String,
-    //   patronymic: String,
-    //   birthday: String,
-  },
+  props: {},
   data: function () {
     return {
       cardPosition: { left: "10px", top: "70px" },
       cardMove: false,
       opponentId: null,
       opponentType: null,
-      dialCardShow: true,
-      dialInProgress: true,
+      dialCardShow: false,
       dialWithRemoteVideo: false,
+      dialWithLocaleVideo: true,
       localVideo: true,
       signalWebsocket: null,
       mediaStreamLocal: null,
@@ -102,18 +107,24 @@ export default {
       dialUUID: null,
       snackbarIncomeCall: false,
       snackbarIncomeCallText: "Вызов",
+      snackbarRejectInitCall: false,
+      snackbarRejectInitCallText: null,
       credentials: null,
       shiftPosCard: null,
     };
   },
-  mounted: function () {
+  destroyed: async function () {
+    this.signalWebsocket.close();
+    await this.$store.dispatch(DIALS_ONLINE_TOOGLE, false);
+  },
+  mounted: async function () {
+    this.setDialCardPosition();
     var vuel = this;
     this.$eventBus.$on(
       "initDial",
       ({ opponentId: opponentId, opponentType: opponentType }) => {
         vuel.opponentId = opponentId;
         vuel.opponentType = opponentType;
-        // vuel.initCall();
         vuel.initRTCPeerconnection();
         vuel.signalWebsocket.send(
           JSON.stringify({
@@ -124,24 +135,26 @@ export default {
         );
       }
     );
+
     var dialElem = document.getElementById("dialCard");
 
-    dialElem.addEventListener("touchstart", this.cardMouseDownHandle);
-    dialElem.addEventListener("touchend", this.cardMouseUpHandle);
+    dialElem.addEventListener("touchstart", vuel.cardMouseDownHandle);
+    dialElem.addEventListener("touchend", vuel.cardMouseUpHandle);
 
     this.signalWebsocket = new WebSocket("wss://" + BASE_URL + "/ws/webdials/");
-    this.signalWebsocket.onclose = function () {
-      vuel.localMediaStreamOff();
-      // window.alert("Websocket has closed");
+    this.signalWebsocket.onopen = async function () {
+      await vuel.$store.dispatch(DIALS_ONLINE_TOOGLE, true);
     };
-    // this.signalWebsocket.onerror = function (evt) {
-    this.signalWebsocket.onerror = function () {
+    this.signalWebsocket.onclose = async function () {
       vuel.localMediaStreamOff();
-      // console.log("ERROR: " + evt.data);
+      await vuel.$store.dispatch(DIALS_ONLINE_TOOGLE, false);
+    };
+    this.signalWebsocket.onerror = async function () {
+      vuel.localMediaStreamOff();
+      await vuel.$store.dispatch(DIALS_ONLINE_TOOGLE, false);
     };
 
     this.signalWebsocket.onmessage = function (evt) {
-      // console.log(evt);
       let msg = JSON.parse(evt.data);
       if (!msg) {
         return console.log("failed to parse msg");
@@ -152,12 +165,25 @@ export default {
           return console.log("failed to parse offer");
         }
         vuel.dialUUID = msg.dial_uuid;
+        // console.log(offer);
+        // инициирование локальных стримов при входящем звонке
         navigator.mediaDevices
+          // запускаем видео и аудио
           .getUserMedia({ video: true, audio: true })
           .then((stream) => {
             vuel.mediaStreamLocal = stream;
-
-            vuel.$refs.refLocalVideo.srcObject = stream;
+            if (stream.getVideoTracks().length > 0) {
+              vuel.$refs.refLocalVideo.srcObject = stream;
+              vuel.dialWithLocaleVideo = true;
+            } else {
+              vuel.dialWithLocaleVideo = false;
+            }
+            if (offer.sdp.indexOf("video") != -1) {
+              // video include
+              vuel.dialWithRemoteVideo = true;
+            } else {
+              vuel.dialWithRemoteVideo = false;
+            }
             stream
               .getTracks()
               .forEach((track) => vuel.pc.addTrack(track, stream));
@@ -165,9 +191,9 @@ export default {
               .setRemoteDescription(offer)
               .then(() => console.log("offer is set"))
               .catch(() => console.log("offer no good"));
+
             vuel.pc.createAnswer().then((answer) => {
               vuel.pc.setLocalDescription(answer);
-              console.log(offer, answer);
               vuel.signalWebsocket.send(
                 JSON.stringify({
                   event: "answer",
@@ -176,21 +202,57 @@ export default {
                 })
               );
             });
-          });
+          })
+          .catch(() => {
+            navigator.mediaDevices
+              // запускаем аудио
+              .getUserMedia({ audio: true })
+              .then((stream) => {
+                vuel.mediaStreamLocal = stream;
+                if (stream.getVideoTracks().length > 0) {
+                  vuel.$refs.refLocalVideo.srcObject = stream;
+                  vuel.dialWithLocaleVideo = true;
+                } else {
+                  vuel.dialWithLocaleVideo = false;
+                }
+                if (offer.sdp.indexOf("video") != -1) {
+                  // video include
+                  vuel.dialWithRemoteVideo = true;
+                } else {
+                  vuel.dialWithRemoteVideo = false;
+                }
+                stream
+                  .getTracks()
+                  .forEach((track) => vuel.pc.addTrack(track, stream));
+                vuel.pc
+                  .setRemoteDescription(offer)
+                  .then(() => console.log("offer is set"))
+                  .catch(() => console.log("offer no good"));
 
-        // return;
+                vuel.pc.createAnswer().then((answer) => {
+                  vuel.pc.setLocalDescription(answer);
+                  vuel.signalWebsocket.send(
+                    JSON.stringify({
+                      event: "answer",
+                      dial_uuid: msg.dial_uuid,
+                      data: JSON.stringify(answer),
+                    })
+                  );
+                });
+              })
+              .catch(() => {
+                window.alert("Нет доступа к камере и/или микрофону.");
+              });
+          });
       } else if (msg.event == "candidate") {
         let candidate = JSON.parse(msg.data);
         if (!candidate) {
           return console.log("failed to parse candidate");
         }
-        // console.log("income candidate", candidate);
-        // setInterval(() => {
         vuel.pc
           .addIceCandidate(new RTCIceCandidate(candidate))
           .then(() => console.log("good candidate"))
           .catch(() => console.log("error candidate"));
-        // }, 100); // какая-то хрень
       } else if (msg.event == "answer") {
         let answer = JSON.parse(msg.data);
         vuel.dialUUID = msg.dial_uuid;
@@ -198,39 +260,38 @@ export default {
         if (!answer) {
           return console.log("failed to parse answer");
         }
+        if (answer.sdp.indexOf("video") != -1) {
+          // video input include
+          vuel.dialWithRemoteVideo = true;
+        } else {
+          vuel.dialWithRemoteVideo = false;
+        }
         vuel.pc.setRemoteDescription(answer);
       } else if (msg.event == "init_call") {
-        // добавить кнопку приема вызова, пока прием по умолчанию
-        // if (accept) {
-        // vuel.initRTCPeerconnection();
         vuel.dialUUID = msg.dial_uuid;
         vuel.snackbarIncomeCallText = msg.init_call_username;
-        // vuel.signalWebsocket.send(
-        //   JSON.stringify({
-        //     event: "accept_init_call",
-        //     dial_uuid: msg.dial_uuid,
-        //   })
-        // );
         vuel.snackbarIncomeCall = true;
-        // } else {
-        //         vuel.signalWebsocket.send(
-        // JSON.stringify({
-        //   event: "reject_init_call",
-        //   dial_uuid: msg.dial_uuid,
-        // }
-        // )
-        // );
       } else if (msg.event == "accept_init_call") {
         vuel.dialUUID = msg.dial_uuid;
         // init call
         vuel.initCall();
       } else if (msg.event == "reject_init_call") {
-        vuel.dialUUID = null;
-        vuel.localMediaStreamOff();
-        vuel.endCall();
         // reject call
-      } else if (msg.event == "end_call") {
         vuel.dialUUID = null;
+        vuel.emitInitCallEnd();
+        if (msg.reason == "opponent_is_offline") {
+          vuel.snackbarRejectInitCallText = "Пользователь не в сети.";
+        } else if (msg.reason == "user_in_call") {
+          vuel.snackbarRejectInitCallText =
+            "Вы не можете инициировать второй вызов.";
+        } else if (msg.reason == "opponent_is_busy") {
+          vuel.snackbarRejectInitCallText = "Пользователь занят.";
+        } else if (msg.reason == "opponent_reject") {
+          vuel.snackbarRejectInitCallText = "Пользователь не принял вызов.";
+        }
+        vuel.snackbarRejectInitCall = true;
+      } else if (msg.event == "end_call") {
+        // vuel.dialUUID = null;
         vuel.localMediaStreamOff();
         vuel.endCall();
         // end call
@@ -251,83 +312,91 @@ export default {
     },
   },
   methods: {
+    setDialCardPosition() {
+      if (localStorage.getItem("dialCardPositionLeft") != undefined) {
+        this.cardPosition.left = localStorage.getItem("dialCardPositionLeft");
+      }
+      if (localStorage.getItem("dialCardPositionTop") != undefined) {
+        this.cardPosition.top = localStorage.getItem("dialCardPositionTop");
+      }
+    },
     cardMouseDownHandle(event) {
+      document.body.classList.add("lock-screen");
       this.cardMove = true;
-      // console.log(
-      //   "handle cardMouseDownHandle",
-      //   event.clientY,
-      //   event.target.getBoundingClientRect().top
-      // );
       var elem = document.getElementById("dialCard");
-      this.shiftPosCard = {
-        x: event.clientX - elem.getBoundingClientRect().left,
-        y: event.clientY - elem.getBoundingClientRect().top,
-      };
+      if (event.type == "mousedown") {
+        this.shiftPosCard = {
+          x: event.clientX - elem.getBoundingClientRect().left,
+          y: event.clientY - elem.getBoundingClientRect().top,
+        };
+      } else if (event.type == "touchstart") {
+        this.shiftPosCard = {
+          x: event.touches[0].clientX - elem.getBoundingClientRect().left,
+          y: event.touches[0].clientY - elem.getBoundingClientRect().top,
+        };
+      }
+      // console.log(this.shiftPosCard);
       document.addEventListener("mousemove", this.moveCard);
+      document.addEventListener("touchmove", this.moveCard);
     },
     cardMouseUpHandle() {
+      document.body.classList.remove("lock-screen");
       this.cardMove = false;
+      localStorage.setItem("dialCardPositionLeft", this.cardPosition.left);
+      localStorage.setItem("dialCardPositionTop", this.cardPosition.top);
       document.removeEventListener("mousemove", this.moveCard);
-      console.log("cardMouseUpHandle handle");
-    },
-    cardDBClickHandle() {
-      console.log("cardDBClickHandle handle");
+      document.removeEventListener("touchmove", this.moveCard);
     },
     moveCard(event) {
       if (this.cardMove) {
-        console.log(
-          event.clientX,
-          event.x,
-          event.pageX,
-          this.shiftPosCard.x,
-          event.x - this.shiftPosCard.x + "px"
-        );
-        // const oldPositionLeft = parseInt(this.cardPosition.left.slice(0, -2));
-        // const oldPositionTop = parseInt(this.cardPosition.top.slice(0, -2));
         var elem = document.getElementById("dialCard");
         const width = elem.getBoundingClientRect().width;
         const height = elem.getBoundingClientRect().height;
+        if (event.type == "mousemove") {
+          if (
+            !(
+              event.x - this.shiftPosCard.x < 10 ||
+              event.x - this.shiftPosCard.x >
+                document.documentElement.clientWidth - 10 - width
+            )
+          ) {
+            this.cardPosition.left =
+              (event.x - this.shiftPosCard.x).toString() + "px";
+          }
+          if (
+            !(
+              event.y - this.shiftPosCard.y < 70 ||
+              event.y - this.shiftPosCard.y >
+                document.documentElement.clientHeight - 10 - height
+            )
+          ) {
+            this.cardPosition.top =
+              (event.y - this.shiftPosCard.y).toString() + "px";
+          }
+        } else if (event.type == "touchmove") {
+          var t = event.touches[0];
 
-        if (
-          !(
-            event.x - this.shiftPosCard.x < 10 ||
-            event.x - this.shiftPosCard.x >
-              document.documentElement.clientWidth - 10 - width
-          )
-        ) {
-          this.cardPosition.left =
-            (event.x - this.shiftPosCard.x).toString() + "px";
+          if (
+            !(
+              t.clientX - this.shiftPosCard.x < 10 ||
+              t.clientX - this.shiftPosCard.x >
+                document.documentElement.clientWidth - 10 - width
+            )
+          ) {
+            this.cardPosition.left =
+              (t.clientX - this.shiftPosCard.x).toString() + "px";
+          }
+          if (
+            !(
+              t.clientY - this.shiftPosCard.y < 70 ||
+              t.clientY - this.shiftPosCard.y >
+                document.documentElement.clientHeight - 10 - height
+            )
+          ) {
+            this.cardPosition.top =
+              (t.clientY - this.shiftPosCard.y).toString() + "px";
+          }
         }
-        // if (
-        //   event.x - this.shiftPosCard.x >
-        //   document.documentElement.clientWidth - 10 - width
-        // ) {
-        //   return;
-        // }
-        if (
-          !(
-            event.y - this.shiftPosCard.y < 70 ||
-            event.y - this.shiftPosCard.y >
-              document.documentElement.clientHeight - 10 - height
-          )
-        ) {
-          this.cardPosition.top =
-            (event.y - this.shiftPosCard.y).toString() + "px";
-        }
-        // if (
-        //   event.y - this.shiftPosCard.y >
-        //   document.documentElement.clientHeight - 10 - height
-        // ) {
-        //   return;
-        // }
-        // event.x - this.shiftPosCard.x + "px";
-        // this.cardPosition.left =
-        //   (event.x - this.shiftPosCard.x).toString() + "px";
-        // (oldPositionLeft + event.movementX).toString() + "px";
-        // this.cardPosition.top =
-        //   (event.y - this.shiftPosCard.y).toString() + "px";
-
-        // (oldPositionTop + event.movementY).toString() + "px";
       }
     },
     get_coturn_credentials() {
@@ -366,12 +435,17 @@ export default {
       }
       this.dialUUID = null;
       this.dialCardShow = false;
-      document.getElementById("remoteVideo").remove();
+      var els = document.getElementsByClassName("remoteVideo");
+      if (els.length) {
+        document.querySelectorAll(".remoteVideo").forEach((el) => el.remove());
+      }
     },
     localMediaStreamOff() {
-      this.mediaStreamLocal.getTracks().forEach(function (track) {
-        track.stop();
-      });
+      if (this.mediaStreamLocal != null) {
+        this.mediaStreamLocal.getTracks().forEach(function (track) {
+          track.stop();
+        });
+      }
     },
     initRTCPeerconnection() {
       var vuel = this;
@@ -384,40 +458,27 @@ export default {
             username: this.credentials.username,
             credential: this.credentials.password,
           },
-          // {
-          //   urls: "stun:openrelay.metered.ca:80",
-          // },
-          // {
-          //   urls: "turn:openrelay.metered.ca:80",
-          //   username: "openrelayproject",
-          //   credential: "openrelayproject",
-          // },
-          // {
-          //   urls: "turn:openrelay.metered.ca:443",
-          //   username: "openrelayproject",
-          //   credential: "openrelayproject",
-          // },
-          // {
-          //   urls: "turn:openrelay.metered.ca:443?transport=tcp",
-          //   username: "openrelayproject",
-          //   credential: "openrelayproject",
-          // },
         ],
       });
 
       this.pc.ontrack = function (event) {
-        if (event.track.kind === "audio") {
+        // добавление входящего стрима
+        if (event.track.kind !== "audio" && event.track.kind !== "video") {
           return;
         }
         vuel.dialCardShow = true;
-        vuel.dialWithRemoteVideo = true;
+        vuel.dialWithRemoteVideo = event.track.kind === "video";
         let el = document.createElement(event.track.kind);
         el.srcObject = event.streams[0];
         el.autoplay = true;
         el.width = 150;
         el.height = 150;
-        el.id = "remoteVideo";
-        vuel.$refs.refLocalVideo.before(el);
+        el.classList.add("remoteVideo");
+        if (vuel.dialWithLocaleVideo) {
+          vuel.$refs.refLocalVideo.before(el);
+        } else {
+          vuel.$refs.refLocalAvtr.$el.before(el);
+        }
         event.track.onmute = function () {
           var playPromise = el.play();
           if (playPromise !== undefined) {
@@ -435,69 +496,84 @@ export default {
       };
       this.pc.onconnectionstatechange = (ev) => {
         if (ev.target.connectionState === "connected") {
-          // console.log(ev);
-          this.dialWithRemoteVideo = true;
+          this.emitInitCallEnd();
         }
       };
       this.pc.onicecandidate = (e) => {
-        // window.alert("i send candidate");
         if (!e.candidate) {
           return;
         }
-
-        console.log("on ice candidate", e.candidate);
         vuel.signalWebsocket.send(
           JSON.stringify({
             event: "candidate",
             dial_uuid: vuel.dialUUID,
-            // opponentId: vuel.opponentId,
-            // opponentType: vuel.opponentType,
             data: JSON.stringify(e.candidate),
           })
         );
       };
     },
-
+    emitInitCallEnd: function () {
+      this.$eventBus.$emit("initDialEnd");
+    },
     initCall() {
       var vuel = this;
       navigator.mediaDevices
+        // пробуем запустить и видео, и аудио
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
           vuel.mediaStreamLocal = stream;
-          vuel.$refs.refLocalVideo.srcObject = stream;
+          if (stream.getVideoTracks().length > 0) {
+            vuel.$refs.refLocalVideo.srcObject = stream;
+            vuel.dialWithLocaleVideo = true;
+          } else {
+            vuel.dialWithLocaleVideo = false;
+          }
           stream
             .getTracks()
             .forEach((track) => vuel.pc.addTrack(track, stream));
-          // await this.getUserMedia();
+
           vuel.pc.createOffer().then((offer) => {
             vuel.pc.setLocalDescription(offer);
             vuel.signalWebsocket.send(
               JSON.stringify({
                 event: "offer",
                 dial_uuid: vuel.dialUUID,
-                // opponentId: vuel.opponentId,
-                // opponentType: vuel.opponentType,
-                // initiator: {opponentId:}
                 data: JSON.stringify(offer),
               })
             );
           });
-          // .then(() => {
-          //   console.log("create offer");
-          //   vuel.signalWebsocket.send(
-          //     JSON.stringify({
-          //       event: "init_call",
-          //       opponentId: vuel.opponentId,
-          //       opponentType: vuel.opponentType,
-          //       type: "video-offer",
-          //       sdp: vuel.pc.localDescription,
-          //     })
-          //   );
-          // });
-
-          // ws.onclose = function (evt) {
         })
-        .catch(window.alert);
+        .catch(() => {
+          navigator.mediaDevices
+            // пробуем запустить аудио
+            .getUserMedia({ audio: true })
+            .then((stream) => {
+              vuel.mediaStreamLocal = stream;
+              if (stream.getVideoTracks().length > 0) {
+                vuel.$refs.refLocalVideo.srcObject = stream;
+                vuel.dialWithLocaleVideo = true;
+              } else {
+                vuel.dialWithLocaleVideo = false;
+              }
+              stream
+                .getTracks()
+                .forEach((track) => vuel.pc.addTrack(track, stream));
+
+              vuel.pc.createOffer().then((offer) => {
+                vuel.pc.setLocalDescription(offer);
+                vuel.signalWebsocket.send(
+                  JSON.stringify({
+                    event: "offer",
+                    dial_uuid: vuel.dialUUID,
+                    data: JSON.stringify(offer),
+                  })
+                );
+              });
+            })
+            .catch(() => {
+              window.alert("Нет доступа к камере и/или микрофону.");
+            });
+        });
     },
     callHandler() {
       this.dialCardShow = true;
@@ -532,15 +608,22 @@ export default {
   justify-content: space-between;
 }
 .dial-card-posiotion {
-  position: absolute !important;
+  position: fixed !important;
   /* right: 10px;
   top: 70px; */
-  z-index: 20;
+  z-index: 7;
 }
 .rotate-dial {
   transform: rotate(135deg);
 }
 .grey-background {
   background: grey;
+}
+.lock-screen {
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+  position: fixed;
+  overscroll-behavior: none;
 }
 </style>
