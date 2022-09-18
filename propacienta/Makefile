@@ -6,11 +6,17 @@ local:
 local_django:
 	docker-compose -f local.yml up django $(SERVICE) --remove-orphans
 
+local_django_nginx:
+	docker-compose -f local.yml up django reverse_proxy $(SERVICE) --remove-orphans
+
 local_build:
 	docker-compose -f local.yml up --build --remove-orphans
 
 local_nginx:
 	docker-compose -f local.yml up reverse_proxy
+
+local_coturn:
+	docker-compose -f local.yml up coturn
 
 db:
 	docker-compose -f local.yml up --remove-orphans -d postgres

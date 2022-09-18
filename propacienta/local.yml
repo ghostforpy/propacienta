@@ -114,3 +114,15 @@ services:
       - ./.envs/.local/.postgres
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+  
+  coturn:
+    image: instrumentisto/coturn:4.5.2
+    network_mode: host
+    ports:
+      - "3478:3478"
+      - "80:80"
+      - "8080:8080"
+      - "49152-65535:49152-65535"
+    volumes:
+      - ./compose/local/coturn.conf:/etc/coturn/turnserver.conf
+      
