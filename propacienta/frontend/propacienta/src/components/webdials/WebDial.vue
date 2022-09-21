@@ -300,6 +300,10 @@ export default {
         // dial in progres
       } else if (msg.event == "get_coturn_credentials") {
         vuel.credentials = msg.credentials;
+      } else if (msg.event == "websocket_disconnect_end_call") {
+        // disconnect opponent websocket
+        vuel.localMediaStreamOff();
+        vuel.endCall();
       }
     };
     // this.WebSocket.onopen = this.get_coturn_credentials();
@@ -497,6 +501,12 @@ export default {
       this.pc.onconnectionstatechange = (ev) => {
         if (ev.target.connectionState === "connected") {
           this.emitInitCallEnd();
+          vuel.signalWebsocket.send(
+            JSON.stringify({
+              event: "connected_call",
+              dial_uuid: vuel.dialUUID,
+            })
+          );
         }
       };
       this.pc.onicecandidate = (e) => {
