@@ -16,6 +16,29 @@ default_cache = caches['default']
 User = get_user_model()
 
 
+class Dial:
+    INIT_STATE = "init"
+    ACCEPT_STATE = "accept"
+    IN_CALL_STATE = "in_call"
+
+    def __init__(
+            self,
+            uuid,
+            initiator,
+            opponent,
+            initiator_channel,
+            opponent_channel,
+            state=INIT_STATE
+                ) -> None:
+        self.uuid = uuid
+        self.initiator = initiator
+        self.initiator_channel = initiator_channel
+        self.opponent = opponent
+        self.opponent_channel = opponent_channel
+        self.state = state
+        self.webdial = None
+
+
 class WebDialsSignalConsumer(JsonWebsocketConsumer):
     default_cache = default_cache
     user_cache_format = "user_{}"
