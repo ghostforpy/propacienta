@@ -62,7 +62,14 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn dark icon v-bind="attrs" v-on="on">
-            <v-icon>{{ accountIcon }}</v-icon>
+            <v-badge
+              :value="dialsAllow"
+              :color="dialsAllow && dialsOnline ? 'green' : 'red'"
+              overlap
+              dot
+            >
+              <v-icon>{{ accountIcon }}</v-icon>
+            </v-badge>
           </v-btn>
         </template>
 
