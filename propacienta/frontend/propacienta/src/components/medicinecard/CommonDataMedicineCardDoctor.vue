@@ -231,10 +231,14 @@ export default {
   methods: {
     dialHandler: function () {
       this.dialBtn = true;
+      var that = this;
       this.$eventBus.$emit("initDial", {
         opponentId: this.pacientId,
         opponentType: "pacient",
       });
+      setInterval(() => {
+        that.dialBtn = false;
+      }, 5000);
     },
     messageHandler: function () {
       this.$eventBus.$emit("openPacientChat", this.pacientId);
