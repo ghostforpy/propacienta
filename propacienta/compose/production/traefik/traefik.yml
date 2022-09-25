@@ -30,13 +30,25 @@ certificatesResolvers:
 
 http:
   routers:
-    web-secure-router:
+    # web-secure-router:
+    #   rule: "Host(`propacienta.ru`) || Host(`www.propacienta.ru`)"
+    #   entryPoints:
+    #     - web-secure
+    #   middlewares:
+    #     - csrf
+    #   service: django
+    #   priority: 1
+    #   tls:
+    #     # https://docs.traefik.io/master/routing/routers/#certresolver
+    #     certResolver: letsencrypt
+    
+    web-secure-reverse_proxy-router:
       rule: "Host(`propacienta.ru`) || Host(`www.propacienta.ru`)"
       entryPoints:
         - web-secure
       middlewares:
         - csrf
-      service: django
+      service: reverse_proxy
       priority: 1
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
@@ -50,15 +62,15 @@ http:
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
-    media-router:
-      rule: "Host(`propacienta.ru`) && PathPrefix(`/media`)"
-      entryPoints:
-        - web-secure
-      service: nginx-media
-      priority: 3
-      tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
-        certResolver: letsencrypt
+    # media-router:
+    #   rule: "Host(`propacienta.ru`) && PathPrefix(`/media`)"
+    #   entryPoints:
+    #     - web-secure
+    #   service: nginx-media
+    #   priority: 3
+    #   tls:
+    #     # https://docs.traefik.io/master/routing/routers/#certresolver
+    #     certResolver: letsencrypt
 
   middlewares:
     csrf:
@@ -68,20 +80,25 @@ http:
         hostsProxyHeaders: ["X-CSRFToken"]
 
   services:
-    django:
+    # django:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://django:5000
+
+    reverse_proxy:
       loadBalancer:
         servers:
-          - url: http://django:5000
+          - url: http://reverse_proxy
 
     flower:
       loadBalancer:
         servers:
           - url: http://flower:5555
     
-    nginx-media:
-      loadBalancer:
-        servers:
-          - url: http://nginx-media
+    # nginx-media:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://nginx-media
 providers:
   # https://docs.traefik.io/master/providers/file/
   file:

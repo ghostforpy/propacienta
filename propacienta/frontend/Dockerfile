@@ -18,6 +18,6 @@ COPY ./proacienta/ .
 # собираем приложение для production с минификацией
 RUN npm run build
 
-EXPOSE 8000
+# EXPOSE 8000
 CMD [ "http-server", "dist" ]
 #CMD [ "npm", "run", "dev" ]
