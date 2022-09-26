@@ -30,17 +30,17 @@ certificatesResolvers:
 
 http:
   routers:
-    # web-secure-router:
-    #   rule: "Host(`propacienta.ru`) || Host(`www.propacienta.ru`)"
-    #   entryPoints:
-    #     - web-secure
-    #   middlewares:
-    #     - csrf
-    #   service: django
-    #   priority: 1
-    #   tls:
-    #     # https://docs.traefik.io/master/routing/routers/#certresolver
-    #     certResolver: letsencrypt
+    web-secure-api-router:
+      rule: "Host(`propacienta.ru`) && PathPrefix(`/api`) || Host(`www.propacienta.ru`) && PathPrefix(`/api`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: django
+      priority: 2
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
     
     web-secure-reverse_proxy-router:
       rule: "Host(`propacienta.ru`) || Host(`www.propacienta.ru`)"
@@ -80,10 +80,10 @@ http:
         hostsProxyHeaders: ["X-CSRFToken"]
 
   services:
-    # django:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://django:5000
+    django:
+      loadBalancer:
+        servers:
+          - url: http://django:5000
 
     reverse_proxy:
       loadBalancer:

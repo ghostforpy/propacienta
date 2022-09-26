@@ -16,6 +16,7 @@ services:
       - production_nginx_media:/app/propacienta/media:z
     
     depends_on:
+      - pgbouncer
       - postgres
       - redis
     env_file:

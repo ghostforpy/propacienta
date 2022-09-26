@@ -53,3 +53,12 @@ create_superuser_local:
 
 startapp_local:
 	docker-compose -f local.yml run --rm django ./manage.py startapp $(APP) && sudo chown ghost:ghost -R ./
+
+manage_production:
+	sudo docker-compose -f production.yml run --rm django ./manage.py $(COMMAND)
+
+production_shell:
+	sudo docker-compose -f production.yml run --rm django ./manage.py shell
+
+create_superuser_production:
+	sudo docker-compose -f production.yml run --rm django ./manage.py createsuperuser
