@@ -34,7 +34,7 @@ migrate_production:
 	sudo docker-compose -f production.yml run --rm django python manage.py migrate
 
 production:
-	sudo docker-compose -f production.yml up --build -d
+	sudo docker-compose -f production.yml up --build -d --remove-orphans
 
 down_prod:
 	sudo docker-compose -f production.yml down
