@@ -247,6 +247,7 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         """Послать инициатору вызова отбой по причине отказа оппонента принять вызов."""
         opponent_channel = self.return_opponent_channel(content)
         dial_uuid = content["dial_uuid"]
+        initiator = self.return_user_by_id(id=self.return_opponent_user_id(content))
         del self.dials[dial_uuid]
         content["type"] = "send.json"
         content["reason"] = "opponent_reject"
@@ -254,9 +255,9 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             opponent_channel.channel_name, content,
         )
         WebDial.objects.create(
-            initiator=self.return_user_by_id(id=self.return_opponent_user_id(content)),
+            initiator=initiator,
             opponent=self.scope["user"],
-            uuid=content["dial_uuid"],
+            uuid=dial_uuid,
             end_webdial_reason="opponent_reject"
         )
 
