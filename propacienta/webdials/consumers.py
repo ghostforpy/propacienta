@@ -80,10 +80,11 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         """
         Для каждого пользователя должен быть открыт только один канал.
         """
-        try:
-            self.doctors_ids[user.doctor.id] = user.id
-        except Exception as e:
-            print(e)
+        if user.doctor is not None:
+            try:
+                self.doctors_ids[user.doctor.id] = user.id
+            except Exception as e:
+                print(e)
         self.pacients_ids[user.pacient.id] = user.id
         if user.id in self.online_users:
             try:
@@ -100,11 +101,12 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             if self.online_users[user.id] != self:
                 return
             del self.online_users[user.id]
-            try:
-                if user.doctor.id in self.doctors_ids:
-                    del self.doctors_ids[user.doctor.id]
-            except Exception as e:
-                print(e)
+            if user.doctor is not None:
+                try:
+                    if user.doctor.id in self.doctors_ids:
+                        del self.doctors_ids[user.doctor.id]
+                except Exception as e:
+                    print(e)
             if user.pacient.id in self.pacients_ids:
                 del self.pacients_ids[user.pacient.id]
 
@@ -208,9 +210,11 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             elif opponent_type == "pacient":
                 user_id = self.pacients_ids[opponent_id]
         except KeyError:
+            # подумать может писать в базу
             return self.return_reject_init_call("opponent_is_offline")
         if user_id in self.online_users:
             if self.user_is_on_call(user_id):
+                # подумать может писать в базу и отправлять уведомление
                 return self.return_reject_init_call("opponent_is_busy")
             opponent_channel = self.online_users[user_id]
             dial_uuid = str(uuid4())
@@ -224,6 +228,7 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             self.add_user_to_cache(self.scope['user'])
         else:
             # opponent user is offline
+            # подумать может писать в базу
             return self.return_reject_init_call("opponent_is_offline")
 
     def accept_init_call(self, content):
