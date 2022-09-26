@@ -81,13 +81,11 @@ services:
   #   volumes:
   #     - production_nginx_media:/usr/share/nginx/html/media:ro
 
-  coturn:
+  coturn: # add certificates ssl
     image: instrumentisto/coturn:4.5.2
     network_mode: host
     ports:
       - "3478:3478"
-      # - "80:80"
-      # - "8080:8080"
       - "49152-65535:49152-65535"
     volumes:
       - ./compose/production/coturn/coturn.conf:/etc/coturn/turnserver.conf
@@ -102,31 +100,4 @@ services:
     depends_on:
       - django
     volumes:
-      # - ./compose/production/nginx/nginx.conf:/etc/nginx/nginx.conf
-      # - ./compose/local/nginx/nginx-selfsigned.crt:/etc/nginx/ssl/certs/localhost.crt
-      # - ./compose/local/nginx/nginx-selfsigned.key:/etc/ssl/private/localhost.key
-      # - ./compose/local/nginx/dhparam.pem:/etc/nginx/ssl/certs/dhparam.pem
-      # - ./compose/local/nginx/options-ssl-nginx.conf:/etc/nginx/ssl/options-ssl-nginx.conf
       - production_nginx_media:/web/media:ro
-      # - ./frontend/propacienta/dist:/usr/share/nginx/html
-    # network_mode: host
-
-          
-  # frontend:
-  #   build:
-  #     context: .
-  #     dockerfile: ./frontend/Dockerfile
-  #   image: propacienta_frontend
-  #   container_name: propacienta_frontend
-    # depends_on:
-    #   - postgres
-    #   - redis
-    #   - mailhog
-    # volumes:
-    #   - ./frontend/propacienta/dist:/app/dist:z
-    # env_file:
-    #   - ./.envs/.local/.django
-    #   - ./.envs/.local/.postgres
-    # ports:
-    #   - "8000:8000"
-    # command: /start
