@@ -16,7 +16,7 @@ services:
       - production_nginx_media:/app/propacienta/media:z
     
     depends_on:
-      - pgbouncer
+      # - pgbouncer
       - postgres
       - redis
     env_file:
@@ -35,12 +35,12 @@ services:
     env_file:
       - ./.envs/.production/.postgres
   
-  pgbouncer:
-    image: edoburu/pgbouncer
-    depends_on:
-      - postgres
-    env_file:
-      - ./.envs/.production/.pgbouncer
+  # pgbouncer:
+  #   image: edoburu/pgbouncer
+  #   depends_on:
+  #     - postgres
+  #   env_file:
+  #     - ./.envs/.production/.pgbouncer
   
   traefik:
     build:
