@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from pacients.signals import pacient_created
+
 # Create your models here.
 
 
@@ -60,3 +62,11 @@ class ResultIndependentResearch(models.Model):
 
     def __str__(self) -> str:
         return self.independent_research.title
+
+
+def create_medicine_card(signal=None, sender=None, pacient=None, **kwargs):
+    medicine_card = MedicineCard.objects.create(pacient=pacient)
+    medicine_card.save()
+
+
+pacient_created.connect(create_medicine_card)

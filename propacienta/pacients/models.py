@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from djoser.signals import user_registered
 
+from .signals import pacient_created
+
 
 class Pacient(models.Model):
     """Model for pacients."""
@@ -30,6 +32,7 @@ def user_created(signal=None, sender=None, user=None, request=None, **kwargs):
     pacient = Pacient.objects.create(phone=phone_pacient)
     user.pacient = pacient
     user.save()
+    pacient_created.send(sender=Pacient, pacient=pacient)
 
 
 user_registered.connect(user_created)
