@@ -18,6 +18,7 @@ from ..models import Dialog, DialogMessage
 User = get_user_model()
 channel_layer = get_channel_layer()
 
+
 class DialogUserSerializer(serializers.ModelSerializer):
     pacient_id = serializers.IntegerField(source="pacient.id")
     doctor_id = serializers.SerializerMethodField()
@@ -48,7 +49,8 @@ class DialogUserSerializer(serializers.ModelSerializer):
     def get_doctor_foto(self, obj):
         if obj.doctor is not None:
             if obj.doctor.is_active:
-                return obj.doctor.avatar.url
+                if obj.doctor.avatar:
+                    return obj.doctor.avatar.url
 
 
 class CreateDialogUserSerializer(serializers.ModelSerializer):
