@@ -62,3 +62,6 @@ production_shell:
 
 create_superuser_production:
 	sudo docker-compose -f production.yml run --rm django ./manage.py createsuperuser
+
+production_logs:
+	sudo docker-compose -f production.yml logs -f
