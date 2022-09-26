@@ -91,6 +91,8 @@ services:
       - "49152-65535:49152-65535"
     volumes:
       - ./compose/production/coturn/coturn.conf:/etc/coturn/turnserver.conf
+    restart: unless-stopped
+
 
   reverse_proxy:
     # image: nginx:latest
