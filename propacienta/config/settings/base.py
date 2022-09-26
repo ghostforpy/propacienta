@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 from pathlib import Path
 
 import environ
+from corsheaders.defaults import default_headers
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # propacienta/
@@ -248,7 +249,7 @@ EMAIL_TIMEOUT = 5
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL.
-ADMIN_URL = "api/admin/"
+ADMIN_URL = "admin/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [("""Aleksey Storin""", "propacienta@gmail.com")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
@@ -342,7 +343,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://0.0.0.0",
     "http://django:8000",
 ]
-from corsheaders.defaults import default_headers
 
 CORS_ALLOW_HEADERS = list(default_headers) + ["access-control-allow-credentials"]
 # By Default swagger ui is available only to admin user. You can change permission classs to change that
@@ -393,10 +393,10 @@ DJOSER = {
         "user_create_password_retype": "propacienta.users.api.serializers.CUserCreateSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
         "user": "djoser.serializers.UserSerializer",
-        #'current_user': 'djoser.serializers.UserSerializer',
+        #  'current_user': 'djoser.serializers.UserSerializer',
         "current_user": "propacienta.users.api.serializers.CUserSerializer",
-        #'token': 'djoser.serializers.TokenSerializer',
-        #'token_create': 'djoser.serializers.TokenCreateSerializer',
+        #  'token': 'djoser.serializers.TokenSerializer',
+        #  'token_create': 'djoser.serializers.TokenCreateSerializer',
     },
     "PERMISSIONS": {
         "activation": ["rest_framework.permissions.AllowAny"],
@@ -418,7 +418,7 @@ DJOSER = {
         "user_delete": [
             "propacienta.users.utils.DenyAll"
         ],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
-        #'user': ['rest_framework.permissions.CurrentUserOrAdmin'],
+        #  'user': ['rest_framework.permissions.CurrentUserOrAdmin'],
         "user_list": [
             "propacienta.users.utils.DenyAll"
         ],  # ['rest_framework.permissions.CurrentUserOrAdmin'],
@@ -432,8 +432,7 @@ DJOSER = {
 }
 
 
-
-# CHANNELS
+#  CHANNELS
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
