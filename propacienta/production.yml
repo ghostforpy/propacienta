@@ -105,7 +105,7 @@ services:
       # - ./compose/local/nginx/nginx-selfsigned.key:/etc/ssl/private/localhost.key
       # - ./compose/local/nginx/dhparam.pem:/etc/nginx/ssl/certs/dhparam.pem
       # - ./compose/local/nginx/options-ssl-nginx.conf:/etc/nginx/ssl/options-ssl-nginx.conf
-      - ./propacienta/media:/web/media:z
+      - production_nginx_media:/web/media:ro
       # - ./frontend/propacienta/dist:/usr/share/nginx/html
     # network_mode: host
 
