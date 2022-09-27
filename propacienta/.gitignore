@@ -280,3 +280,5 @@ propacienta/media/
 compose/local/nginx/*.key
 compose/production/traefik/certs/*.key
 compose/production/traefik/certs/*.crt
+mailu/*.env
+mailu/gen*
