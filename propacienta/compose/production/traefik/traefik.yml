@@ -46,17 +46,6 @@ http:
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
-    web-secure-mailu-router:
-      rule: "(Host(`propacienta.ru`) && (PathPrefix(`/admincajhsjbajh`) || PathPrefix(`/webmaildasd3`))"
-      entryPoints:
-        - web-secure
-      middlewares:
-        - csrf
-      service: django
-      priority: 3
-      tls:
-        # https://docs.traefik.io/master/routing/routers/#certresolver
-        certResolver: letsencrypt
     
     web-secure-reverse_proxy-router:
       rule: "Host(`propacienta.ru`) || Host(`www.propacienta.ru`)"
