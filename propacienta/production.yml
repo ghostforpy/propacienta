@@ -103,7 +103,7 @@ services:
       - production_nginx_media:/web/media:ro
 
   traefik-certs-dumper:
-    image: ldez/traefik-certs-dumper:v2.7.0
+    image: alpine
     entrypoint: ["sh", "-c", "/certs/entrypoint.sh"]
     depends_on:
       - traefik
