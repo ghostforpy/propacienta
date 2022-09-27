@@ -101,3 +101,12 @@ services:
       - django
     volumes:
       - production_nginx_media:/web/media:ro
+
+  traefik-certs-dumper:
+    image: ldez/traefik-certs-dumper:v2.7.0
+    entrypoint: ["sh", "-c", "/certs/entrypoint.sh"]
+    depends_on:
+      - traefik
+    volumes:
+      - ./compose/production/traefik/certs:/certs
+      - production_traefik:/data
