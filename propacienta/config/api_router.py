@@ -5,8 +5,6 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from propacienta.users.api.views import UserViewSet
-
 schema_view = get_schema_view(
     openapi.Info(
         title="Snippets API",
