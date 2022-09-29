@@ -103,7 +103,7 @@ http:
     mail:
       loadBalancer:
         servers:
-          - url: http://nginx-mailcow
+          - url: http://mail
 
     reverse_proxy:
       loadBalancer:
