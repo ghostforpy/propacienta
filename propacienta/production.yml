@@ -104,11 +104,20 @@ services:
     volumes:
       - production_nginx_media:/web/media:ro
 
-  traefik-certs-dumper:
-    image: alpine
-    entrypoint: ["sh", "-c", "/certs/entrypoint.sh"]
-    depends_on:
-      - traefik
+  # traefik-certs-dumper:
+  #   image: alpine
+  #   entrypoint: ["sh", "-c", "/certs/entrypoint.sh"]
+  #   depends_on:
+  #     - traefik
+  #   volumes:
+  #     - ./compose/production/traefik/certs:/certs
+  #     - production_traefik:/data
+
+  certdumper:
+    image: humenius/traefik-certs-dumper:latest
     volumes:
-      - ./compose/production/traefik/certs:/certs
-      - production_traefik:/data
+    - production_traefik:/traefik:ro
+    - ./compose/production/traefik/certs:/output:rw
+    # Don't set DOMAIN
+    # environment:
+    # - DOMAIN=example.org
