@@ -42,7 +42,7 @@ services:
       - "0.0.0.0:143:143"
       - "0.0.0.0:993:993"
     volumes:
-      - "./compose/production/traefik/certs:/certs:ro"
+      - "./compose/production/traefik/certs/mail.propacienta.ru/:/certs:ro"
       # - "/mailu/overrides/nginx:/overrides:ro"
     depends_on:
       - resolver
