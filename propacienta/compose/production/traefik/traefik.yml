@@ -59,6 +59,16 @@ http:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
+    mail:
+      rule: "Host(`mail.propacienta.ru`)"
+      entryPoints:
+        - web-secure
+      service: mail
+      priority: 1
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
     flower-secure-router:
       rule: "Host(`propacienta.ru`)"
       entryPoints:
@@ -89,6 +99,11 @@ http:
       loadBalancer:
         servers:
           - url: http://django:5000
+
+    mail:
+      loadBalancer:
+        servers:
+          - url: http://nginx-mailcow
 
     reverse_proxy:
       loadBalancer:
