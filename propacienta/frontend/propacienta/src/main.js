@@ -1,3 +1,5 @@
+import { BrowserTracing } from "@sentry/tracing"
+import * as Sentry from "@sentry/vue"
 import VTooltip from 'v-tooltip'
 import Vue from 'vue'
 import App from './App.vue'
@@ -6,14 +8,12 @@ import router from './router'
 import store from './store'
 
 
-
 Vue.config.productionTip = false
 Vue.use(VTooltip)
 Vue.prototype.$eventBus = new Vue();
 
 if (process.env.NODE_ENV === "production") {
-  import * as Sentry from "@sentry/vue";
-  import { BrowserTracing } from "@sentry/tracing";
+
   const SENTRY_DSN = process.env.SENTRY_DSN
   const BASE_URL = process.env.BASE_URL
   Sentry.init({
