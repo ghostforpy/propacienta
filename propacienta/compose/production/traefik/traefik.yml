@@ -36,7 +36,7 @@ certificatesResolvers:
 http:
   routers:
     web-secure-api-router:
-      rule: "(Host(`propacienta.ru`) || Host(`www.propacienta.ru`)) && (PathPrefix(`/api`) || PathPrefix(`/auth`) || PathPrefix(`/ws`))"
+      rule: "(Host(`coturn.propacienta.ru`) || Host(`propacienta.ru`) || Host(`www.propacienta.ru`)) && (PathPrefix(`/api`) || PathPrefix(`/auth`) || PathPrefix(`/ws`))"
       entryPoints:
         - web-secure
       middlewares:
