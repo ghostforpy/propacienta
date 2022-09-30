@@ -281,3 +281,4 @@ compose/local/nginx/*.key
 compose/production/traefik/certs
 mailu/*.env
 mailu/gen*
+mailu/mailu

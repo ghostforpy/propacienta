@@ -7,12 +7,9 @@ version: '2.2'
 services:
 
   # External dependencies
-  redis_mailu:
-    networks:
-      # add Traefik's network
-      propacienta_default:
-    image: redis:6
-    restart: unless-stopped
+  redis:
+    image: redis:alpine
+    restart: always
     volumes:
       - "./mailu/redis:/data"
     depends_on:
@@ -21,38 +18,37 @@ services:
       - 192.168.203.254
 
   # Core services
-  front:
+  mail_front:
+    image: ${DOCKER_ORG:-mailu}/${DOCKER_PREFIX:-}nginx:${MAILU_VERSION:-1.9}
+    restart: unless-stopped
+    env_file: mailu.env
+    logging:
+      driver: json-file
     networks:
       # add Traefik's network
       propacienta_default:
       default:
-    image: ${DOCKER_ORG:-mailu}/${DOCKER_PREFIX:-}nginx:${MAILU_VERSION:-1.9}
-    restart: unless-stopped
-    env_file: ./mailu/mailu.env
-    logging:
-      driver: json-file
     ports:
-      # - "185.182.111.231:80:80"
-      # - "185.182.111.231:443:443"
-      - "0.0.0.0:25:25"
-      - "0.0.0.0:465:465"
-      - "0.0.0.0:587:587"
-      - "0.0.0.0:110:110"
-      - "0.0.0.0:995:995"
-      - "0.0.0.0:143:143"
-      - "0.0.0.0:993:993"
+      #- "0.0.0.0:81:80"
+      #- "185.182.111.231:444:443"
+      - "185.182.111.231:25:25"
+      - "185.182.111.231:465:465"
+      - "185.182.111.231:587:587"
+      - "185.182.111.231:110:110"
+      - "185.182.111.231:995:995"
+      - "185.182.111.231:143:143"
+      - "185.182.111.231:993:993"
     volumes:
-      - "./compose/production/traefik/certs/mail.propacienta.ru/:/certs:ro"
-      # - "/mailu/overrides/nginx:/overrides:ro"
+      - "../compose/production/traefik/certs/mail.propacienta.ru/:/certs:ro"
+      - "./mailu/overrides/nginx:/overrides:ro"
     depends_on:
       - resolver
-      - traefik
     dns:
       - 192.168.203.254
 
   resolver:
     image: ${DOCKER_ORG:-mailu}/${DOCKER_PREFIX:-}unbound:${MAILU_VERSION:-1.9}
-    env_file: ./mailu/mailu.env
+    env_file: mailu.env
     restart: unless-stopped
     networks:
       default:
@@ -61,7 +57,7 @@ services:
   admin:
     image: ${DOCKER_ORG:-mailu}/${DOCKER_PREFIX:-}admin:${MAILU_VERSION:-1.9}
     restart: unless-stopped
-    env_file: ./mailu/mailu.env
+    env_file: mailu.env
     volumes:
       - "./mailu/data:/data"
       - "./mailu/dkim:/dkim"
@@ -74,12 +70,12 @@ services:
   imap:
     image: ${DOCKER_ORG:-mailu}/${DOCKER_PREFIX:-}dovecot:${MAILU_VERSION:-1.9}
     restart: unless-stopped
-    env_file: ./mailu/mailu.env
+    env_file: mailu.env
     volumes:
       - "./mailu/mail:/mail"
       - "./mailu/overrides/dovecot:/overrides:ro"
     depends_on:
-      - front
+      - mail_front
       - resolver
     dns:
       - 192.168.203.254
@@ -87,12 +83,12 @@ services:
   smtp:
     image: ${DOCKER_ORG:-mailu}/${DOCKER_PREFIX:-}postfix:${MAILU_VERSION:-1.9}
     restart: unless-stopped
-    env_file: ./mailu/mailu.env
+    env_file: mailu.env
     volumes:
       - "./mailu/mailqueue:/queue"
       - "./mailu/overrides/postfix:/overrides:ro"
     depends_on:
-      - front
+      - mail_front
       - resolver
     dns:
       - 192.168.203.254
@@ -106,7 +102,7 @@ services:
       - "./mailu/filter:/var/lib/rspamd"
       - "./mailu/overrides/rspamd:/etc/rspamd/override.d:ro"
     depends_on:
-      - front
+      - mail_front
       - resolver
     dns:
       - 192.168.203.254
@@ -116,6 +112,18 @@ services:
 
 
   # Webmail
+  webmail:
+    image: ${DOCKER_ORG:-mailu}/${DOCKER_PREFIX:-}rainloop:${MAILU_VERSION:-1.9}
+    restart: unless-stopped
+    env_file: mailu.env
+    volumes:
+      - "./mailu/webmail:/data"
+      - "./mailu/overrides/rainloop:/overrides:ro"
+    depends_on:
+      - imap
+      - resolver
+    dns:
+      - 192.168.203.254
 
 networks:
   default:
@@ -126,4 +134,3 @@ networks:
         - subnet: 192.168.203.0/24
   propacienta_default:
     external: true
-        

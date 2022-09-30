@@ -64,7 +64,7 @@ http:
       entryPoints:
         - web-secure
       service: mail
-      priority: 1
+      priority: 3
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
@@ -103,7 +103,7 @@ http:
     mail:
       loadBalancer:
         servers:
-          - url: http://mail
+          - url: http://mail_front
 
     reverse_proxy:
       loadBalancer:
