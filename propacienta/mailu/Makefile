@@ -3,5 +3,5 @@
 down:
 	sudo docker-compose down
 
-production:
+up:
 	sudo docker-compose -p mailu up --build -d --remove-orphans
