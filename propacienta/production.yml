@@ -99,8 +99,8 @@ services:
       dockerfile: ./compose/production/nginx/Dockerfile
     depends_on:
       - django
-    env_file:
-      - ./.envs/.production/.vuejs
+    # env_file:
+    #   - ./.envs/.production/.vuejs
     volumes:
       - production_nginx_media:/web/media:ro
 
