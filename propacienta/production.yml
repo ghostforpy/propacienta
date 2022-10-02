@@ -86,9 +86,12 @@ services:
     network_mode: host
     ports:
       - "3478:3478"
+      - "5349:5349"
       - "49152-65535:49152-65535"
     volumes:
       - ./compose/production/coturn/coturn.conf:/etc/coturn/turnserver.conf
+      - ./compose/production/traefik/certs/coturn.propacienta.ru/cert.pem:/etc/coturn/cert.pem
+      - ./compose/production/traefik/certs/coturn.propacienta.ru/key.pem:/etc/coturn/privkey.pem
     restart: unless-stopped
 
 
