@@ -491,7 +491,10 @@ export default {
             credential: this.credentials.password,
           },
           {
-            urls: `turns:${BASE_URL}:5349`,
+            urls:
+              process.env.NODE_ENV === "production"
+                ? `turns:${BASE_URL}:5349`
+                : `turn:${BASE_URL}:3478`,
             username: this.credentials.username,
             credential: this.credentials.password,
           },
