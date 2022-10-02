@@ -87,10 +87,18 @@ export default {
   },
   methods: {
     onSubmit: async function () {
-      let data = {
+      var data = {
         email: this.email,
         password: this.password,
       };
+      if (process.env.NODE_ENV === "production") {
+        await this.$recaptchaLoaded();
+        const token = await this.$recaptcha("login");
+        if (!token) {
+          return;
+        }
+        data.recaptchatoken = token;
+      }
       this.animError = false;
       const res = await this.$store.dispatch(AUTH_REQUEST, data);
       if (res) {

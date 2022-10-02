@@ -1,16 +1,21 @@
-from rest_framework.authtoken.views import ObtainAuthToken
+from django.conf import settings
 from django.contrib.auth import login, logout
-
+from rest_framework.authtoken.views import ObtainAuthToken
 # from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import EmailAuthTokenSerializer
+
+from .serializers import (
+    EmailAuthTokenSerializer,
+    EmailAuthTokenSerializerWithRecaptchaTokenValidate,
+)
 
 # from django.views.decorators.csrf import csrf_exempt
 
 
 class EmailObtainAuthToken(ObtainAuthToken):
-    serializer_class = EmailAuthTokenSerializer
+    serializer_class = EmailAuthTokenSerializer if settings.DEBUG\
+        else EmailAuthTokenSerializerWithRecaptchaTokenValidate  # add recaptcha in prod
 
     # @csrf_exempt
     def post(self, request, *args, **kwargs):

@@ -1,10 +1,13 @@
 from django.contrib.auth import get_user_model
-from djoser.serializers import UserCreatePasswordRetypeSerializer
+from djoser.serializers import (
+    SendEmailResetSerializer,
+    UserCreatePasswordRetypeSerializer,
+)
 from rest_framework import serializers
-from rest_framework.mixins import UpdateModelMixin
 
 from doctors.models import Doctor
 from pacients.models import Pacient
+from propacienta.utils.recaptcha_token_validate import recaptcha_token_validate
 
 User = get_user_model()
 
@@ -130,3 +133,10 @@ class CUserCreateSerializer(UserCreatePasswordRetypeSerializer):
         else:
             raise serializers.ValidationError("Поле телефона является обязательным.")
         return value
+
+
+class SendEmailResetSerializerWithRecaptchaTokenValidate(SendEmailResetSerializer):
+    recaptchatoken = serializers.CharField(
+        write_only=True,
+        validators=[recaptcha_token_validate]
+    )

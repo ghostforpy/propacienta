@@ -381,7 +381,10 @@ DJOSER = {
     },
     "SERIALIZERS": {
         "activation": "djoser.serializers.ActivationSerializer",
-        "password_reset": "djoser.serializers.SendEmailResetSerializer",
+#        "password_reset": "djoser.serializers.SendEmailResetSerializer",
+        "password_reset":
+            "propacienta.users.api.serializers.SendEmailResetSerializerWithRecaptchaTokenValidate"\
+            if not DEBUG else "djoser.serializers.SendEmailResetSerializer",  # for recaptcha in prod
         "password_reset_confirm": "djoser.serializers.PasswordResetConfirmSerializer",
         "password_reset_confirm_retype": "djoser.serializers.PasswordResetConfirmRetypeSerializer",
         "set_password": "djoser.serializers.SetPasswordSerializer",
@@ -453,3 +456,6 @@ CHANNEL_LAYERS = {
 # COTURN
 COTURN_SECRET = "mysuperSecret"
 COTURN_EXPIRATION = 86400
+
+# RECAPTCHA V3 https://www.google.com/recaptcha/admin/site/574123764/settings
+RECAPTCHA_SECRET_KEY = env("RECAPTCHA_SECRET_KEY", default="")

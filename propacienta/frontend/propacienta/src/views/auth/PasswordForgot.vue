@@ -87,10 +87,18 @@ export default {
       if (!this.emailValidate()) {
         return;
       }
-      let data = {
+      var data = {
         email: this.email,
         // password: this.password,
       };
+      if (process.env.NODE_ENV === "production") {
+        await this.$recaptchaLoaded();
+        const token = await this.$recaptcha("login");
+        if (!token) {
+          return;
+        }
+        data.recaptchatoken = token;
+      }
       let config = {
         method: "post",
         url: `api/users/reset_password/`,

@@ -1,6 +1,8 @@
-from django.contrib.auth import authenticate, login
-from rest_framework import serializers
+from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
+from propacienta.utils.recaptcha_token_validate import recaptcha_token_validate
 
 
 class EmailAuthTokenSerializer(serializers.Serializer):
@@ -33,3 +35,10 @@ class EmailAuthTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError(msg, code="authorization")
         attrs["user"] = user
         return attrs
+
+
+class EmailAuthTokenSerializerWithRecaptchaTokenValidate(EmailAuthTokenSerializer):
+    recaptchatoken = serializers.CharField(
+        write_only=True,
+        validators=[recaptcha_token_validate]
+    )
