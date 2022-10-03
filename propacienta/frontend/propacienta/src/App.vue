@@ -171,6 +171,14 @@
     </v-main>
 
     <v-footer color="cyan lighten-1" padless app :absolute="true">
+      <cookie-law
+        theme="dark-lime"
+        buttonText="Согласиться"
+        :buttonLink="{ name: 'privacy' }"
+        buttonLinkText="Политика конфиденциальности"
+        buttonLinkNewTab="true"
+        message="Этот сервис использует файлы cookie, чтобы обеспечить вам максимальное удобство пользования."
+      ></cookie-law>
       <v-row justify="center" no-gutters>
         <v-btn
           v-for="(item, id) in footerMenuList"
@@ -196,12 +204,14 @@ import { TOOGLE_DOC_MODE, DIALS_TOOGLE } from "@/store/actions/user";
 // import ChatComponent from "./components/chats/ChatComponent";
 import ChatComp from "./components/chats/ChatComp";
 import WebDial from "@/components/webdials/WebDial";
+import CookieLaw from "vue-cookie-law";
 export default {
   name: "App",
   components: {
     // ChatComponent,
     ChatComp,
     WebDial,
+    CookieLaw,
   },
   data: () => ({
     docMode: false,
@@ -343,5 +353,17 @@ export default {
   all: unset;
   color: rgb(83, 83, 83) !important;
   text-decoration: none;
+}
+.Cookie--dark-lime .Cookie__button {
+  /* .Cookie__button__custom { */
+  background: #00acc1;
+  padding: 0.625em 3.125em;
+  color: #fff;
+  border-radius: 0;
+  border: 0;
+  font-size: 1em;
+}
+.Cookie--dark-lime .Cookie__button:hover {
+  background: #00bcd4;
 }
 </style>
