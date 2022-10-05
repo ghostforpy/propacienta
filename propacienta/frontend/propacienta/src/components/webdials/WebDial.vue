@@ -125,6 +125,7 @@ export default {
       snackbarRejectInitCallText: null,
       credentials: null,
       shiftPosCard: null,
+      gumConstrains: { video: true, audio: true },
     };
   },
   destroyed: async function () {
@@ -132,6 +133,7 @@ export default {
     await this.$store.dispatch(DIALS_ONLINE_TOOGLE, false);
   },
   mounted: async function () {
+    this.testGUM();
     this.remotevideo = this.$refs.refRemoteVideo;
     this.remoteaudio = this.$refs.refRemoteAudio;
     this.setDialCardPosition();
@@ -189,28 +191,15 @@ export default {
           navigator.oGetUserMedia;
         // console.log(offer);
         // инициирование локальных стримов при входящем звонке
-        // navigator.mediaDevices
         //   // запускаем видео и аудио
-        //   .getUserMedia({ video: true, audio: true })
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           navigator.mediaDevices
-            // .getUserMedia({ video: true })
-            .getUserMedia({ video: true, audio: true })
+            .getUserMedia(vuel.gumConstrains)
             .then((stream) => {
               vuel.mediaStreamLocal = stream;
               if (stream.getVideoTracks().length > 0) {
                 vuel.$refs.refLocalVideo.srcObject = stream;
-                // vuel.dialWithLocaleVideo = true;
               }
-              // else {
-              // vuel.dialWithLocaleVideo = false;
-              // }
-              // if (offer.sdp.indexOf("video") != -1) {
-              //   // video include
-              //   vuel.dialWithRemoteVideo = true;
-              // } else {
-              //   vuel.dialWithRemoteVideo = false;
-              // }
               stream
                 .getTracks()
                 .forEach((track) => vuel.pc.addTrack(track, stream));
@@ -231,46 +220,33 @@ export default {
               });
             })
             .catch(() => {
-              navigator.mediaDevices
-                // запускаем аудио
-                .getUserMedia({ audio: true })
-                .then((stream) => {
-                  vuel.mediaStreamLocal = stream;
-                  // if (stream.getVideoTracks().length > 0) {
-                  //   vuel.$refs.refLocalVideo.srcObject = stream;
-                  //   // vuel.dialWithLocaleVideo = true;
-                  // }
-                  // else {
-                  //   vuel.dialWithLocaleVideo = false;
-                  // }
-                  // if (offer.sdp.indexOf("video") != -1) {
-                  //   // video include
-                  //   vuel.dialWithRemoteVideo = true;
-                  // } else {
-                  //   vuel.dialWithRemoteVideo = false;
-                  // }
-                  stream
-                    .getTracks()
-                    .forEach((track) => vuel.pc.addTrack(track, stream));
-                  vuel.pc
-                    .setRemoteDescription(offer)
-                    .then(() => console.log("offer is set"))
-                    .catch(() => console.log("offer no good"));
+              // navigator.mediaDevices
+              //   // запускаем аудио
+              //   .getUserMedia({ audio: true })
+              //   .then((stream) => {
+              //     vuel.mediaStreamLocal = stream;
+              //     stream
+              //       .getTracks()
+              //       .forEach((track) => vuel.pc.addTrack(track, stream));
+              //     vuel.pc
+              //       .setRemoteDescription(offer)
+              //       .then(() => console.log("offer is set"))
+              //       .catch(() => console.log("offer no good"));
 
-                  vuel.pc.createAnswer().then((answer) => {
-                    vuel.pc.setLocalDescription(answer);
-                    vuel.signalWebsocket.send(
-                      JSON.stringify({
-                        event: "answer",
-                        dial_uuid: msg.dial_uuid,
-                        data: JSON.stringify(answer),
-                      })
-                    );
-                  });
-                })
-                .catch(() => {
-                  window.alert("Нет доступа к камере и/или микрофону.");
-                });
+              //     vuel.pc.createAnswer().then((answer) => {
+              //       vuel.pc.setLocalDescription(answer);
+              //       vuel.signalWebsocket.send(
+              //         JSON.stringify({
+              //           event: "answer",
+              //           dial_uuid: msg.dial_uuid,
+              //           data: JSON.stringify(answer),
+              //         })
+              //       );
+              //     });
+              //   })
+              //   .catch(() => {
+              window.alert("Нет доступа к камере и/или микрофону.");
+              // });
             });
         }
       } else if (msg.event == "candidate") {
@@ -345,6 +321,52 @@ export default {
     },
   },
   methods: {
+    testGUM() {
+      var that = this;
+      navigator.getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia ||
+        navigator.oGetUserMedia;
+      // инициирование локальных стримов
+      //   { video: true, audio: true }
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          // .getUserMedia({ video: true, audio: true })
+          .getUserMedia(that.gumConstrains)
+          .then((stream) => {
+            stream.getTracks().forEach(function (track) {
+              track.stop();
+            });
+          })
+          .catch(() => {
+            that.gumConstrains = { audio: true };
+            navigator.getUserMedia =
+              navigator.getUserMedia ||
+              navigator.webkitGetUserMedia ||
+              navigator.mozGetUserMedia ||
+              navigator.msGetUserMedia ||
+              navigator.oGetUserMedia;
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+              navigator.mediaDevices
+                //   { audio: true }
+                .getUserMedia(that.gumConstrains)
+                .then((stream) => {
+                  stream.getTracks().forEach(function (track) {
+                    track.stop();
+                  });
+                })
+                .catch(() => {
+                  that.snackbarRejectInitCallText =
+                    "Нет доступа к камере и/или микрофону. Звонки запрещены.";
+                  that.snackbarRejectInitCall = true;
+                  that.signalWebsocket.close();
+                });
+            }
+          });
+      }
+    },
     setDialCardPosition() {
       if (localStorage.getItem("dialCardPositionLeft") != undefined) {
         this.cardPosition.left = localStorage.getItem("dialCardPositionLeft");
@@ -583,24 +605,16 @@ export default {
         navigator.mozGetUserMedia ||
         navigator.msGetUserMedia ||
         navigator.oGetUserMedia;
-      // console.log(offer);
       // инициирование локальных стримов при входящем звонке
-      // navigator.mediaDevices
-      //   // запускаем видео и аудио
-      //   .getUserMedia({ video: true, audio: true })
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices
           // .getUserMedia({ video: true })
-          .getUserMedia({ video: true, audio: true })
+          .getUserMedia(vuel.gumConstrains)
           .then((stream) => {
             vuel.mediaStreamLocal = stream;
             if (stream.getVideoTracks().length > 0) {
               vuel.$refs.refLocalVideo.srcObject = stream;
-              // vuel.dialWithLocaleVideo = true;
             }
-            // else {
-            //   vuel.dialWithLocaleVideo = false;
-            // }
             stream
               .getTracks()
               .forEach((track) => vuel.pc.addTrack(track, stream));
@@ -622,36 +636,29 @@ export default {
               });
           })
           .catch(() => {
-            navigator.mediaDevices
-              // пробуем запустить аудио
-              .getUserMedia({ audio: true })
-              .then((stream) => {
-                vuel.mediaStreamLocal = stream;
-                // if (stream.getVideoTracks().length > 0) {
-                //   vuel.$refs.refLocalVideo.srcObject = stream;
-                //   // vuel.dialWithLocaleVideo = true;
-                // }
-                // else {
-                // vuel.dialWithLocaleVideo = false;
-                // }
-                stream
-                  .getTracks()
-                  .forEach((track) => vuel.pc.addTrack(track, stream));
+            //   navigator.mediaDevices
+            //     // пробуем запустить аудио
+            //     .getUserMedia({ audio: true })
+            //     .then((stream) => {
+            //       vuel.mediaStreamLocal = stream;
+            //       stream
+            //         .getTracks()
+            //         .forEach((track) => vuel.pc.addTrack(track, stream));
 
-                vuel.pc.createOffer().then((offer) => {
-                  vuel.pc.setLocalDescription(offer);
-                  vuel.signalWebsocket.send(
-                    JSON.stringify({
-                      event: "offer",
-                      dial_uuid: vuel.dialUUID,
-                      data: JSON.stringify(offer),
-                    })
-                  );
-                });
-              })
-              .catch(() => {
-                window.alert("Нет доступа к камере и/или микрофону.");
-              });
+            //       vuel.pc.createOffer().then((offer) => {
+            //         vuel.pc.setLocalDescription(offer);
+            //         vuel.signalWebsocket.send(
+            //           JSON.stringify({
+            //             event: "offer",
+            //             dial_uuid: vuel.dialUUID,
+            //             data: JSON.stringify(offer),
+            //           })
+            //         );
+            //       });
+            //     })
+            //     .catch(() => {
+            window.alert("Нет доступа к камере и/или микрофону.");
+            // });
           });
       }
     },
