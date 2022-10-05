@@ -176,7 +176,7 @@
         buttonText="Согласиться"
         :buttonLink="{ name: 'privacy' }"
         buttonLinkText="Политика конфиденциальности"
-        buttonLinkNewTab="true"
+        :buttonLinkNewTab="true"
         message="Этот сервис использует файлы cookie, чтобы обеспечить вам максимальное удобство пользования."
       ></cookie-law>
       <v-row justify="center" no-gutters>
