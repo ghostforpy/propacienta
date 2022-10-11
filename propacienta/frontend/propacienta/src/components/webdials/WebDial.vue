@@ -37,13 +37,13 @@
         </v-btn>
       </template>
     </v-snackbar>
-
+    <!-- card -->
+    <!-- height="390" -->
     <v-card
       v-bind:style="cardPosition"
       @mousedown="cardMouseDownHandle"
       @mouseup="cardMouseUpHandle"
       @mouseleave="cardMouseUpHandle"
-      height="390"
       width="150"
       color="grey"
       class="dial-card-posiotion"
@@ -51,6 +51,9 @@
       ref="dialCard"
       id="dialCard"
     >
+      <v-btn icon @click="showVideo = !showVideo" class="shevron-btn">
+        <v-icon>{{ showVideo ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
+      </v-btn>
       <!-- <v-img
         v-if="false"
         class="grey-background"
@@ -60,24 +63,28 @@
         ref="refRemoteAvtr"
       ></v-img> -->
       <audio autoplay ref="refRemoteAudio"></audio>
-      <video
-        ref="refRemoteVideo"
-        width="150"
-        height="150"
-        autoplay
-        muted
-        playsinline
-        :poster="avatarSrc"
-      ></video>
-      <video
-        ref="refLocalVideo"
-        width="150"
-        height="150"
-        autoplay
-        muted
-        playsinline
-        :poster="avatarSrc"
-      ></video>
+      <v-expand-transition>
+        <div v-show="showVideo" style="margin-top: 4px">
+          <video
+            ref="refRemoteVideo"
+            width="150"
+            height="150"
+            autoplay
+            muted
+            playsinline
+            :poster="avatarSrc"
+          ></video>
+          <video
+            ref="refLocalVideo"
+            width="150"
+            height="150"
+            autoplay
+            muted
+            playsinline
+            :poster="avatarSrc"
+          ></video>
+        </div>
+      </v-expand-transition>
       <!-- <v-img
         v-if="false"
         class="grey-background"
@@ -87,11 +94,17 @@
         ref="refLocalAvtr"
       ></v-img> -->
       <br />
-      <v-card-text class="text-center">
+      <!-- <v-card-text class="text-center"> -->
+      <!-- <v-card-actions> -->
+      <!-- <v-row align="start" justify="center"> -->
+      <div class="discard-call-div">
         <v-btn fab small color="red lighten-1" @click="discardCallHandler"
           ><v-icon color="white" class="rotate-dial">mdi-phone</v-icon></v-btn
         >
-      </v-card-text>
+      </div>
+      <!-- </v-row> -->
+      <!-- </v-card-text> -->
+      <!-- </v-card-actions> -->
     </v-card>
   </div>
 </template>
@@ -106,11 +119,12 @@ export default {
     return {
       remotevideo: "",
       remoteaudio: "",
+      showVideo: true,
       cardPosition: { left: "10px", top: "70px" },
       cardMove: false,
       opponentId: null,
       opponentType: null,
-      dialCardShow: false,
+      dialCardShow: true,
       dialWithRemoteVideo: false,
       dialWithLocaleVideo: true,
       localVideo: true,
@@ -778,5 +792,15 @@ export default {
   width: 100%;
   position: fixed;
   overscroll-behavior: none;
+}
+.shevron-btn {
+  position: absolute !important;
+  z-index: 10;
+}
+.discard-call-div {
+  justify-content: center;
+  display: flex;
+  margin-bottom: 7px;
+  margin-top: -15px;
 }
 </style>
