@@ -238,7 +238,7 @@ export default {
       });
       setInterval(() => {
         that.dialBtn = false;
-      }, 5000);
+      }, 10000);
     },
     messageHandler: function () {
       this.$eventBus.$emit("openPacientChat", this.pacientId);

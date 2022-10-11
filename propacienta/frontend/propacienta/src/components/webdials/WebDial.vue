@@ -4,7 +4,7 @@
       v-model="snackbarIncomeCall"
       centered
       vertical
-      timeout="-1"
+      timeout="10000"
       content-class="snackbar-content-class"
     >
       <span>{{ snackbarIncomeCallText }}</span>
