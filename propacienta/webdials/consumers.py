@@ -1,8 +1,11 @@
+import logging
+import threading
 from time import sleep
 from uuid import uuid4
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import caches
 from django.db.models import F
@@ -14,70 +17,8 @@ from .models import WebDial
 default_cache = caches['default']
 
 User = get_user_model()
-
-
-class Dial:
-    INIT_STATE = "init"
-    ACCEPT_STATE = "accept"
-    IN_CALL_STATE = "in_call"
-
-    def __init__(
-            self,
-            uuid,
-            initiator,
-            opponent,
-            initiator_channel,
-            opponent_channel,
-            state=INIT_STATE
-                ) -> None:
-        self.uuid = uuid
-        self.initiator = initiator
-        self.initiator_channel = initiator_channel
-        self.opponent = opponent
-        self.opponent_channel = opponent_channel
-        self.state = state
-        self.webdial = None
-
-
-# class OnlineUser(dict):
-#     # def __init__(
-#     #     self,
-#     #     user,
-#     #     channel=None,
-#     #     doctor_id=None,
-#     #     pacient_id=None,
-#     #     status='online',
-#     #     dial_uuid=None
-#     # ) -> None:
-#     #     self.user = user,
-#     #     self.channel = channel,
-#     #     self.doctor_id = doctor_id,
-#     #     self.pacient_id = pacient_id,
-#     #     self.status = status
-#     #     self.dial_uuid = dial_uuid
-#     @property
-#     def user(self):
-#         return self["user"]
-
-#     @property
-#     def channel(self):
-#         return self["channel"]
-
-#     @property
-#     def doctor_id(self):
-#         return self["doctor_id"]
-
-#     @property
-#     def pacient_id(self):
-#         return self["pacient_id"]
-
-#     @property
-#     def status(self):
-#         return self["status"]
-
-#     @property
-#     def dial_uuid(self):
-#         return self["dial_uuid"]
+# logger = logging.getLogger(__name__)
+logger = logging.getLogger("sentry_sdk")
 
 
 class WebDialsSignalConsumer(JsonWebsocketConsumer):
@@ -92,11 +33,9 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
     user_cache_format = "user_{}"
     default_max_age = 3600  # 1 час
 
-    # online_users = dict()
-    # doctors_ids = dict()
-    # pacients_ids = dict()
-    # dials = dict()
     channel_layer = "webdials"
+
+    CONNECTING_TIOMEOUT = 10  # sec
 
     def connect(self):
         user = self.scope['user']
@@ -109,12 +48,12 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
 
     def send_coturn_credentials(self):
         credentials = get_coturn_credentials(user_id=str(self.scope["user"].id))
-        content = {"event": "get_coturn_credentials"}
-        content["credentials"] = credentials
-        content["type"] = "send.json"
-        async_to_sync(self.channel_layer.send)(
-            self.channel_name, content,
-        )
+        content = {
+            "event": "get_coturn_credentials",
+            "credentials": credentials,
+            "type": "send.json"
+            }
+        async_to_sync(self.channel_layer.send)(self.channel_name, content,)
 
     def disconnect(self, close_code):
         user = self.scope['user']
@@ -125,6 +64,20 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         del content["type"]
         return super().send_json(content, close)
 
+    def set_online_doctor(self, doctor_id, user_id):
+        self.default_cache.set(
+            self.online_doctors_prefix.format(doctor_id),
+            user_id,
+            self.default_max_age_online_user
+        )
+
+    def set_online_pacient(self, pacient_id, user_id):
+        self.default_cache.set(
+            self.online_pacients_prefix.format(pacient_id),
+            user_id,
+            self.default_max_age_online_user
+        )
+
     def add_online_user(self, user):
         """
         Для каждого пользователя должен быть открыт только один канал.
@@ -133,44 +86,23 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         if user.doctor is not None:
             try:
                 doctor_id = user.doctor.id
-                # self.doctors_ids[user.doctor.id] = user.id
-                self.default_cache.set(
-                    self.online_doctors_prefix.format(doctor_id),
-                    user.id,
-                    self.default_max_age_online_user
-                )
+                self.set_online_doctor(doctor_id, user.id)
             except Exception as e:
-                print(1111, e)
-        # self.pacients_ids[user.pacient.id] = user.id
-
+                logger.error(e)
         try:
-            self.default_cache.set(
-                self.online_pacients_prefix.format(user.pacient.id),
-                user.id,
-                self.default_max_age_online_user
-            )
+            self.set_online_pacient(user.pacient.id, user.id)
         except Exception as e:
-            print(222, e)
-
-        # if user.id in self.online_users:
-        u = self.default_cache.get(self.online_users_prefix.format(user.id))
+            logger.error(e)
+        u = self.get_online_user(user.id)
         if u is not None:
             try:
                 async_to_sync(self.channel_layer.send)(
                     u["channel"], {"type": "websocket.closebyname"},
                 )
-                # u["channel"].close()  # не сработает
-                # self.online_users[user.id].close()
             except Exception as e:
-                print(1111, e)
+                logger.error(e)
             u["channel"] = self.channel_name
         else:
-            # u = OnlineUser(
-            #     user=user,
-            #     channel=self.channel_name,
-            #     doctor_id=doctor_id,
-            #     pacient_id=user.pacient.id
-            # )
             u = dict(
                 user=user,
                 channel=self.channel_name,
@@ -183,8 +115,6 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             self.online_users_prefix.format(user.id), u, self.default_max_age_online_user
         )
 
-        # self.online_users[user.id] = self
-
     def websocket_closebyname(self):
         self.close()
 
@@ -192,7 +122,7 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         """
         Удаление канала.
         """
-        u = self.default_cache.get(self.online_users_prefix.format(user.id))
+        u = self.get_online_user(user.id)
 
         if u is not None:
             if u["channel"] != self.channel_name:
@@ -211,8 +141,13 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             # if user.pacient.id in self.pacients_ids:
             #     del self.pacients_ids[user.pacient.id]
 
+    def get_online_user(self, user_id):
+        return self.default_cache.get(self.online_users_prefix.format(user_id))
+
     def set_user_status(self, user_id, status, dial_uuid=None):
-        user = self.default_cache.get(self.online_users_prefix.format(user_id))
+        user = self.get_online_user(user_id)
+        if user is None:
+            return
         user["status"] = status
         if status == 'in_dial':
             user["dial_uuid"] = dial_uuid
@@ -233,6 +168,13 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             dial,
             self.default_max_age_online_user
         )
+
+    def set_dial_state(self, dial_uuid, state):
+        dial = self.get_dial(dial_uuid)
+        if dial is not None:
+            dial["state"] = state
+            self.set_dial(dial_uuid, dial)
+        return dial
 
     def delete_dial(self, dial_uuid):
         self.default_cache.delete(
@@ -274,7 +216,6 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
     def return_opponent_user_id(self, content):
         dial_uuid = content["dial_uuid"]
         self_id = self.scope['user'].id
-        # dial = self.dials[dial_uuid]
         dial = self.get_dial(dial_uuid)
         if dial["initiator"] == self_id:
             opponent_id = dial["opponent"]
@@ -284,8 +225,7 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
 
     def return_opponent_channel(self, content):
         opponent_id = self.return_opponent_user_id(content)
-        # return self.online_users[opponent_id]
-        u = self.default_cache.get(self.online_users_prefix.format(opponent_id))
+        u = self.get_online_user(opponent_id)
         return u["channel"]
 
     def add_user_to_cache(self, user):
@@ -315,19 +255,16 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         )
 
     def user_is_on_call(self, user_id):
-        u = self.default_cache.get(self.online_users_prefix.format(user_id))
+        u = self.get_online_user(user_id)
         return u["status"] == "in_dial"
-        # for i in self.dials:
-        #     if self.dials[i]["initiator"] == user_id or self.dials[i]["opponent"] == user_id:
-        #         return True
-        # return False
 
     def return_reject_init_call(self, reason=None):
         """Вернуть инициатору вызова отбой без посылки вызова оппоненту."""
-        content = dict()
-        content["type"] = "send.json"
-        content["event"] = "reject_init_call"
-        content["reason"] = reason
+        content = {
+            "type": "send.json",
+            "event": "reject_init_call",
+            "reason": reason
+        }
         async_to_sync(self.channel_layer.send)(
             self.channel_name, content,
         )
@@ -341,35 +278,55 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         try:
             if opponent_type == "doctor":
                 user_id = self.default_cache.get(self.online_doctors_prefix.format(opponent_id))
-                # user_id = self.doctors_ids[opponent_id]
             elif opponent_type == "pacient":
                 user_id = self.default_cache.get(self.online_pacients_prefix.format(opponent_id))
-                # user_id = self.pacients_ids[opponent_id]
         except KeyError:
             # подумать может писать в базу
             return self.return_reject_init_call("opponent_is_offline")
         if user_id is None:
             return self.return_reject_init_call("opponent_is_offline")
-        u = self.default_cache.get(self.online_users_prefix.format(user_id))
+        u = self.get_online_user(user_id)
         if u is not None:
-        # if user_id in self.online_users:
             if self.user_is_on_call(user_id):
                 # подумать может писать в базу и отправлять уведомление
                 return self.return_reject_init_call("opponent_is_busy")
-            # opponent_channel = self.online_users[user_id]
             opponent_channel = u["channel"]
             dial_uuid = str(uuid4())
-            # self.dials[dial_uuid] = {"initiator": self_id, "opponent": user_id}
-            self.set_dial(dial_uuid, {"initiator": self_id, "opponent": user_id})
+            self.set_dial(dial_uuid, {"initiator": self_id, "opponent": user_id, "state": "init"})
             self.set_user_status(user_id, "in_dial", dial_uuid=dial_uuid)
             self.set_user_status(self_id, "in_dial", dial_uuid=dial_uuid)
             content["type"] = "send.json"
             content["init_call_username"] = self.scope["user"].get_fio()
             content["dial_uuid"] = dial_uuid
+            if opponent_type == "pacient":
+                content["avatar"] = self.scope["user"].doctor.avatar.url
             async_to_sync(self.channel_layer.send)(
                 opponent_channel, content,
             )
             self.add_user_to_cache(self.scope['user'])
+
+            def check_dial():
+                sleep(self.CONNECTING_TIOMEOUT)  # таймаут ожидания установки соединения
+                dial = self.get_dial(dial_uuid)
+                if dial is not None:
+                    print("dial", dial, dial["state"])
+                    if dial["state"] != "connected":
+                        for channel in [self.channel_name, opponent_channel]:
+                            async_to_sync(self.channel_layer.send)(
+                                channel,
+                                {
+                                    "type": "send.json",
+                                    "dial_uuid": dial_uuid,
+                                    "event": "init_call_failed"
+                                },
+                            )
+                        for i in ["initiator", "opponent"]:
+                            user_id = dial[i]
+                            self.set_user_status(user_id, "online")
+                        self.delete_dial(dial_uuid)
+            thread = threading.Thread(target=check_dial)
+            thread.start()
+
         else:
             # opponent user is offline
             # подумать может писать в базу
@@ -377,6 +334,7 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
 
     def accept_init_call(self, content):
         opponent_channel = self.return_opponent_channel(content)
+        self.set_dial_state(content["dial_uuid"], "connecting")
         content["type"] = "send.json"
         async_to_sync(self.channel_layer.send)(
             opponent_channel, content,
@@ -395,7 +353,6 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         self.delete_dial(dial_uuid)
         self.set_user_status(initiator.id, "online")
         self.set_user_status(self.scope["user"].id, "online")
-        # del self.dials[dial_uuid]
         content["type"] = "send.json"
         content["reason"] = "opponent_reject"
         async_to_sync(self.channel_layer.send)(
@@ -411,22 +368,18 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
     def handle_end_call(self, content):
         opponent_channel = self.return_opponent_channel(content)
         dial_uuid = content["dial_uuid"]
-        content = dict()
-        # initiator = self.return_user_by_id(self.dials[dial_uuid]["initiator"])
-        # opponent = self.return_user_by_id(self.dials[dial_uuid]["opponent"])
-        # del self.dials[dial_uuid]
         dial = self.get_dial(dial_uuid)
         initiator = self.return_user_by_id(dial["initiator"])
         opponent = self.return_user_by_id(dial["opponent"])
         self.delete_dial(dial_uuid)
         self.set_user_status(initiator.id, "online")
         self.set_user_status(opponent.id, "online")
-        content["type"] = "send.json"
-        content["event"] = "end_call"
-        content["reason"] = "opponent_end_call"
-        async_to_sync(self.channel_layer.send)(
-            opponent_channel, content,
-        )
+        content = {
+            "type": "send.json",
+            "event": "end_call",
+            "reason": "opponent_end_call"
+        }
+        async_to_sync(self.channel_layer.send)(opponent_channel, content,)
         end_webdial_reason = "initiator" if initiator == self.scope["user"] else "opponent"
         now = timezone.now()
         WebDial.objects.filter(
@@ -442,18 +395,7 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
     def websocket_disconnect_end_call(self):
         # подумать
         self_id = self.scope['user'].id
-        # dial_uuid = None
-        # for i in self.dials:
-        #     if self.dials[i]["initiator"] == self_id or self.dials[i]["opponent"] == self_id:
-        #         dial_uuid = i
-        #         opponent_id = self.dials[i]["initiator"] \
-        #             if self.dials[i]["initiator"] != self_id \
-        #             else self.dials[i]["opponent"]
-        #         opponent_channel = self.online_users[opponent_id]
-        #         break
-        # if dial_uuid is None:
-        #     return
-        u = self.default_cache.get(self.online_users_prefix.format(self_id))
+        u = self.get_online_user(self_id)
         if u["status"] != "in_dial":
             return
         dial_uuid = u["dial_uuid"]
@@ -461,18 +403,14 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         initiator = self.return_user_by_id(dial["initiator"])
         opponent = self.return_user_by_id(dial["opponent"])
         opponent_id = opponent.id if initiator.id == self_id else initiator.id
-        u = self.default_cache.get(self.online_users_prefix.format(opponent_id))
+        u = self.get_online_user(opponent_id)
         opponent_channel = u["channel"]
-        # initiator = self.return_user_by_id(self.dials[dial_uuid]["initiator"])
-        # opponent = self.return_user_by_id(self.dials[dial_uuid]["opponent"])
-        # del self.dials[dial_uuid]
-        content = dict()
-        content["type"] = "send.json"
-        content["event"] = "end_call"
-        content["reason"] = "websocket_disconnect_end_call"
-        async_to_sync(self.channel_layer.send)(
-            opponent_channel, content,
-        )
+        content = {
+            "type": "send.json",
+            "event": "end_call",
+            "reason": "websocket_disconnect_end_call"
+        }
+        async_to_sync(self.channel_layer.send)(opponent_channel, content,)
         now = timezone.now()
         WebDial.objects.filter(
             uuid=dial_uuid,
@@ -485,11 +423,9 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
 
     def handle_connected_call(self, content):
         dial_uuid = content["dial_uuid"]
-        dial = self.get_dial(dial_uuid)
+        dial = self.set_dial_state(dial_uuid, "connected")
         initiator = self.return_user_by_id(dial["initiator"])
         opponent = self.return_user_by_id(dial["opponent"])
-        # initiator = self.return_user_by_id(self.dials[dial_uuid]["initiator"])
-        # opponent = self.return_user_by_id(self.dials[dial_uuid]["opponent"])
         WebDial.objects.filter(
             uuid=dial_uuid,
             initiator=initiator,
@@ -517,7 +453,10 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             print(content)
 
     def receive_json(self, content):
-        # try:
-        return self.return_handler(content)
-        # except Exception as e:
-            # print(e)
+        if settings.DEBUG:
+            return self.return_handler(content)
+        else:
+            try:
+                return self.return_handler(content)
+            except Exception as e:
+                logger.error(e)
