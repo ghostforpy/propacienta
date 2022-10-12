@@ -124,7 +124,7 @@ export default {
       cardMove: false,
       opponentId: null,
       opponentType: null,
-      dialCardShow: true,
+      dialCardShow: false,
       dialWithRemoteVideo: false,
       dialWithLocaleVideo: true,
       localVideo: true,
