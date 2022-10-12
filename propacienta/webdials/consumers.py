@@ -158,6 +158,7 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             user,
             self.default_max_age_online_user
         )
+        return user
 
     def get_dial(self, dial_uuid):
         return self.default_cache.get(self.active_dials_prefix.format(dial_uuid))
@@ -403,7 +404,8 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
         initiator = self.return_user_by_id(dial["initiator"])
         opponent = self.return_user_by_id(dial["opponent"])
         opponent_id = opponent.id if initiator.id == self_id else initiator.id
-        u = self.get_online_user(opponent_id)
+        # u = self.get_online_user(opponent_id)
+        u = self.set_user_status(opponent_id, "online")
         opponent_channel = u["channel"]
         content = {
             "type": "send.json",
