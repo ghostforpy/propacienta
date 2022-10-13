@@ -72,6 +72,14 @@ export default {
       sendErrorText: "Что-то пошло не так. Попробуйте позже.",
     };
   },
+  mounted: function () {
+    const recaptcha = this.$recaptchaInstance;
+    recaptcha.showBadge();
+  },
+  beforeDestroy: function () {
+    const recaptcha = this.$recaptchaInstance;
+    recaptcha.hideBadge();
+  },
   methods: {
     emailValidate: function () {
       const pattern =

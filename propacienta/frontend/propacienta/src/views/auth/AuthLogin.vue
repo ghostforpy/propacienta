@@ -85,6 +85,14 @@ export default {
       return "Сервер недоступен";
     },
   },
+  mounted: function () {
+    const recaptcha = this.$recaptchaInstance;
+    recaptcha.showBadge();
+  },
+  beforeDestroy: function () {
+    const recaptcha = this.$recaptchaInstance;
+    recaptcha.hideBadge();
+  },
   methods: {
     onSubmit: async function () {
       var data = {

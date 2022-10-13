@@ -18,30 +18,32 @@ if (process.env.NODE_ENV === "production") {
   if (RECAPTCHA_SITE_KEY !== undefined) {
     Vue.use(VueReCaptcha, {
       siteKey: RECAPTCHA_SITE_KEY
+      , loaderOptions: {
+        autoHideBadge: true
+      }
     })
+    const SENTRY_DSN = process.env.VUE_APP_SENTRY_DSN
+    const BASE_URL = process.env.VUE_APP_BASE_URL
+    Sentry.init({
+      Vue,
+      dsn: SENTRY_DSN,
+      integrations: [
+        new BrowserTracing({
+          routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+          tracingOrigins: ["localhost", BASE_URL, /^\//],
+        }),
+      ],
+      // Set tracesSampleRate to 1.0 to capture 100%
+      // of transactions for performance monitoring.
+      // We recommend adjusting this value in production
+      tracesSampleRate: 1.0,
+    });
   }
-  const SENTRY_DSN = process.env.VUE_APP_SENTRY_DSN
-  const BASE_URL = process.env.VUE_APP_BASE_URL
-  Sentry.init({
-    Vue,
-    dsn: SENTRY_DSN,
-    integrations: [
-      new BrowserTracing({
-        routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-        tracingOrigins: ["localhost", BASE_URL, /^\//],
-      }),
-    ],
-    // Set tracesSampleRate to 1.0 to capture 100%
-    // of transactions for performance monitoring.
-    // We recommend adjusting this value in production
-    tracesSampleRate: 1.0,
-  });
-}
 
 
-new Vue({
-  router,
-  vuetify,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+  new Vue({
+    router,
+    vuetify,
+    store,
+    render: h => h(App)
+  }).$mount('#app')
