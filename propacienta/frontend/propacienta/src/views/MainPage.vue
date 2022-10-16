@@ -199,6 +199,7 @@ export default {
   font-weight: 500;
   line-height: 2rem;
   letter-spacing: 0.0125em !important;
+  overflow-wrap: break-word;
 }
 .center-text-class {
   font-family: serif;
