@@ -2,6 +2,7 @@
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer  # , WebsocketConsumer
+from django.core.cache import caches
 
 from .api.serializers import DialogMessageSerializer
 # from django.contrib.auth.models import AnonymousUser
@@ -21,6 +22,9 @@ from .models import Dialog, DialogMessage
 
 class ChatConsumer(JsonWebsocketConsumer):
     online_users = dict()
+    default_cache = caches['default']
+    online_users_prefix = "chats_online_user_{}"
+    default_max_age_online_user = 86400  # 1 сутки
 
     TYPE_RECEIVER_HANDLERS = {
             "message": "message_receiver_handler",
@@ -30,7 +34,7 @@ class ChatConsumer(JsonWebsocketConsumer):
     }
     SERVICE_HANDLERS = {
         "typing": "typing_service_handler",
-        "message_received_and_read" : "message_received_and_read_handler",
+        "message_received_and_read": "message_received_and_read_handler",
         "message_received": "message_received_service_handler",
         "messages_read": "messages_read_service_handler",
     }
@@ -186,9 +190,18 @@ class ChatConsumer(JsonWebsocketConsumer):
         Добавляем канал в группу пользователя для доставки сообщений
         во все активные каналы (открытые клиенты) пользователя
         """
-        if user.id not in self.online_users:
-            self.online_users[user.id] = list()
-        self.online_users[user.id].append(channel)
+        user_channels = self.default_cache.get(self.online_users_prefix.format(user.id))
+        if user_channels is None:
+            user_channels = set()
+        user_channels.add(channel)
+        self.default_cache.set(
+            self.online_users_prefix.format(user.id),
+            user_channels,
+            self.default_max_age_online_user
+        )
+        # if user.id not in self.online_users:
+        #     self.online_users[user.id] = list()
+        # self.online_users[user.id].append(channel)
 
     def delete_online_user(self, user, channel):
         """
@@ -196,12 +209,17 @@ class ChatConsumer(JsonWebsocketConsumer):
         Если открытых каналов не осталось, разослать другим пользователям сообщение
         об отключении текущего.
         """
-        if user.id in self.online_users:
-            self.online_users[user.id] = list(
-                filter(lambda x: x != channel, self.online_users[user.id])
-            )
-        if len(self.online_users[user.id]) == 0:
-            self.send_user_disconnect(user)
+        user_channels = self.default_cache.get(self.online_users_prefix.format(user.id))
+        if user_channels is set:
+            user_channels.discard(channel)
+            if len(user_channels) == 0:
+                self.send_user_disconnect(user)
+        # if user.id in self.online_users:
+        #     self.online_users[user.id] = list(
+        #         filter(lambda x: x != channel, self.online_users[user.id])
+        #     )
+        # if len(self.online_users[user.id]) == 0:
+        #     self.send_user_disconnect(user)
 
     def send_user_connect(self, user):
         """
