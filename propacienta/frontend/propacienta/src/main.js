@@ -39,11 +39,11 @@ if (process.env.NODE_ENV === "production") {
       tracesSampleRate: 1.0,
     });
   }
+}
 
-
-  new Vue({
-    router,
-    vuetify,
-    store,
-    render: h => h(App)
-  }).$mount('#app')
+new Vue({
+  router,
+  vuetify,
+  store,
+  render: h => h(App)
+}).$mount('#app')
