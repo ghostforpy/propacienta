@@ -5,9 +5,19 @@
       centered
       vertical
       timeout="10000"
+      min-width="0"
       content-class="snackbar-content-class"
     >
-      <span>{{ snackbarIncomeCallText }}</span>
+      <div class="d-flex justify-center">
+        <v-img
+          class="grey-background"
+          height="150"
+          width="150"
+          contain
+          :src="remoteAvatarSrc"
+        ></v-img>
+      </div>
+      <span class="my-3 text-center">{{ snackbarIncomeCallText }}</span>
       <div class="snackbar-content-btn-class">
         <v-btn fab color="green" @click="accept_income_call">
           <v-icon color="white">mdi-phone</v-icon>
@@ -72,7 +82,7 @@
             autoplay
             muted
             playsinline
-            :poster="avatarSrc"
+            :poster="remoteAvatarSrc"
           ></video>
           <video
             ref="refLocalVideo"
@@ -81,30 +91,17 @@
             autoplay
             muted
             playsinline
-            :poster="avatarSrc"
+            :poster="localAvatarSrc"
           ></video>
         </div>
       </v-expand-transition>
-      <!-- <v-img
-        v-if="false"
-        class="grey-background"
-        height="150"
-        contain
-        :src="avatarSrc"
-        ref="refLocalAvtr"
-      ></v-img> -->
+
       <br />
-      <!-- <v-card-text class="text-center"> -->
-      <!-- <v-card-actions> -->
-      <!-- <v-row align="start" justify="center"> -->
       <div class="discard-call-div">
         <v-btn fab small color="red lighten-1" @click="discardCallHandler"
           ><v-icon color="white" class="rotate-dial">mdi-phone</v-icon></v-btn
         >
       </div>
-      <!-- </v-row> -->
-      <!-- </v-card-text> -->
-      <!-- </v-card-actions> -->
     </v-card>
   </div>
 </template>
@@ -124,6 +121,7 @@ export default {
       cardMove: false,
       opponentId: null,
       opponentType: null,
+      opponentAvatar: null,
       dialCardShow: false,
       dialWithRemoteVideo: false,
       dialWithLocaleVideo: true,
@@ -147,22 +145,28 @@ export default {
     await this.$store.dispatch(DIALS_ONLINE_TOOGLE, false);
   },
   mounted: async function () {
-    this.testGUM();
+    await this.testGUM();
     this.remotevideo = this.$refs.refRemoteVideo;
     this.remoteaudio = this.$refs.refRemoteAudio;
     this.setDialCardPosition();
     var vuel = this;
     this.$eventBus.$on(
       "initDial",
-      ({ opponentId: opponentId, opponentType: opponentType }) => {
+      ({
+        opponentId: opponentId,
+        opponentType: opponentType,
+        opponentAvatar: opponentAvatar,
+      }) => {
         vuel.opponentId = opponentId;
         vuel.opponentType = opponentType;
+        vuel.opponentAvatar = opponentAvatar;
         vuel.initRTCPeerconnection();
         vuel.signalWebsocket.send(
           JSON.stringify({
             event: "init_call",
             opponentId: vuel.opponentId,
             opponentType: vuel.opponentType,
+            dialerType: vuel.$store.getters.docMode ? "doctor" : "pacient",
           })
         );
       }
@@ -197,19 +201,7 @@ export default {
           return console.log("failed to parse offer");
         }
         vuel.dialUUID = msg.dial_uuid;
-        // navigator.getUserMedia =
-        //   navigator.getUserMedia ||
-        //   navigator.webkitGetUserMedia ||
-        //   navigator.mozGetUserMedia ||
-        //   navigator.msGetUserMedia ||
-        //   navigator.oGetUserMedia;
-        // // console.log(offer);
-        // // инициирование локальных стримов при входящем звонке
-        // //   // запускаем видео и аудио
-        // if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        //   navigator.mediaDevices
-        //     .getUserMedia(vuel.gumConstrains)
-        //     .then((stream) => {
+
         vuel.timeout();
 
         vuel.initGUM(
@@ -240,36 +232,6 @@ export default {
           },
           () => {}
         );
-        // .catch(() => {
-        // navigator.mediaDevices
-        //   // запускаем аудио
-        //   .getUserMedia({ audio: true })
-        //   .then((stream) => {
-        //     vuel.mediaStreamLocal = stream;
-        //     stream
-        //       .getTracks()
-        //       .forEach((track) => vuel.pc.addTrack(track, stream));
-        //     vuel.pc
-        //       .setRemoteDescription(offer)
-        //       .then(() => console.log("offer is set"))
-        //       .catch(() => console.log("offer no good"));
-
-        //     vuel.pc.createAnswer().then((answer) => {
-        //       vuel.pc.setLocalDescription(answer);
-        //       vuel.signalWebsocket.send(
-        //         JSON.stringify({
-        //           event: "answer",
-        //           dial_uuid: msg.dial_uuid,
-        //           data: JSON.stringify(answer),
-        //         })
-        //       );
-        //     });
-        //   })
-        //   .catch(() => {
-        // window.alert("Нет доступа к камере и/или микрофону.");
-        // });
-        // });
-        // }
       } else if (msg.event == "candidate") {
         let candidate = JSON.parse(msg.data);
         if (!candidate) {
@@ -297,6 +259,8 @@ export default {
         vuel.dialUUID = msg.dial_uuid;
         vuel.snackbarIncomeCallText = msg.init_call_username;
         vuel.snackbarIncomeCall = true;
+        vuel.opponentAvatar = msg.avatar;
+        vuel.opponentType = msg.dialerType;
       } else if (msg.event == "accept_init_call") {
         vuel.dialUUID = msg.dial_uuid;
         // init call
@@ -337,62 +301,39 @@ export default {
     // };
   },
   computed: {
-    avatarSrc: function () {
-      return require("@/assets/doctor_dial_avatar.jpeg");
+    remoteAvatarSrc: function () {
+      return this.opponentType === "pacient"
+        ? require("@/assets/male_pacient_avatar.jpeg")
+        : this.opponentAvatar !== null
+        ? this.opponentAvatar
+        : require("@/assets/doctor_dial_avatar.jpeg");
+    },
+    localAvatarSrc: function () {
+      return this.$store.getters.docMode
+        ? require("@/assets/doctor_dial_avatar.jpeg")
+        : require("@/assets/male_pacient_avatar.jpeg");
     },
   },
   methods: {
-    testGUM() {
+    // blockUpdateSwipe() {
+    //   const beforeunloadCallback = (event) => {
+    //     alert("handle");
+    //     event.preventDefault();
+    //     event.returnValue = "";
+    //     return "";
+    //   };
+    //   document.addEventListener("beforeunload", beforeunloadCallback);
+    // },
+    // unBlockUpdateSwipe() {
+    //   document.removeEventListener("beforeunload");
+    // },
+    async testGUM() {
       var that = this;
-      // navigator.getUserMedia =
-      //   navigator.getUserMedia ||
-      //   navigator.webkitGetUserMedia ||
-      //   navigator.mozGetUserMedia ||
-      //   navigator.msGetUserMedia ||
-      //   navigator.oGetUserMedia;
-      // // инициирование локальных стримов
-      // //   { video: true, audio: true }
-      // if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      //   navigator.mediaDevices
-      //     // .getUserMedia({ video: true, audio: true })
-      //     .getUserMedia(that.gumConstrains)
-      //     .then((stream) => {
-      //       stream.getTracks().forEach(function (track) {
-      //         track.stop();
-      //       });
-      //     })
-      //     .catch(() => {
-      //       that.gumConstrains = { audio: true };
-      //       navigator.getUserMedia =
-      //         navigator.getUserMedia ||
-      //         navigator.webkitGetUserMedia ||
-      //         navigator.mozGetUserMedia ||
-      //         navigator.msGetUserMedia ||
-      //         navigator.oGetUserMedia;
-      //       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      //         navigator.mediaDevices
-      //           //   { audio: true }
-      //           .getUserMedia(that.gumConstrains)
-      //           .then((stream) => {
-      //             stream.getTracks().forEach(function (track) {
-      //               track.stop();
-      //             });
-      //           })
-      //           .catch(() => {
-      //             that.snackbarRejectInitCallText =
-      //               "Нет доступа к камере и/или микрофону. Звонки запрещены.";
-      //             that.snackbarRejectInitCall = true;
-      //             that.signalWebsocket.close();
-      //           });
-      //       }
-      //     });
-      // }
       this.initGUM(
         // проверить видео + аудио
         this.gumConstrains,
         () => {
           // проверка видео + аудио завершена успешно
-
           (stream) => {
             stream.getTracks().forEach(function (track) {
               track.stop();
@@ -406,7 +347,6 @@ export default {
             that.gumConstrains,
             () => {
               // проверка аудио завершена успешно
-
               (stream) => {
                 stream.getTracks().forEach(function (track) {
                   track.stop();
@@ -415,7 +355,6 @@ export default {
             },
             () => {
               // проверка аудио завершена с ошибкой
-
               that.snackbarRejectInitCallText =
                 "Нет доступа к камере и/или микрофону. Звонки запрещены.";
               that.snackbarRejectInitCall = true;
@@ -462,7 +401,6 @@ export default {
           y: event.touches[0].clientY - elem.getBoundingClientRect().top,
         };
       }
-      // console.log(this.shiftPosCard);
       document.addEventListener("mousemove", this.moveCard);
       document.addEventListener("touchmove", this.moveCard);
     },
@@ -562,10 +500,7 @@ export default {
       }
       this.dialUUID = null;
       this.dialCardShow = false;
-      // var els = document.getElementsByClassName("remoteVideo");
-      // if (els.length) {
-      //   document.querySelectorAll(".remoteVideo").forEach((el) => el.remove());
-      // }
+      this.opponentAvatar = null;
     },
     localMediaStreamOff() {
       if (this.mediaStreamLocal != null) {
@@ -672,19 +607,6 @@ export default {
     },
     initCall() {
       var vuel = this;
-      // navigator.getUserMedia =
-      //   navigator.getUserMedia ||
-      //   navigator.webkitGetUserMedia ||
-      //   navigator.mozGetUserMedia ||
-      //   navigator.msGetUserMedia ||
-      //   navigator.oGetUserMedia;
-      // // инициирование локальных стримов при входящем звонке
-      // if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      //   navigator.mediaDevices
-      //     // .getUserMedia({ video: true })
-      //     .getUserMedia(vuel.gumConstrains)
-      //     .then((stream) => {
-
       vuel.initGUM(
         vuel.gumConstrains,
         (stream) => {
@@ -715,32 +637,6 @@ export default {
         },
         () => {}
       );
-      // .catch(() => {
-      //   navigator.mediaDevices
-      //     // пробуем запустить аудио
-      //     .getUserMedia({ audio: true })
-      //     .then((stream) => {
-      //       vuel.mediaStreamLocal = stream;
-      //       stream
-      //         .getTracks()
-      //         .forEach((track) => vuel.pc.addTrack(track, stream));
-
-      //       vuel.pc.createOffer().then((offer) => {
-      //         vuel.pc.setLocalDescription(offer);
-      //         vuel.signalWebsocket.send(
-      //           JSON.stringify({
-      //             event: "offer",
-      //             dial_uuid: vuel.dialUUID,
-      //             data: JSON.stringify(offer),
-      //           })
-      //         );
-      //       });
-      //     })
-      //     .catch(() => {
-      //       window.alert("Нет доступа к камере и/или микрофону.");
-      //       // });
-      //     });
-      // }
     },
     callHandler() {
       this.dialCardShow = true;
@@ -769,6 +665,8 @@ export default {
   display: flex;
   /* justify-content: space-between; */
   flex-direction: column;
+  margin: 0px !important;
+  min-width: 0px !important;
 }
 .snackbar-content-btn-class {
   display: flex;
