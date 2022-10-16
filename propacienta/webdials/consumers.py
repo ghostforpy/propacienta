@@ -115,7 +115,7 @@ class WebDialsSignalConsumer(JsonWebsocketConsumer):
             self.online_users_prefix.format(user.id), u, self.default_max_age_online_user
         )
 
-    def websocket_closebyname(self):
+    def websocket_closebyname(self, *args, **kwargs):
         self.close()
 
     def delete_online_user(self, user):
