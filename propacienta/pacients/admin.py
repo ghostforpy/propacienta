@@ -93,7 +93,7 @@ class MedicinePrescriptionAdmin(EditMixin, admin.StackedInline):
     fields = [
         "get_edit_link",
         "medicine",
-        "medicine_card",
+        "medicine_card__",
         "doctor",
         "doctor_appointment",
     ]
@@ -130,6 +130,7 @@ class PacientAdmin(admin.ModelAdmin):
         "user_name",
         "phone",
     )
+    list_filter = ("medicine_card__gender", "medicine_card__blood_type")
     list_select_related = True
     inlines = [
         UserModelAdmin,

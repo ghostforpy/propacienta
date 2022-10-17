@@ -18,7 +18,7 @@ class MedicineCardAdmin(admin.ModelAdmin):
         "pacient__user__patronymic",
         "pacient__phone",
     )
-
+    list_filter = ("gender", "blood_type")
     list_display = ("user_name",)
     inlines = [ResultIndependentResearchAdmin]
 

@@ -7,6 +7,20 @@ from pacients.signals import pacient_created
 
 
 class MedicineCard(models.Model):
+    GENDER_CHOISES = [
+        ("male", "Мужской"),
+        ("female", "Женский"),
+    ]
+    BLOOD_TYPE_CHOISES = [
+        ("I−", "O(I) Rh−"),
+        ("I+", "O(I) Rh+"),
+        ("II−", "A(II) Rh−"),
+        ("II+", "A(II) Rh+"),
+        ("III−", "B(III) Rh−"),
+        ("III+", "B(III) Rh+"),
+        ("IV−", "AB(IV) Rh−"),
+        ("IV+", "AB(IV) Rh+"),
+    ]
     pacient = models.OneToOneField(
         "pacients.pacient",
         on_delete=models.CASCADE,
@@ -17,6 +31,18 @@ class MedicineCard(models.Model):
     weight = models.DecimalField(_("Вес"), max_digits=8, decimal_places=2, null=True)
     average_pressure = models.CharField(
         max_length=20, null=True, verbose_name=_("Среднее давление")
+    )
+    gender = models.CharField(
+        _("Пол"),
+        max_length=6,
+        default="male",
+        choices=GENDER_CHOISES
+    )
+    blood_type = models.CharField(
+        _("Группа крови"),
+        max_length=6,
+        default="I−",
+        choices=BLOOD_TYPE_CHOISES
     )
 
     class Meta:

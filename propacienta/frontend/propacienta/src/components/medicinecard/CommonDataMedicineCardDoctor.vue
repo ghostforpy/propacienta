@@ -112,6 +112,36 @@
               suffix="кг"
             >
             </TextFieldUserOwner>
+            <v-select
+              :items="[
+                { gender: 'Мужской', abbr: 'male' },
+                { gender: 'Женский', abbr: 'female' },
+              ]"
+              label="Пол"
+              item-text="gender"
+              item-value="abbr"
+              v-model="gender"
+              @change="updateHandl"
+              color="cyan"
+            ></v-select>
+            <v-select
+              :items="[
+                { bloodType: 'O(I) Rh−', abbr: 'I−' },
+                { bloodType: 'O(I) Rh+', abbr: 'I+' },
+                { bloodType: 'A(II) Rh−', abbr: 'II−' },
+                { bloodType: 'A(II) Rh+', abbr: 'II+' },
+                { bloodType: 'B(III) Rh-', abbr: 'III' },
+                { bloodType: 'B(III) Rh+', abbr: 'III+' },
+                { bloodType: 'AB(IV) Rh−', abbr: 'IV−' },
+                { bloodType: 'AB(IV) Rh+', abbr: 'IV+' },
+              ]"
+              label="Группа крови"
+              item-text="bloodType"
+              item-value="abbr"
+              v-model="bloodType"
+              @change="updateHandl"
+              color="cyan"
+            ></v-select>
 
             <v-btn
               block
@@ -168,6 +198,10 @@ export default {
       oldHeight: "",
       weight: "",
       oldWeight: "",
+      gender: "",
+      oldGender: "",
+      bloodType: "",
+      oldBloodType: "",
       applyBtn: false,
       loading: false,
       dialog: false,
@@ -196,7 +230,13 @@ export default {
         config,
         function (resp) {
           el.height = resp.data.height;
-          el.weight = resp.data.weight;
+          el.height = resp.data.height;
+          el.bloodType = resp.data.blood_type;
+          el.gender = resp.data.gender;
+          el.oldHeight = el.height;
+          el.oldWeight = el.weight;
+          el.oldBloodType = el.bloodType;
+          el.oldGender = el.gender;
         },
         function (error) {
           console.log(error.response);
@@ -244,10 +284,17 @@ export default {
       this.$eventBus.$emit("openPacientChat", this.pacientId);
     },
     updateHandl: function () {
+      this.applyBtn = false;
       if (this.height != this.oldHeight) {
         this.applyBtn = true;
       }
       if (this.weight != this.oldweight) {
+        this.applyBtn = true;
+      }
+      if (this.gender !== this.oldGender) {
+        this.applyBtn = true;
+      }
+      if (this.bloodType !== this.oldBloodType) {
         this.applyBtn = true;
       }
     },
@@ -259,6 +306,8 @@ export default {
       let data = {
         height: this.height,
         weight: this.weight,
+        gender: this.gender,
+        blood_type: this.bloodType,
       };
       let config = {
         method: "patch",
@@ -276,6 +325,8 @@ export default {
           el.applyBtn = false;
           el.oldHeight = resp.data.height;
           el.oldWeight = resp.data.weight;
+          el.oldBloodType = resp.data.blood_type;
+          el.oldGender = resp.data.gender;
           el.loading = false;
         },
         function (error) {

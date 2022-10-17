@@ -31,7 +31,36 @@
               suffix="кг"
             >
             </TextFieldUserOwner>
-
+            <v-select
+              :items="[
+                { gender: 'Мужской', abbr: 'male' },
+                { gender: 'Женский', abbr: 'female' },
+              ]"
+              label="Пол"
+              item-text="gender"
+              item-value="abbr"
+              v-model="gender"
+              @change="updateHandl"
+              color="cyan"
+            ></v-select>
+            <v-select
+              :items="[
+                { bloodType: 'O(I) Rh−', abbr: 'I−' },
+                { bloodType: 'O(I) Rh+', abbr: 'I+' },
+                { bloodType: 'A(II) Rh−', abbr: 'II−' },
+                { bloodType: 'A(II) Rh+', abbr: 'II+' },
+                { bloodType: 'B(III) Rh-', abbr: 'III' },
+                { bloodType: 'B(III) Rh+', abbr: 'III+' },
+                { bloodType: 'AB(IV) Rh−', abbr: 'IV−' },
+                { bloodType: 'AB(IV) Rh+', abbr: 'IV+' },
+              ]"
+              label="Группа крови"
+              item-text="bloodType"
+              item-value="abbr"
+              v-model="bloodType"
+              @change="updateHandl"
+              color="cyan"
+            ></v-select>
             <v-btn
               block
               v-if="applyBtn"
@@ -76,6 +105,10 @@ export default {
       oldHeight: "",
       weight: "",
       oldWeight: "",
+      gender: "",
+      oldGender: "",
+      bloodType: "",
+      oldBloodType: "",
       applyBtn: false,
       loading: false,
       numberRules: [
@@ -98,10 +131,10 @@ export default {
   computed: {
     submitAvailable: function () {
       const v =
-        this.height != null &&
-        this.height != "" &&
-        this.weight != null &&
-        this.weight != "" &&
+        this.height !== null &&
+        this.height !== "" &&
+        this.weight !== null &&
+        this.weight !== "" &&
         this.$refs.height.$refs.field.valid &&
         this.$refs.weight.$refs.field.valid;
       return v;
@@ -112,14 +145,27 @@ export default {
     if (res) {
       this.height = this.$store.getters.commondataResp.height;
       this.weight = this.$store.getters.commondataResp.weight;
+      this.bloodType = this.$store.getters.commondataResp.blood_type;
+      this.gender = this.$store.getters.commondataResp.gender;
+      this.oldHeight = this.height;
+      this.oldWeight = this.weight;
+      this.oldBloodType = this.bloodType;
+      this.oldGender = this.gender;
     }
   },
   methods: {
     updateHandl: function () {
-      if (this.height != this.oldHeight) {
+      this.applyBtn = false;
+      if (this.height !== this.oldHeight) {
         this.applyBtn = true;
       }
-      if (this.weight != this.oldweight) {
+      if (this.weight !== this.oldWeight) {
+        this.applyBtn = true;
+      }
+      if (this.gender !== this.oldGender) {
+        this.applyBtn = true;
+      }
+      if (this.bloodType !== this.oldBloodType) {
         this.applyBtn = true;
       }
     },
@@ -128,6 +174,8 @@ export default {
       let data = {
         height: this.height,
         weight: this.weight,
+        gender: this.gender,
+        blood_type: this.bloodType,
       };
 
       const res = await this.$store.dispatch(
@@ -139,6 +187,8 @@ export default {
         this.applyBtn = false;
         this.oldHeight = this.height;
         this.oldWeight = this.weight;
+        this.oldBloodType = this.bloodType;
+        this.oldGender = this.gender;
       } else {
         console.log("wrong");
       }
